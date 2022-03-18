@@ -1,0 +1,10 @@
+*.vim
+
+__pycache__
+
+*.class
+
+/build/pianoray
+/build/build
+/build/dist
+/build/*.egg-info

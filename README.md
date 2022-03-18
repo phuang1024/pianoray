@@ -1,3 +1,3 @@
 # PianoRay
 
-Piano visualizer
+Video rendering pipeline with piano visualization.
