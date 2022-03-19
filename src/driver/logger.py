@@ -17,10 +17,23 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java
+import termcolor
 
-java:
-	cd ./$(KERNEL); \
-	mkdir -p ./build; \
-	javac *.java; \
-	mv *.class ./build; \
+VERBOSE = True
+
+
+def set_verbose(verbose):
+    global VERBOSE
+    VERBOSE = verbose
+
+def info(msg):
+    if VERBOSE:
+        print(termcolor.colored("INFO:  "+msg, "blue"))
+
+def warn(msg):
+    if VERBOSE:
+        print(termcolor.colored("WARN:  "+msg, "yellow"))
+
+def error(msg):
+    if VERBOSE:
+        print(termcolor.colored("ERROR: "+msg, "red"))

@@ -17,10 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java
 
-java:
-	cd ./$(KERNEL); \
-	mkdir -p ./build; \
-	javac *.java; \
-	mv *.class ./build; \
+def readall(stream):
+    """
+    Read all from an output bytes stream.
+    """
+    out = b""
+    while len(chunk := stream.read(1024)) > 0:
+        out += chunk
+    return out

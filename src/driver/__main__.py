@@ -18,12 +18,33 @@
 #
 
 import argparse
+from .kernel import Kernel
+from . import logger
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Video rendering pipeline with piano visualization.")
+        description="Video rendering pipeline with piano visualization.\n"
+                    "This program drives the rendering kernels.")
+    parser.add_argument("-V", "--version", help="Print version.", action="store_true")
+    parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").")
+    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_true")
     args = parser.parse_args()
+
+    if args.version:
+        print("PianoRay Driver 0.0.1")
+        return
+
+    logger.set_verbose(args.verbose)
+
+    from .utils import readall
+    k = Kernel(".")
+    print(k.dir_path, k.exe_path, k.lang)
+    proc = k.run()
+    proc.wait()
+    print(readall(proc.stdout))
+
+    #kernels = load_kernels(args.paths)
 
 
 if __name__ == "__main__":
