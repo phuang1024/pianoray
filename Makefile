@@ -20,16 +20,18 @@
 .PHONY: driver kernels install clean
 
 driver:
+	rm -rf ./build/driver
 	mkdir -p ./build/driver
 	rm -rf ./build/pianoray
 	cp -r ./src/driver ./build/pianoray
 	cd ./build; \
 	python ./setup.py bdist_wheel sdist; \
-	mv ./build ./dist ./*.egg-info ./driver
+	mv -f ./build ./dist ./*.egg-info ./driver
 
 kernels:
 	cd ./src/kernels; \
-	make java KERNEL=jtest
+	make java KERNEL=jtest; \
+	make python KERNEL=pytest; \
 
 install:
 	pip install ./build/driver/dist/*.whl

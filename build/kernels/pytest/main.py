@@ -1,4 +1,4 @@
-#pip uninstall -y pianoray && make && make install
+#
 #  PianoRay
 #  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
@@ -17,14 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java python
+import printer  # local import
 
-java:
-	mkdir -p ./$(KERNEL)/build ../../build/kernels
-	javac ./$(KERNEL)/*.java
-	mv ./$(KERNEL)/*.class ./$(KERNEL)/build
-	mv ./$(KERNEL)/build ../../build/kernels/$(KERNEL)
-
-python:
-	mkdir -p ../../build/kernels/$(KERNEL)
-	cp ./$(KERNEL)/*.py ../../build/kernels/$(KERNEL)
+printer.json_dump({
+    "a": 1,
+    "b": 2,
+})
