@@ -41,7 +41,11 @@ def load_kernels(paths):
     return kernels
 
 
-def execute_graph(path, kernels):
+def execute_graph(path, output, kernels):
+    if not path.count(":") == 1:
+        logger.error("Pipeline path must be \"/path/file.py:PipelineClass\"")
+        return
+
     path, cls_name = path.split(":")
     parent = os.path.dirname(path)
     mod_name = os.path.basename(path)[:-3]
@@ -56,17 +60,18 @@ def execute_graph(path, kernels):
         return
 
     graph = cls(kernels)
-    graph.render(None)
+    graph.render(output)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Video rendering pipeline with piano visualization.\n"
+        description="Video rendering pipeline with piano visualization. "
                     "This program drives the rendering kernels.")
     parser.add_argument("-V", "--version", help="Print version.", action="store_true")
+    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_false")
     parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").",
         required=True)
-    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_false")
+    parser.add_argument("-o", "--output", help="Output video file.", required=True)
     parser.add_argument("graph", help="File containing pipeline e.g. file.py:PipelineClass")
     args = parser.parse_args()
 
@@ -77,7 +82,7 @@ def main():
     logger.set_verbose(args.verbose)
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
-    execute_graph(os.path.realpath(args.graph), kernels)
+    execute_graph(os.path.realpath(args.graph), args.output, kernels)
 
 
 if __name__ == "__main__":

@@ -18,7 +18,9 @@
 #
 
 import numpy as np
-from typing import Mapping, Tuple
+import cv2
+from tqdm import trange
+from typing import Any, Mapping
 from .kernel import Kernel
 
 
@@ -26,22 +28,29 @@ class BasePipeline:
     """
     Extend off of this class to create your pipeline.
     """
+
     kernels: Mapping[str, Kernel]
+    """Mapping of loaded kernels."""
+
+    meta: Mapping[str, Any]
+    """
+    Metadata. Define in subclass.
+    * start: Frame start, inclusive
+    * end: Frame end, inclusive
+    * res: Video resolution, (width, height)
+    * fps: Video frames per second
+    """
 
     def __init__(self, kernels):
         self.kernels = kernels
 
     def render_frame(self, frame: int) -> np.ndarray:
         """
+        Override this in your subclass.
         Render one frame and return the image as a numpy array.
-        Override this in your subclass.
-        """
-        raise NotImplementedError("Override this in your subclass.")
 
-    def get_frame_bounds(self) -> Tuple[int, int]:
-        """
-        Return ``(start_frame, end_frame)``, inclusive.
-        Override this in your subclass.
+        :param frame: Frame number.
+        :return: np.ndarray shape (height, width, 3), RGB channels.
         """
         raise NotImplementedError("Override this in your subclass.")
 
@@ -50,5 +59,12 @@ class BasePipeline:
         Renders each frame.
         Don't override.
         """
-        start, end = self.get_frame_bounds()
-        self.render_frame(0)
+        video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
+            self.meta["fps"], self.meta["res"])
+
+        for frame in trange(self.meta["start"], self.meta["end"]+1):
+            img = self.render_frame(frame)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            video.write(img)
+
+        video.release()

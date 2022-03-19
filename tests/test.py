@@ -17,13 +17,22 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import numpy as np
 from pianoray import BasePipeline
 
 
 class Pipeline(BasePipeline):
-    def get_frame_bounds(self):
-        return (0, 0)
+    meta = {
+        "start": 0,
+        "end": 30,
+        "res": (1920, 1080),
+        "fps": 30,
+    }
 
     def render_frame(self, frame):
-        print(frame)
-        print(self.kernels["build"].run_json(None))
+        res = self.meta["res"]
+
+        img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
+        img[..., 0] = 255
+
+        return img
