@@ -5,7 +5,6 @@ __pycache__
 
 *.class
 
+/build/driver
+/build/kernels
 /build/pianoray
-/build/build
-/build/dist
-/build/*.egg-info
