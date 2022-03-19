@@ -1,4 +1,4 @@
-#
+#pip uninstall -y pianoray && make && make install
 #  PianoRay
 #  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
@@ -20,7 +20,7 @@
 .PHONY: java
 
 java:
-	cd ./$(KERNEL); \
-	mkdir -p ./build; \
-	javac *.java; \
-	mv *.class ./build; \
+	mkdir -p ./$(KERNEL)/build ../../build/kernels
+	javac ./$(KERNEL)/*.java
+	mv ./$(KERNEL)/*.class ./$(KERNEL)/build
+	mv ./$(KERNEL)/build ../../build/kernels/$(KERNEL)

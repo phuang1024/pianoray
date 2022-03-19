@@ -17,13 +17,23 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver install
+.PHONY: driver kernels install clean
 
 driver:
+	mkdir -p ./build/driver
 	rm -rf ./build/pianoray
 	cp -r ./src/driver ./build/pianoray
 	cd ./build; \
-	python ./setup.py bdist_wheel sdist
+	python ./setup.py bdist_wheel sdist; \
+	mv ./build ./dist ./*.egg-info ./driver
+
+kernels:
+	cd ./src/kernels; \
+	make java KERNEL=test
 
 install:
-	pip install ./build/dist/*.whl
+	pip install ./build/driver/dist/*.whl
+
+clean:
+	find | grep ".*\.class" | grep -v build | xargs rm -f
+	rm -rf ./build/pianoray
