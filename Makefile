@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver kernels install clean
+.PHONY: driver kernels install clean docs
 
 driver:
 	rm -rf ./build/driver
@@ -39,3 +39,7 @@ install:
 clean:
 	find | grep ".*\.class" | grep -v build | xargs rm -f
 	rm -rf ./build/pianoray
+
+docs:
+	cd ./docs; \
+	make html
