@@ -44,5 +44,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     include_package_data=True,
-    entry_points={"console_scripts": ["pianoray = pianoray.__main__:main"]},
+    entry_points={
+        "console_scripts": [
+            "pianoray = pianoray.__main__:main",
+        ]
+    },
 )

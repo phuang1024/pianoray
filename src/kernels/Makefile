@@ -1,4 +1,4 @@
-#pip uninstall -y pianoray && make && make install
+#
 #  PianoRay
 #  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022

@@ -8,6 +8,12 @@ First, clone the repository.
    git clone https://github.com/phuang1024/pianoray
    cd pianoray
 
+Requirements
+------------
+
+- Python 3.8 or later
+- Java
+
 Driver
 ------
 
