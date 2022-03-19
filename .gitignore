@@ -8,3 +8,5 @@ __pycache__
 /build/driver
 /build/kernels
 /build/pianoray
+
+/docs/_build
