@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java python
+.PHONY: java python cpp
 
 java:
 	mkdir -p ./$(KERNEL)/build ../../build/kernels
@@ -28,3 +28,8 @@ java:
 python:
 	mkdir -p ../../build/kernels/$(KERNEL)
 	cp ./$(KERNEL)/*.py ../../build/kernels/$(KERNEL)
+
+cpp:
+	mkdir -p ../../build/kernels/$(KERNEL)
+	g++ -O3 -Wall ./$(KERNEL)/*.cpp -o a.out
+	mv ./$(KERNEL)/a.out ../../build/kernels/$(KERNEL)/main.out
