@@ -30,6 +30,11 @@ class Pipeline(BasePipeline):
     }
 
     def render_frame(self, frame):
+        if False and frame == 0:
+            # Testing stuff (disabled currently)
+            print(self.kernels["jtest"].run_json(None))
+            print(self.kernels["pytest"].run_json(None))
+
         res = self.meta["res"]
 
         img = np.zeros((res[1], res[0], 3), dtype=np.uint8)

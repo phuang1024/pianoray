@@ -43,6 +43,8 @@ class Kernel:
     If there is more than one such file, an arbitrary one will be chosen.
     """
 
+    name: str
+
     dir_path: str
     """Path to directory"""
 
@@ -56,6 +58,7 @@ class Kernel:
         """
         Initialize with path to directory.
         """
+        path = os.path.realpath(path)
         entry = next(filter(lambda s: s.lower().startswith("main"), os.listdir(path)))
         ext = entry.split(".")[-1]
 
@@ -74,6 +77,7 @@ class Kernel:
 
         self.dir_path = path
         self.exe_path = os.path.join(path, entry)
+        self.name = os.path.basename(self.dir_path)
 
     def run(self, args=()) -> Popen:
         """
@@ -89,7 +93,7 @@ class Kernel:
             pre_args = [self.exe_path]
 
         pre_args.extend(args)
-        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, cwd=self.dir_path)
+        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, cwd=self.dir_path)
         return proc
 
     def run_json(self, stdin, args=()):
@@ -105,5 +109,9 @@ class Kernel:
         proc.stdin.flush()
         proc.stdin.close()
         proc.wait()
+        if proc.returncode != 0:
+            logger.error(f"Kernel {self.name} exited with code {proc.returncode}")
+            raise KernelException()
 
-        return json.loads(readall(proc.stdout))
+        data = readall(proc.stdout)
+        return json.loads(data)
