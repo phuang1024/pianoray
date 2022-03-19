@@ -17,23 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver kernels install clean
 
-driver:
-	mkdir -p ./build/driver
-	rm -rf ./build/pianoray
-	cp -r ./src/driver ./build/pianoray
-	cd ./build; \
-	python ./setup.py bdist_wheel sdist; \
-	mv ./build ./dist ./*.egg-info ./driver
-
-kernels:
-	cd ./src/kernels; \
-	make java KERNEL=jtest
-
-install:
-	pip install ./build/driver/dist/*.whl
-
-clean:
-	find | grep ".*\.class" | grep -v build | xargs rm -f
-	rm -rf ./build/pianoray
+def readall(stream):
+    """
+    Read all from an output bytes stream.
+    """
+    out = b""
+    while len(chunk := stream.read(1024)) > 0:
+        out += chunk
+    return out

@@ -1,0 +1,3 @@
+[console_scripts]
+pianoray = pianoray.__main__:main
+

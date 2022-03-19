@@ -17,23 +17,23 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver kernels install clean
+import termcolor
 
-driver:
-	mkdir -p ./build/driver
-	rm -rf ./build/pianoray
-	cp -r ./src/driver ./build/pianoray
-	cd ./build; \
-	python ./setup.py bdist_wheel sdist; \
-	mv ./build ./dist ./*.egg-info ./driver
+VERBOSE = True
 
-kernels:
-	cd ./src/kernels; \
-	make java KERNEL=jtest
 
-install:
-	pip install ./build/driver/dist/*.whl
+def set_verbose(verbose):
+    global VERBOSE
+    VERBOSE = verbose
 
-clean:
-	find | grep ".*\.class" | grep -v build | xargs rm -f
-	rm -rf ./build/pianoray
+def info(msg):
+    if VERBOSE:
+        print(termcolor.colored("INFO:  "+msg, "blue"))
+
+def warn(msg):
+    if VERBOSE:
+        print(termcolor.colored("WARN:  "+msg, "yellow"))
+
+def error(msg):
+    if VERBOSE:
+        print(termcolor.colored("ERROR: "+msg, "red"))
