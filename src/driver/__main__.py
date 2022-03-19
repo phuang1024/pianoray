@@ -68,7 +68,6 @@ def main():
         description="Video rendering pipeline with piano visualization. "
                     "This program drives the rendering kernels.")
     parser.add_argument("-V", "--version", help="Print version.", action="store_true")
-    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_false")
     parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").",
         required=True)
     parser.add_argument("-o", "--output", help="Output video file.", required=True)
@@ -78,8 +77,6 @@ def main():
     if args.version:
         print("PianoRay Driver 0.0.1")
         return
-
-    logger.set_verbose(args.verbose)
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
     execute_graph(os.path.realpath(args.graph), args.output, kernels)
