@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import os
 import argparse
 from .kernel import Kernel, KernelException
@@ -39,6 +40,19 @@ def load_kernels(paths):
     return kernels
 
 
+def execute_graph(path, kernels):
+    path, cls_name = path.split(":")
+    parent = os.path.dirname(path)
+    mod_name = os.path.basename(path)[:-3]
+
+    sys.path.insert(0, parent)
+    mod = __import__(mod_name)
+    cls = getattr(mod, cls_name)
+    sys.path.pop(0)
+
+    print(cls)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Video rendering pipeline with piano visualization.\n"
@@ -47,6 +61,7 @@ def main():
     parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").",
         required=True)
     parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_true")
+    parser.add_argument("graph", help="File containing pipeline e.g. file.py:PipelineClass")
     args = parser.parse_args()
 
     if args.version:
@@ -54,7 +69,9 @@ def main():
         return
 
     logger.set_verbose(args.verbose)
+
     kernels = load_kernels(args.paths.split(os.path.pathsep))
+    execute_graph(os.path.realpath(args.graph), kernels)
 
 
 if __name__ == "__main__":
