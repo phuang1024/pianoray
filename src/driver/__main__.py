@@ -21,6 +21,7 @@ import sys
 import os
 import argparse
 from .kernel import Kernel, KernelException
+from .pipeline import BasePipeline
 from . import logger
 
 
@@ -50,7 +51,12 @@ def execute_graph(path, kernels):
     cls = getattr(mod, cls_name)
     sys.path.pop(0)
 
-    print(cls)
+    if not issubclass(cls, BasePipeline):
+        logger.error(f"Class {cls} needs to extend from pianoray.BasePipeline")
+        return
+
+    graph = cls(kernels)
+    graph.render(None)
 
 
 def main():
@@ -60,7 +66,7 @@ def main():
     parser.add_argument("-V", "--version", help="Print version.", action="store_true")
     parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").",
         required=True)
-    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_true")
+    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_false")
     parser.add_argument("graph", help="File containing pipeline e.g. file.py:PipelineClass")
     args = parser.parse_args()
 

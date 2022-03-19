@@ -17,8 +17,13 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import pianoray
+from pianoray import BasePipeline
 
 
-class Pipeline:
-    pass
+class Pipeline(BasePipeline):
+    def get_frame_bounds(self):
+        return (0, 0)
+
+    def render_frame(self, frame):
+        print(frame)
+        print(self.kernels["build"].run_json(None))
