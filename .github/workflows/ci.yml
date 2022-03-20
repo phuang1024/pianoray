@@ -7,23 +7,41 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  fmt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Formatting
+        run: |
+          python tests/formatting.py
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
           pip install sphinx sphinx-rtd-theme
-      - name: Build and install
-        run: |
-          make driver
-          make kernels
-          make install
       - name: Docs
         run: |
           cd ./docs
           mkdir ./_static ./_templates
           make html SPHINXOPTS="-W --keep-going"
-      - name: Formatting
-        run: python tests/formatting.py
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Build and install
+        run: |
+          make driver
+          make kernels
+          make install
+      - name: Test video
+        run: |
+          cd ./tests
+          pianoray -p ../build/kernels -o a.mp4 ./test.py:Pipeline
+      - name: JUnit
+        run: |
+          echo todo
