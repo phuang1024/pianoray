@@ -18,12 +18,12 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
           pip install sphinx sphinx-rtd-theme
       - name: Docs
         run: |
-          pwd
           cd ./docs
           mkdir ./_static ./_templates
           make html SPHINXOPTS="-W --keep-going"
@@ -31,9 +31,9 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          pwd
           pip install -r requirements.txt
       - name: Build and install
         run: |
