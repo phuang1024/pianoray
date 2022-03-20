@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Formatting
+        run: |
+          python tests/formatting.py
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pip install sphinx sphinx-rtd-theme
+      - name: Docs
+        run: |
+          cd ./docs
+          mkdir ./_static ./_templates
+          make html SPHINXOPTS="-W --keep-going"
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Build and install
+        run: |
+          make driver
+          make kernels
+          make install
+      - name: Test video
+        run: |
+          cd ./tests
+          pianoray -p ../build/kernels -o a.mp4 ./test.py:Pipeline
+      - name: JUnit
+        run: |
+          echo todo
