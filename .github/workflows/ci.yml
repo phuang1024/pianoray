@@ -23,6 +23,7 @@ jobs:
           pip install sphinx sphinx-rtd-theme
       - name: Docs
         run: |
+          pwd
           cd ./docs
           mkdir ./_static ./_templates
           make html SPHINXOPTS="-W --keep-going"
@@ -32,6 +33,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
+          pwd
           pip install -r requirements.txt
       - name: Build and install
         run: |
