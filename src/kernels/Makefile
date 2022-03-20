@@ -20,10 +20,10 @@
 .PHONY: java python
 
 java:
-	mkdir -p ./$(KERNEL)/build ../../build/kernels
-	javac ./$(KERNEL)/*.java
-	mv ./$(KERNEL)/*.class ./$(KERNEL)/build
-	mv ./$(KERNEL)/build ../../build/kernels/$(KERNEL)
+	mkdir -p ../../build/kernels/$(KERNEL)
+	cd ./$(KERNEL); \
+	ls | grep '^[^J][^U].*\.java' | xargs javac
+	mv ./$(KERNEL)/*.class ../../build/kernels/$(KERNEL)
 
 python:
 	mkdir -p ../../build/kernels/$(KERNEL)
