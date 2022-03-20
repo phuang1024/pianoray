@@ -37,8 +37,8 @@ install:
 	pip install ./build/driver/dist/*.whl
 
 clean:
-	find | grep ".*\.class" | grep -v build | xargs rm -f
 	rm -rf ./build/pianoray
+	rm -rf ./build/driver/build ./build/driver/*.egg-info
 
 docs:
 	cd ./docs; \
