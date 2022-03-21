@@ -32,4 +32,4 @@ python:
 cpp:
 	mkdir -p ../../build/kernels/$(KERNEL)
 	g++ -O3 -Wall ./$(KERNEL)/*.cpp -o a.out
-	mv ./$(KERNEL)/a.out ../../build/kernels/$(KERNEL)/main.out
+	mv ./a.out ../../build/kernels/$(KERNEL)/main.out
