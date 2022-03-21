@@ -65,21 +65,17 @@ def execute_graph(path, output, kernels):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Video rendering pipeline with piano visualization. "
-                    "This program drives the rendering kernels.")
-    parser.add_argument("-V", "--version", help="Print version.", action="store_true")
-    parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_false")
-    parser.add_argument("-p", "--paths", help="Path to kernel executables (sep=\":\").",
+        description="Video rendering pipeline with piano visualization.")
+    parser.add_argument("-V", "--version", help="Version.", action="store_true")
+    parser.add_argument("-p", "--paths", help="Directories to search for kernels. (sep=\":\").",
         required=True)
     parser.add_argument("-o", "--output", help="Output video file.", required=True)
-    parser.add_argument("graph", help="File containing pipeline e.g. file.py:PipelineClass")
+    parser.add_argument("graph", help="Pipeline file and class name e.g. file.py:PipelineClass")
     args = parser.parse_args()
 
     if args.version:
         print("PianoRay Driver 0.0.1")
         return
-
-    logger.set_verbose(args.verbose)
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
     execute_graph(os.path.realpath(args.graph), args.output, kernels)

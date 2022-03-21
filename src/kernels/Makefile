@@ -1,4 +1,4 @@
-#pip uninstall -y pianoray && make && make install
+#
 #  PianoRay
 #  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
@@ -17,13 +17,20 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java python cpp
+JUNIT = ../../../lib/hamcrest-core-1.3.jar:../../../lib/junit-4.13.2.jar
+
+.PHONY: java junit python cpp
 
 java:
-	mkdir -p ./$(KERNEL)/build ../../build/kernels
-	javac ./$(KERNEL)/*.java
-	mv ./$(KERNEL)/*.class ./$(KERNEL)/build
-	mv ./$(KERNEL)/build ../../build/kernels/$(KERNEL)
+	mkdir -p ../../build/kernels/$(KERNEL)
+	cd ./$(KERNEL); \
+	ls | grep -F ".java" | grep -v "JUTest.java" | xargs javac
+	cp ./$(KERNEL)/*.class ../../build/kernels/$(KERNEL)
+
+junit:
+	cd ./$(KERNEL); \
+	javac -cp .:$(JUNIT) JUTest.java; \
+	java -cp .:$(JUNIT) JUTest
 
 python:
 	mkdir -p ../../build/kernels/$(KERNEL)

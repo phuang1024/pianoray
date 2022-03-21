@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver kernels install clean
+.PHONY: driver kernels test install clean docs
 
 driver:
 	rm -rf ./build/driver
@@ -33,9 +33,18 @@ kernels:
 	make java KERNEL=jtest; \
 	make python KERNEL=pytest; \
 
+test:
+	cd ./src/kernels; \
+	make junit KERNEL=jtest; \
+
 install:
 	pip install ./build/driver/dist/*.whl
 
 clean:
-	find | grep ".*\.class" | grep -v build | xargs rm -f
+	find -name "*.class" | grep -v build | xargs rm -f
 	rm -rf ./build/pianoray
+	rm -rf ./build/driver/build ./build/driver/*.egg-info
+
+docs:
+	cd ./docs; \
+	make html
