@@ -17,13 +17,20 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: java python
+JUNIT = ../../../lib/hamcrest-core-1.3.jar:../../../lib/junit-4.13.2.jar
+
+.PHONY: java junit python
 
 java:
 	mkdir -p ../../build/kernels/$(KERNEL)
 	cd ./$(KERNEL); \
-	ls | grep '^[^J][^U].*\.java' | xargs javac
-	mv ./$(KERNEL)/*.class ../../build/kernels/$(KERNEL)
+	ls | grep -F ".java" | grep -v "JUTest.java" | xargs javac
+	cp ./$(KERNEL)/*.class ../../build/kernels/$(KERNEL)
+
+junit:
+	cd ./$(KERNEL); \
+	javac -cp .:$(JUNIT) JUTest.java; \
+	java -cp .:$(JUNIT) JUTest
 
 python:
 	mkdir -p ../../build/kernels/$(KERNEL)
