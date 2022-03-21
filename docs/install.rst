@@ -22,7 +22,8 @@ Driver
    make driver
    make install
 
-The driver will be installed as a Python package and can be invoked with ``pianoray``
+The driver will be installed as a Python package and can be invoked with
+``pianoray``
 
 Kernels
 -------
@@ -31,5 +32,5 @@ Kernels
 
    make kernels
 
-The kernels will be built to ``build/kernels``. Pass this path to the driver when
-using it.
+The kernels will be built to ``build/kernels``. Pass this path to the driver
+when using it.

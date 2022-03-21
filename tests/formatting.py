@@ -21,6 +21,8 @@ import sys
 import os
 import pathlib
 
+MAX_LEN = 80   # Max line length.
+
 RED = "\x1b[31m"
 GREEN = "\x1b[32m"
 
@@ -34,25 +36,31 @@ PATHS = (
 )
 
 
+def print_msg(ok: bool, path, msg):
+    sys.stdout.write(GREEN if ok else RED)
+    print(str(path)+":", msg)
+
+
 def test_file(path):
-    msg = "OK"
     exitcode = 0
 
     with open(path, "r") as file:
         data = file.read()
 
     if not data.endswith("\n"):
-        msg = "no blank line at the end"
+        print_msg(False, path, "no blank line at the end")
         exitcode = 1
 
     for i, line in enumerate(data.split("\n")):
         if line.endswith(" "):
-            msg = f"line {i+1}: trailing whitespace"
+            print_msg(False, path, f"line {i+1}: trailing whitespace")
+            exitcode = 1
+        if len(line) > MAX_LEN:
+            print_msg(False, path, f"line {i+1}: longer than {MAX_LEN} chars")
             exitcode = 1
 
-    sys.stdout.write(GREEN if exitcode == 0 else RED)
-    print(str(path)+":", msg)
-
+    if exitcode == 0:
+        print_msg(True, path, "OK")
     return exitcode
 
 
