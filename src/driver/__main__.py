@@ -35,7 +35,7 @@ def load_kernels(paths):
                     k = Kernel(p)
                     kernels[dir] = k
                     logger.info(f"Loaded kernel: {dir}")
-                except (StopIteration, KernelException):
+                except KernelException:
                     logger.warn(f"Failed to load kernel: {dir}")
 
     return kernels
@@ -44,7 +44,7 @@ def load_kernels(paths):
 def execute_graph(path, output, kernels):
     if not path.count(":") == 1:
         logger.error("Pipeline path must be \"/path/file.py:PipelineClass\"")
-        return
+        return 1
 
     path, cls_name = path.split(":")
     parent = os.path.dirname(path)
@@ -52,15 +52,20 @@ def execute_graph(path, output, kernels):
 
     sys.path.insert(0, parent)
     mod = __import__(mod_name)
+    if not hasattr(mod, cls_name):
+        logger.error(f"Class {cls_name} not found.")
+        return 1
     cls = getattr(mod, cls_name)
     sys.path.pop(0)
 
     if not issubclass(cls, BasePipeline):
         logger.error(f"Class {cls} needs to extend from pianoray.BasePipeline")
-        return
+        return 1
 
     graph = cls(kernels)
     graph.render(output)
+
+    return 0
 
 
 def main():
@@ -80,7 +85,8 @@ def main():
         return
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
-    execute_graph(os.path.realpath(args.graph), args.output, kernels)
+    ret = execute_graph(os.path.realpath(args.graph), args.output, kernels)
+    sys.exit(ret)
 
 
 if __name__ == "__main__":

@@ -21,6 +21,7 @@ import os
 import shutil
 import json
 from subprocess import Popen, PIPE
+from typing import Any, Sequence
 from . import logger
 from .utils import readall
 
@@ -54,13 +55,19 @@ class Kernel:
     lang: str
     """PYTHON, JAVA, EXEC"""
 
-    def __init__(self, path):
+    def __init__(self, path: str) -> None:
         """
         Initialize with path to directory.
+        The directory must contain ``main.py``, ``main.class``, or ``main.out``,
+        case insensitive.
         """
         path = os.path.realpath(path)
-        entry = next(filter(lambda s: s.lower().startswith("main"),
-            os.listdir(path)))
+        files = filter(lambda s: s.lower().startswith("main"),
+            os.listdir(path))
+        try:
+            entry = next(files)
+        except StopIteration:
+            raise KernelException("Kernel directory has no main file.")
         ext = entry.split(".")[-1]
 
         if ext == "py":
@@ -80,7 +87,7 @@ class Kernel:
         self.exe_path = os.path.join(path, entry)
         self.name = os.path.basename(self.dir_path)
 
-    def run(self, args=()) -> Popen:
+    def proc(self, args: Sequence[str] = ()) -> Popen:
         """
         Open a process with all three streams PIPE.
 
@@ -97,13 +104,31 @@ class Kernel:
         proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, cwd=self.dir_path)
         return proc
 
-    def run_json(self, stdin, args=()):
+    def run(self, stdin: bytes, args=()) -> bytes:
+        """
+        Run process with bytes input and output.
+        """
+        proc = self.proc(args)
+
+        proc.stdin.write(stdin)
+        proc.stdin.flush()
+        proc.stdin.close()
+        proc.wait()
+        if proc.returncode != 0:
+            logger.error(f"Kernel {self.name} exited with code "
+                "{proc.returncode}")
+            raise KernelException()
+
+        data = readall(proc.stdout)
+        return data
+
+    def run_json(self, stdin: Any, args: Sequence[str] = ()) -> Any:
         """
         Run process with json input and output.
         Dump ``stdin`` as json into ``proc.stdin``.
-        Return output as parsed json.
+        Return output as object parsed from ``proc.stdout``.
         """
-        proc = self.run(args)
+        proc = self.proc(args)
 
         proc.stdin.write(json.dumps(stdin).encode())
         proc.stdin.write(b"\n")

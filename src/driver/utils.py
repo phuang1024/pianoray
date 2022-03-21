@@ -17,8 +17,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from io import BytesIO
 
-def readall(stream):
+
+def readall(stream: BytesIO) -> bytes:
     """
     Read all from an output bytes stream.
     """

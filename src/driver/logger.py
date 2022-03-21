@@ -17,14 +17,27 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import termcolor
 
 
-def info(msg):
-    print(termcolor.colored("INFO:  "+msg, "blue"))
+def info(msg: str) -> None:
+    """
+    Info log to stderr.
+    Color: blue
+    """
+    print(termcolor.colored("INFO:  "+msg, "blue"), file=sys.stderr)
 
-def warn(msg):
-    print(termcolor.colored("WARN:  "+msg, "yellow"))
+def warn(msg: str) -> None:
+    """
+    Warning log to stderr.
+    Color: yellow
+    """
+    print(termcolor.colored("WARN:  "+msg, "yellow"), file=sys.stderr)
 
-def error(msg):
-    print(termcolor.colored("ERROR: "+msg, "red"))
+def error(msg: str) -> None:
+    """
+    Error log to stderr.
+    Color: red
+    """
+    print(termcolor.colored("ERROR: "+msg, "red"), file=sys.stderr)
