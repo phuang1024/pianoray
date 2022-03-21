@@ -62,7 +62,8 @@ class Kernel:
         case insensitive.
         """
         path = os.path.realpath(path)
-        files = filter(lambda s: s.lower().startswith("main"), os.listdir(path))
+        files = filter(lambda s: s.lower().startswith("main"),
+            os.listdir(path))
         try:
             entry = next(files)
         except StopIteration:
@@ -114,7 +115,8 @@ class Kernel:
         proc.stdin.close()
         proc.wait()
         if proc.returncode != 0:
-            logger.error(f"Kernel {self.name} exited with code {proc.returncode}")
+            logger.error(f"Kernel {self.name} exited with code "
+                "{proc.returncode}")
             raise KernelException()
 
         data = readall(proc.stdout)
@@ -134,7 +136,8 @@ class Kernel:
         proc.stdin.close()
         proc.wait()
         if proc.returncode != 0:
-            logger.error(f"Kernel {self.name} exited with code {proc.returncode}")
+            logger.error(f"Kernel {self.name} exited with code "
+                "{proc.returncode}")
             raise KernelException()
 
         data = readall(proc.stdout)

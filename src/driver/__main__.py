@@ -72,10 +72,12 @@ def main():
     parser = argparse.ArgumentParser(
         description="Video rendering pipeline with piano visualization.")
     parser.add_argument("-V", "--version", help="Version.", action="store_true")
-    parser.add_argument("-p", "--paths", help="Directories to search for kernels. (sep=\":\").",
+    parser.add_argument("-p", "--paths", help="Directories to search for "
+        "kernels. (sep=\":\").", required=True)
+    parser.add_argument("-o", "--output", help="Output video file.",
         required=True)
-    parser.add_argument("-o", "--output", help="Output video file.", required=True)
-    parser.add_argument("graph", help="Pipeline file and class name e.g. file.py:PipelineClass")
+    parser.add_argument("graph", help="Pipeline file and class name e.g. "
+        "file.py:PipelineClass")
     args = parser.parse_args()
 
     if args.version:
