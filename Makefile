@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-.PHONY: driver kernels install clean docs
+.PHONY: driver kernels test install clean docs
 
 driver:
 	rm -rf ./build/driver
@@ -32,6 +32,10 @@ kernels:
 	cd ./src/kernels; \
 	make java KERNEL=jtest; \
 	make python KERNEL=pytest; \
+
+test:
+	cd ./src/kernels; \
+	make junit KERNEL=jtest; \
 
 install:
 	pip install ./build/driver/dist/*.whl

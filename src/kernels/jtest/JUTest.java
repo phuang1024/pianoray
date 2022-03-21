@@ -36,6 +36,7 @@ public class JUTest {
         assertTrue(p1.getStr().equals("[2, 3, 4]"));
         assertTrue(p2.getStr().equals("[20, 21, 22]"));
         assertTrue(p3.getStr().equals("[-20, -19, -18]"));
+        assertTrue(false);
     }
 
     public static void main(String args[]) {
