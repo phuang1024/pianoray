@@ -59,7 +59,8 @@ class Kernel:
         Initialize with path to directory.
         """
         path = os.path.realpath(path)
-        entry = next(filter(lambda s: s.lower().startswith("main"), os.listdir(path)))
+        entry = next(filter(lambda s: s.lower().startswith("main"),
+            os.listdir(path)))
         ext = entry.split(".")[-1]
 
         if ext == "py":
@@ -110,7 +111,8 @@ class Kernel:
         proc.stdin.close()
         proc.wait()
         if proc.returncode != 0:
-            logger.error(f"Kernel {self.name} exited with code {proc.returncode}")
+            logger.error(f"Kernel {self.name} exited with code "
+                "{proc.returncode}")
             raise KernelException()
 
         data = readall(proc.stdout)
