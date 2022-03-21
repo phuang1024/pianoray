@@ -46,4 +46,4 @@ jobs:
           pianoray -p ../build/kernels -o a.mp4 ./test.py:Pipeline
       - name: JUnit
         run: |
-          echo todo
+          make test
