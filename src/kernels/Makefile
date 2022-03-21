@@ -19,7 +19,7 @@
 
 JUNIT = ../../../lib/hamcrest-core-1.3.jar:../../../lib/junit-4.13.2.jar
 
-.PHONY: java junit python
+.PHONY: java junit python cpp
 
 java:
 	mkdir -p ../../build/kernels/$(KERNEL)
@@ -35,3 +35,8 @@ junit:
 python:
 	mkdir -p ../../build/kernels/$(KERNEL)
 	cp ./$(KERNEL)/*.py ../../build/kernels/$(KERNEL)
+
+cpp:
+	mkdir -p ../../build/kernels/$(KERNEL)
+	g++ -O3 -Wall ./$(KERNEL)/*.cpp -o a.out
+	mv ./a.out ../../build/kernels/$(KERNEL)/main.out
