@@ -62,7 +62,11 @@ class Kernel:
         case insensitive.
         """
         path = os.path.realpath(path)
-        entry = next(filter(lambda s: s.lower().startswith("main"), os.listdir(path)))
+        files = filter(lambda s: s.lower().startswith("main"), os.listdir(path))
+        try:
+            entry = next(files)
+        except StopIteration:
+            raise KernelException("Kernel directory has no main file.")
         ext = entry.split(".")[-1]
 
         if ext == "py":
