@@ -41,7 +41,7 @@ class BasePipeline:
     * fps: Video frames per second
     """
 
-    def __init__(self, kernels):
+    def __init__(self, kernels: Mapping[str, Kernel]) -> None:
         self.kernels = kernels
 
     def render_frame(self, frame: int) -> np.ndarray:
@@ -54,7 +54,7 @@ class BasePipeline:
         """
         raise NotImplementedError("Override this in your subclass.")
 
-    def render(self, out_path: str):
+    def render(self, out_path: str) -> None:
         """
         Renders each frame.
         Don't override.
