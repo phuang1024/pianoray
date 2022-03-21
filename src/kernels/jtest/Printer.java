@@ -25,7 +25,7 @@ public class Printer {
         this.a = a;
     }
 
-    public void print() {
-        System.out.println("[" + a + ", " + (a+1) + ", " + (a+2) + "]");
+    public String getStr() {
+        return "[" + a + ", " + (a+1) + ", " + (a+2) + "]";
     }
 }
