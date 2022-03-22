@@ -23,6 +23,7 @@ import pathlib
 
 MAX_LEN = 80   # Max line length.
 
+RESET = "\x1b[39m"
 RED = "\x1b[31m"
 GREEN = "\x1b[32m"
 
@@ -88,6 +89,8 @@ def main():
     exitcode = 0
     for path in PATHS:
         exitcode = max(exitcode, test_dir(*path))
+    sys.stdout.write(RESET)
+    sys.stdout.flush()
     return exitcode
 
 
