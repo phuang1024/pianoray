@@ -27,7 +27,7 @@ RESET = "\x1b[39m"
 RED = "\x1b[31m"
 GREEN = "\x1b[32m"
 
-# List of (dir, recursive, (glob1, glob2, glob3))
+# List of (dir, recursive, (glob1, glob2, ...))
 PATHS = (
     (".",         False, ("*.md", "*.gitignore", "*.txt")),
     ("./build",   False, ("*.py",)),
