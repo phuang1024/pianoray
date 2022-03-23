@@ -8,12 +8,19 @@ Video rendering pipeline with piano visualization.
    :hidden:
    :caption: General
 
-   about.rst
-   install.rst
+   general/about.rst
+   general/install.rst
 
 .. toctree::
    :maxdepth: 2
    :hidden:
    :caption: Manual
 
-   cli.rst
+   manual/cli.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Kernels
+
+   kernels/midi.rst
