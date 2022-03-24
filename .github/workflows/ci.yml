@@ -65,11 +65,11 @@ jobs:
         run: |
           make test
 
-    clean:
-      needs: style docs build test
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-        - uses: geekyeggo/delete-artifact@v1
-          with:
-            name: build-files
+  clean:
+    needs: style docs build test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: build-files
