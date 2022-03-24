@@ -1,4 +1,6 @@
 *.vim
+*.mid
+*.mp3
 *.mp4
 
 __pycache__
@@ -10,3 +12,5 @@ __pycache__
 /build/pianoray
 
 /docs/_build
+
+!/examples/*
