@@ -25,7 +25,6 @@ jobs:
       - name: Docs
         run: |
           cd ./docs
-          mkdir ./_static ./_templates
           make html SPHINXOPTS="-W --keep-going"
 
   tests:

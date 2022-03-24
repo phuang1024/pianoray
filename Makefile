@@ -48,4 +48,5 @@ clean:
 
 docs:
 	cd ./docs; \
+	mkdir -p ./_static ./_templates; \
 	make html
