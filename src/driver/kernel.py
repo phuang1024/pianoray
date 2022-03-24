@@ -142,3 +142,21 @@ class Kernel:
 
         data = readall(proc.stdout)
         return json.loads(data)
+
+
+class KernelWrapper:
+    """
+    This is used by the instance of ``pianoray.BasePipeline``.
+    Makes creating a pipeline easier.
+    """
+
+    kernel: Kernel
+
+    def __init__(self, kernel: Kernel) -> None:
+        self.kernel = kernel
+
+    def __call__(self, obj: Any, args: Sequence[str] = ()) -> Any:
+        """
+        Call with json input and output.
+        """
+        return self.kernel.run_json(obj, args)
