@@ -26,7 +26,7 @@ jobs:
         run: |
           make docs
 
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,6 +38,16 @@ jobs:
           make driver
           make kernels
           make install
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: See what this does
+        run: |
+          ls
+          ls ./build
       - name: Test video
         run: |
           cd ./tests
