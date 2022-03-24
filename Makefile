@@ -17,6 +17,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+PY = python3
+
 .PHONY: driver kernels test install clean docs
 
 driver:
@@ -25,7 +27,7 @@ driver:
 	cp -r ./src/driver ./build/driver/pianoray
 	mv ./build/driver/pianoray/setup.py ./build/driver
 	cd ./build/driver; \
-	python ./setup.py bdist_wheel sdist; \
+	$(PY) ./setup.py bdist_wheel sdist; \
 
 kernels:
 	cd ./src/kernels; \
@@ -38,7 +40,7 @@ test:
 	make junit KERNEL=jtest; \
 
 install:
-	pip install ./build/driver/dist/*.whl
+	$(PY) -m pip install ./build/driver/dist/*.whl
 
 clean:
 	find -name "*.class" | grep -v build | xargs rm -f
