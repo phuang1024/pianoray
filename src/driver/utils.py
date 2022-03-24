@@ -40,6 +40,9 @@ class Namespace:
     def __setattr__(self, attr: str, val: Any) -> None:
         self._items[attr] = val
 
+    def __contains__(self, attr: str) -> bool:
+        return attr in self._items
+
     def __getitem__(self, attr: str) -> Any:
         return self._items[attr]
 
