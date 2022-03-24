@@ -16,6 +16,11 @@ Input
                "type1",
                "type2",
                "..."
+           ],
+           "attrs": [
+               "type",
+               "velocity",
+               "..."
            ]
        }
    }
@@ -24,6 +29,9 @@ Input
     - ``file``: Path to MIDI file to parse.
     - ``fps``: Frames per second of video.
     - ``capture``: List of message types to return.
+    - ``attrs``: List of message attributes to include (see output).
+      If an attr is absent, no exception is raised. The attr is
+      omitted from the output.
 
 Output
 ------

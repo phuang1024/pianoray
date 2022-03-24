@@ -17,12 +17,32 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import json
 import mido
 
 
 def main():
-    pass
+    inp = json.load(sys.stdin)["midi"]
+    out = {"midi": []}
+
+    midi = mido.MidiFile(inp["file"])
+    fps = inp["fps"]
+    types = inp["capture"]
+    attrs = inp["attrs"]
+
+    time = 0  # Frames
+    for msg in midi:
+        time += msg.time * fps
+        if msg.type in types:
+            msg_out = {"time": time}
+            for attr in attrs:
+                if attr != "time" and hasattr(msg, attr):
+                    msg_out[attr] = getattr(msg, attr)
+            out["midi"].append(msg_out)
+
+    json.dump(out, sys.stdout)
+    print(flush=True)
 
 
 if __name__ == "__main__":
