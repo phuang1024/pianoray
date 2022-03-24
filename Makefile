@@ -22,11 +22,10 @@
 driver:
 	rm -rf ./build/driver
 	mkdir -p ./build/driver
-	rm -rf ./build/pianoray
-	cp -r ./src/driver ./build/pianoray
-	cd ./build; \
+	cp -r ./src/driver ./build/driver/pianoray
+	mv ./build/driver/pianoray/setup.py ./build/driver
+	cd ./build/driver; \
 	python ./setup.py bdist_wheel sdist; \
-	mv -f ./build ./dist ./*.egg-info ./driver
 
 kernels:
 	cd ./src/kernels; \
