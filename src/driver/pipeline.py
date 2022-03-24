@@ -21,7 +21,8 @@ import numpy as np
 import cv2
 from tqdm import trange
 from typing import Any, Mapping
-from .kernel import Kernel
+from .kernel import Kernel, KernelWrapper, KernelException
+from .utils import Namespace
 
 
 class BasePipeline:
@@ -29,7 +30,7 @@ class BasePipeline:
     Extend off of this class to create your pipeline.
     """
 
-    kernels: Mapping[str, Kernel]
+    kernels: Namespace
     """Mapping of loaded kernels."""
 
     meta: Mapping[str, Any]
@@ -42,7 +43,9 @@ class BasePipeline:
     """
 
     def __init__(self, kernels: Mapping[str, Kernel]) -> None:
-        self.kernels = kernels
+        self.kernels = Namespace()
+        for key in kernels:
+            self.kernels[key] = KernelWrapper(kernels[key])
 
     def render_frame(self, frame: int) -> np.ndarray:
         """
@@ -63,7 +66,12 @@ class BasePipeline:
             self.meta["fps"], self.meta["res"])
 
         for frame in trange(self.meta["start"], self.meta["end"]+1):
-            img = self.render_frame(frame)
+            try:
+                img = self.render_frame(frame)
+            except KernelException:
+                logger.error("Stop after KernelException.")
+                break
+
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             video.write(img)
 

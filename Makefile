@@ -33,7 +33,6 @@ kernels:
 	cd ./src/kernels; \
 	make java KERNEL=jtest; \
 	make python KERNEL=pytest; \
-	make cpp KERNEL=ctest; \
 
 test:
 	cd ./src/kernels; \

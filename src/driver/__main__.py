@@ -33,10 +33,14 @@ def load_kernels(paths):
             if os.path.isdir(p):
                 try:
                     k = Kernel(p)
-                    kernels[dir] = k
-                    logger.info(f"Loaded kernel: {dir}")
                 except KernelException:
                     logger.warn(f"Failed to load kernel: {dir}")
+
+                if dir in kernels:
+                    logger.warn(f"Duplicate kernel: {dir}, not loaded.")
+                else:
+                    kernels[dir] = k
+                    logger.info(f"Loaded kernel: {dir}")
 
     return kernels
 
