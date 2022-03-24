@@ -24,8 +24,7 @@ jobs:
           pip install sphinx sphinx-rtd-theme
       - name: Docs
         run: |
-          cd ./docs
-          make html SPHINXOPTS="-W --keep-going"
+          make docs
 
   tests:
     runs-on: ubuntu-latest
