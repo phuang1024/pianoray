@@ -36,7 +36,7 @@ jobs:
           make driver
           make kernels
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v3
         with:
           name: build-files
           path: ./build
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/download-artifact@master
+      - uses: actions/download-artifact@v3
         with:
           name: build-files
           path: ./build
@@ -64,3 +64,12 @@ jobs:
       - name: JUnit
         run: |
           make test
+
+    clean:
+      needs: style docs build test
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: geekyeggo/delete-artifact@v1
+          with:
+            name: build-files
