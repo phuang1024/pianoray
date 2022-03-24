@@ -22,6 +22,7 @@ import cv2
 from tqdm import trange
 from typing import Any, Mapping
 from .kernel import Kernel, KernelWrapper, KernelException
+from .utils import Namespace
 
 
 class BasePipeline:
@@ -29,7 +30,7 @@ class BasePipeline:
     Extend off of this class to create your pipeline.
     """
 
-    kernels: Mapping[str, KernelWrapper]
+    kernels: Namespace
     """Mapping of loaded kernels."""
 
     meta: Mapping[str, Any]
@@ -42,7 +43,7 @@ class BasePipeline:
     """
 
     def __init__(self, kernels: Mapping[str, Kernel]) -> None:
-        self.kernels = {}
+        self.kernels = Namespace()
         for key in kernels:
             self.kernels[key] = KernelWrapper(kernels[key])
 

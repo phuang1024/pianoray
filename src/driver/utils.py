@@ -18,6 +18,33 @@
 #
 
 from io import BytesIO
+from typing import Any, Mapping
+
+
+class Namespace:
+    """
+    General getattr and setattr object stuff.
+    """
+
+    _items: Mapping[str, Any]
+
+    def __init__(self) -> None:
+        object.__setattr__(self, "_items", {})
+
+    def __hasattr__(self, attr: str) -> bool:
+        return attr in self._items
+
+    def __getattr__(self, attr: str) -> Any:
+        return self._items[attr]
+
+    def __setattr__(self, attr: str, val: Any) -> None:
+        self._items[attr] = val
+
+    def __getitem__(self, attr: str) -> Any:
+        return self._items[attr]
+
+    def __setitem__(self, attr: str, val: Any) -> None:
+        self._items[attr] = val
 
 
 def readall(stream: BytesIO) -> bytes:

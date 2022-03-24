@@ -32,9 +32,9 @@ class Pipeline(BasePipeline):
     def render_frame(self, frame):
         if frame == 0:
             # Testing stuff
-            print(self.kernels["jtest"](None))
-            print(self.kernels["pytest"](None))
-            print(self.kernels["ctest"](None))
+            print(self.kernels.jtest(None))
+            print(self.kernels.pytest(None))
+            print(self.kernels.ctest(None))
 
         res = self.meta["res"]
 
