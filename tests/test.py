@@ -34,7 +34,6 @@ class Pipeline(BasePipeline):
             # Testing stuff
             print(self.kernels.jtest(None))
             print(self.kernels.pytest(None))
-            print(self.kernels.ctest(None))
 
         res = self.meta["res"]
 
