@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 import numpy as np
 from pianoray import BasePipeline
 
@@ -32,12 +33,14 @@ class Pipeline(BasePipeline):
     def render_frame(self, frame):
         if frame == 0:
             # Testing stuff
-            print(self.kernels["jtest"].run_json(None))
-            print(self.kernels["pytest"].run_json(None))
-            print(self.kernels["ctest"].run_json(None))
-            print(self.kernels["jtest"].run(b""))
-            print(self.kernels["pytest"].run(b""))
-            print(self.kernels["ctest"].run(b""))
+            print(self.kernels["midi"].run_json({
+                "midi": {
+                    "file": os.path.abspath("../examples/furelise.mid"),
+                    "fps": 30,
+                    "capture": ["note_on"],
+                    "attrs": ["type", "note", "velocity"],
+                }
+            }))
 
         res = self.meta["res"]
 

@@ -30,6 +30,7 @@ driver:
 
 kernels:
 	cd ./src/kernels; \
+	make python KERNEL=midi; \
 	make java KERNEL=jtest; \
 	make python KERNEL=pytest; \
 	make cpp KERNEL=ctest; \
