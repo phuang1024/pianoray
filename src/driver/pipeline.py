@@ -21,6 +21,7 @@ import numpy as np
 import cv2
 from tqdm import trange
 from typing import Any, Mapping
+from . import logger
 from .kernel import Kernel, KernelWrapper, KernelException
 from .utils import Namespace
 
@@ -68,9 +69,9 @@ class BasePipeline:
         for frame in trange(self.meta["start"], self.meta["end"]+1):
             try:
                 img = self.render_frame(frame)
-            except KernelException:
+            except KernelException as e:
                 logger.error("Stop after KernelException.")
-                break
+                raise
 
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             video.write(img)
