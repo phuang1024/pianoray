@@ -37,7 +37,7 @@ class Pipeline(BasePipeline):
             # MIDI kernel
             midi_input = {
                 "midi": {
-                    "file": os.path.abspath("../examples/furelise.mid"),
+                    "file": os.path.abspath("./examples/furelise.mid"),
                     "fps": 30,
                     "capture": ["note_on"],
                     "attrs": ["type", "note", "velocity"],
