@@ -37,11 +37,11 @@ class Pipeline(BasePipeline):
             # MIDI kernel
             midi_input = {
                 "midi": {
-                    "type": "filter",
+                    "type": "blocks",
                     "file": os.path.abspath("./examples/furelise.mid"),
                     "fps": 30,
-                    "capture": ["note_on"],
-                    "attrs": ["type", "note", "velocity"],
+                    #"types": ["note_on"],
+                    #"attrs": ["type", "note", "velocity"],
                 }
             }
             print(self.kernels.midi(midi_input))
