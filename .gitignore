@@ -1,4 +1,6 @@
 *.vim
+*.mid
+*.mp3
 *.mp4
 
 __pycache__
@@ -8,3 +10,5 @@ __pycache__
 /build
 
 /docs/_build
+
+!/examples/*

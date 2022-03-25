@@ -17,37 +17,33 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PY = python3
+import sys
+import json
+import mido
 
-.PHONY: driver kernels test install clean docs
 
-driver:
-	rm -rf ./build/driver
-	mkdir -p ./build/driver
-	cp -r ./src/driver ./build/driver/pianoray
-	mv ./build/driver/pianoray/setup.py ./build/driver
-	cd ./build/driver; \
-	$(PY) ./setup.py bdist_wheel sdist; \
+def main():
+    inp = json.load(sys.stdin)["midi"]
+    out = {"midi": []}
 
-kernels:
-	cd ./src/kernels; \
-	make python KERNEL=midi; \
-	make java KERNEL=jtest; \
-	make python KERNEL=pytest; \
+    midi = mido.MidiFile(inp["file"])
+    fps = inp["fps"]
+    types = inp["capture"]
+    attrs = inp["attrs"]
 
-test:
-	cd ./src/kernels; \
-	make junit KERNEL=jtest; \
+    time = 0  # Frames
+    for msg in midi:
+        time += msg.time * fps
+        if msg.type in types:
+            msg_out = {"time": time}
+            for attr in attrs:
+                if attr != "time" and hasattr(msg, attr):
+                    msg_out[attr] = getattr(msg, attr)
+            out["midi"].append(msg_out)
 
-install:
-	$(PY) -m pip install ./build/driver/dist/*.whl
+    json.dump(out, sys.stdout)
+    print(flush=True)
 
-clean:
-	find -name "*.class" | grep -v build | xargs rm -f
-	rm -rf ./build/pianoray
-	rm -rf ./build/driver/build ./build/driver/*.egg-info
 
-docs:
-	cd ./docs; \
-	mkdir -p ./_static ./_templates; \
-	make html
+if __name__ == "__main__":
+    main()

@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 import numpy as np
 from pianoray import BasePipeline
 
@@ -32,10 +33,25 @@ class Pipeline(BasePipeline):
     def render_frame(self, frame):
         if frame == 0:
             # Testing stuff
-            run = self.kernels.jtest(None, True)
-            print(self.kernels.pytest(None))
+
+            # MIDI kernel
+            midi_input = {
+                "midi": {
+                    "file": os.path.abspath("../examples/furelise.mid"),
+                    "fps": 30,
+                    "capture": ["note_on"],
+                    "attrs": ["type", "note", "velocity"],
+                }
+            }
+            print(self.kernels.midi(midi_input))
+
+            # Async kernel
+            run = self.kernels.pytest(None, True)
             run.wait()
             print(run.output)
+
+            # The Java ...
+            print(self.kernels.jtest(None))
 
         res = self.meta["res"]
 
