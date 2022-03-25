@@ -42,6 +42,9 @@ class Pipeline(BasePipeline):
                 }
             }))
 
+            print(self.kernels.jtest(None))
+            print(self.kernels.pytest(None))
+
         res = self.meta["res"]
 
         img = np.zeros((res[1], res[0], 3), dtype=np.uint8)

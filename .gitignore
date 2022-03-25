@@ -7,9 +7,7 @@ __pycache__
 
 *.class
 
-/build/driver
-/build/kernels
-/build/pianoray
+/build
 
 /docs/_build
 

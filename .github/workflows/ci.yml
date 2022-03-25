@@ -24,26 +24,52 @@ jobs:
           pip install sphinx sphinx-rtd-theme
       - name: Docs
         run: |
-          cd ./docs
-          mkdir ./_static ./_templates
-          make html SPHINXOPTS="-W --keep-going"
+          make docs
 
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Build and install
+
+      - name: Build
         run: |
           make driver
           make kernels
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-files
+          path: ./build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-files
+          path: ./build
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
           make install
+
       - name: Test video
         run: |
           cd ./tests
           pianoray -p ../build/kernels -o a.mp4 ./test.py:Pipeline
+
       - name: JUnit
         run: |
           make test
+
+  clean:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: build-files

@@ -17,30 +17,30 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+PY = python3
+
 .PHONY: driver kernels test install clean docs
 
 driver:
 	rm -rf ./build/driver
 	mkdir -p ./build/driver
-	rm -rf ./build/pianoray
-	cp -r ./src/driver ./build/pianoray
-	cd ./build; \
-	python ./setup.py bdist_wheel sdist; \
-	mv -f ./build ./dist ./*.egg-info ./driver
+	cp -r ./src/driver ./build/driver/pianoray
+	mv ./build/driver/pianoray/setup.py ./build/driver
+	cd ./build/driver; \
+	$(PY) ./setup.py bdist_wheel sdist; \
 
 kernels:
 	cd ./src/kernels; \
 	make python KERNEL=midi; \
 	make java KERNEL=jtest; \
 	make python KERNEL=pytest; \
-	make cpp KERNEL=ctest; \
 
 test:
 	cd ./src/kernels; \
 	make junit KERNEL=jtest; \
 
 install:
-	pip install ./build/driver/dist/*.whl
+	$(PY) -m pip install ./build/driver/dist/*.whl
 
 clean:
 	find -name "*.class" | grep -v build | xargs rm -f
@@ -49,4 +49,5 @@ clean:
 
 docs:
 	cd ./docs; \
+	mkdir -p ./_static ./_templates; \
 	make html
