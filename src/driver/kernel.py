@@ -135,7 +135,8 @@ class KernelRun:
     _output: Any  # Output object.
     _read_output: bool  # Whether output was read.
 
-    def __init__(self, kernel: Kernel, stdin: Any, args: Sequence[str] = ()) -> None:
+    def __init__(self, kernel: Kernel, stdin: Any,
+            args: Sequence[str] = ()) -> None:
         """
         Initialize run.
 
