@@ -33,6 +33,8 @@ class Pipeline(BasePipeline):
     def render_frame(self, frame):
         if frame == 0:
             # Testing stuff
+
+            # MIDI kernel
             midi_input = {
                 "midi": {
                     "file": os.path.abspath("../examples/furelise.mid"),
@@ -43,8 +45,13 @@ class Pipeline(BasePipeline):
             }
             print(self.kernels.midi(midi_input))
 
+            # Async kernel
+            run = self.kernels.pytest(None, True)
+            run.wait()
+            print(run.output)
+
+            # The Java ...
             print(self.kernels.jtest(None))
-            print(self.kernels.pytest(None))
 
         res = self.meta["res"]
 

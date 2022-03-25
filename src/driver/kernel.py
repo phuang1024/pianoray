@@ -21,7 +21,7 @@ import os
 import shutil
 import json
 from subprocess import Popen, PIPE
-from typing import Any, Sequence
+from typing import Any, Sequence, Union
 from . import logger
 from .utils import readall
 
@@ -122,26 +122,65 @@ class Kernel:
         data = readall(proc.stdout)
         return data
 
-    def run_json(self, stdin: Any, args: Sequence[str] = ()) -> Any:
-        """
-        Run process with json input and output.
-        Dump ``stdin`` as json into ``proc.stdin``.
-        Return output as object parsed from ``proc.stdout``.
-        """
-        proc = self.proc(args)
 
+class KernelRun:
+    """
+    Used to manage a running kernel with json io.
+    Useful for async kernel execution.
+    """
+
+    kernel: Kernel
+    proc: Popen
+
+    _output: Any  # Output object.
+    _read_output: bool  # Whether output was read.
+
+    def __init__(self, kernel: Kernel, stdin: Any,
+            args: Sequence[str] = ()) -> None:
+        """
+        Initialize run.
+
+        :param kernel: Kernel instance.
+        :param stdin: Input JSON object.
+        :param args: CLI arguments.
+        """
+        proc = kernel.proc(args)
         proc.stdin.write(json.dumps(stdin).encode())
         proc.stdin.write(b"\n")
         proc.stdin.flush()
         proc.stdin.close()
-        proc.wait()
-        if proc.returncode != 0:
-            logger.error(f"Kernel {self.name} exited with code "
-                "{proc.returncode}")
-            raise KernelException()
 
-        data = readall(proc.stdout)
-        return json.loads(data)
+        self.kernel = kernel
+        self.proc = proc
+        self._output = None
+        self._read_output = False
+
+    @property
+    def alive(self):
+        """
+        If the process is still running.
+        """
+        return self.proc.poll() is not None
+
+    def wait(self):
+        """
+        Wait for the process to finish.
+        """
+        self.proc.wait()
+
+    @property
+    def output(self):
+        """
+        Get process output as JSON object.
+        If process is alive, raises KernelException.
+        """
+        if self.proc.poll() is None:
+            raise KernelException("Cannot read KernelRun.output while running.")
+
+        if not self._read_output:
+            self._output = readall(self.proc.stdout)
+            self._read_output = True
+        return self._output
 
 
 class KernelWrapper:
@@ -155,8 +194,20 @@ class KernelWrapper:
     def __init__(self, kernel: Kernel) -> None:
         self.kernel = kernel
 
-    def __call__(self, obj: Any, args: Sequence[str] = ()) -> Any:
+    def __call__(self, obj: Any, async_: bool = False,
+            args: Sequence[str] = ()) -> Union[Any, KernelRun]:
         """
         Call with json input and output.
+
+        :param obj: Input JSON object.
+        :param async_: Whether to run asynchronously.
+            if True, return KernelRun.
+            else, return JSON output.
+        :param args: CLI arguments.
         """
-        return self.kernel.run_json(obj, args)
+        run = KernelRun(self.kernel, obj, args)
+        if async_:
+            return run
+        else:
+            run.wait()
+            return run.output
