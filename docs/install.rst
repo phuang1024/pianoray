@@ -14,6 +14,10 @@ Requirements
 - Python 3.8 or later
 - Java
 
+.. code-block:: sh
+
+   pip install -r requirements.txt
+
 Driver
 ------
 
@@ -32,5 +36,5 @@ Kernels
 
    make kernels
 
-The kernels will be built to ``build/kernels``. Pass this path to the driver
-when using it.
+The kernels will be built to ``./build/kernels``. Pass this path to the
+driver when using it.
