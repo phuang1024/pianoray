@@ -17,21 +17,26 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
 import json
-
-from filter import filter_midi
-
-
-def main():
-    inp = json.load(sys.stdin)["midi"]
-
-    if inp["type"] == "filter":
-        out = filter_midi(inp)
-
-    json.dump(out, sys.stdout)
-    print(flush=True)
+import mido
 
 
-if __name__ == "__main__":
-    main()
+def filter_midi(inp):
+    out = {"midi": []}
+
+    midi = mido.MidiFile(inp["file"])
+    fps = inp["fps"]
+    types = inp["types"]
+    attrs = inp["attrs"]
+
+    time = 0  # Frames
+    for msg in midi:
+        time += msg.time * fps
+        if msg.type in types:
+            msg_out = {"time": time}
+            for attr in attrs:
+                if attr != "time" and hasattr(msg, attr):
+                    msg_out[attr] = getattr(msg, attr)
+            out["midi"].append(msg_out)
+
+    return out
