@@ -44,6 +44,10 @@ class BasePipeline:
     """
 
     def __init__(self, kernels: Mapping[str, Kernel]) -> None:
+        """
+        Initialize pipeline.
+        Don't override.
+        """
         self.kernels = Namespace()
         for key in kernels:
             self.kernels[key] = KernelWrapper(kernels[key])
@@ -58,22 +62,29 @@ class BasePipeline:
         """
         raise NotImplementedError("Override this in your subclass.")
 
-    def render(self, out_path: str) -> None:
-        """
-        Renders each frame.
-        Don't override.
-        """
-        video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
-            self.meta["fps"], self.meta["res"])
 
-        for frame in trange(self.meta["start"], self.meta["end"]+1):
-            try:
-                img = self.render_frame(frame)
-            except KernelException as e:
-                logger.error("Stop after KernelException.")
-                raise
+def check_version(real, require):
+    """
+    See if the required version of a pipeline can be used
+    with this version.
+    """
+    # TODO
 
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            video.write(img)
+def render_pipeline(pipe: BasePipeline, out_path: str) -> None:
+    """
+    Renders each frame.
+    """
+    video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
+        pipe.meta["fps"], pipe.meta["res"])
 
-        video.release()
+    for frame in trange(pipe.meta["start"], pipe.meta["end"]+1):
+        try:
+            img = pipe.render_frame(frame)
+        except KernelException as e:
+            logger.error("Stop after KernelException.")
+            raise
+
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        video.write(img)
+
+    video.release()
