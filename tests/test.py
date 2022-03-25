@@ -33,14 +33,15 @@ class Pipeline(BasePipeline):
     def render_frame(self, frame):
         if frame == 0:
             # Testing stuff
-            print(self.kernels["midi"].run_json({
+            midi_input = {
                 "midi": {
                     "file": os.path.abspath("../examples/furelise.mid"),
                     "fps": 30,
                     "capture": ["note_on"],
                     "attrs": ["type", "note", "velocity"],
                 }
-            }))
+            }
+            print(self.kernels.midi(midi_input))
 
             print(self.kernels.jtest(None))
             print(self.kernels.pytest(None))
