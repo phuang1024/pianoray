@@ -22,7 +22,7 @@ import os
 import argparse
 from . import logger
 from .kernel import Kernel, KernelException
-from .pipeline import BasePipeline
+from .pipeline import BasePipeline, render_pipeline
 from .utils import VERSION
 
 
@@ -68,7 +68,7 @@ def execute_pipeline(path, output, kernels):
         return 1
 
     pipe = cls(kernels)
-    render_pipeline(output)
+    render_pipeline(pipe, output)
 
     return 0
 
@@ -90,7 +90,8 @@ def main():
         return
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
-    ret = execute_pipeline(os.path.realpath(args.pipeline), args.output, kernels)
+    path = os.path.realpath(args.pipeline)
+    ret = execute_pipeline(path, args.output, kernels)
     sys.exit(ret)
 
 

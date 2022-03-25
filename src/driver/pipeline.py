@@ -75,9 +75,9 @@ def render_pipeline(pipe: BasePipeline, out_path: str) -> None:
     Renders each frame.
     """
     video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
-        pipe.meta["fps"], self.meta["res"])
+        pipe.meta["fps"], pipe.meta["res"])
 
-    for frame in trange(pipe.meta["start"], self.meta["end"]+1):
+    for frame in trange(pipe.meta["start"], pipe.meta["end"]+1):
         try:
             img = pipe.render_frame(frame)
         except KernelException as e:
