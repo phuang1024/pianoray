@@ -20,6 +20,8 @@
 from io import BytesIO
 from typing import Any, Mapping
 
+VERSION = (0, 0, 1)
+
 
 class Namespace:
     """

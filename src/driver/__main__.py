@@ -20,9 +20,10 @@
 import sys
 import os
 import argparse
+from . import logger
 from .kernel import Kernel, KernelException
 from .pipeline import BasePipeline
-from . import logger
+from .utils import VERSION
 
 
 def load_kernels(paths):
@@ -45,7 +46,7 @@ def load_kernels(paths):
     return kernels
 
 
-def execute_graph(path, output, kernels):
+def execute_pipeline(path, output, kernels):
     if not path.count(":") == 1:
         logger.error("Pipeline path must be \"/path/file.py:PipelineClass\"")
         return 1
@@ -66,8 +67,8 @@ def execute_graph(path, output, kernels):
         logger.error(f"Class {cls} needs to extend from pianoray.BasePipeline")
         return 1
 
-    graph = cls(kernels)
-    graph.render(output)
+    pipe = cls(kernels)
+    render_pipeline(output)
 
     return 0
 
@@ -80,16 +81,16 @@ def main():
         "kernels. (sep=\":\").", required=True)
     parser.add_argument("-o", "--output", help="Output video file.",
         required=True)
-    parser.add_argument("graph", help="Pipeline file and class name e.g. "
+    parser.add_argument("pipeline", help="Pipeline file and class name e.g. "
         "file.py:PipelineClass")
     args = parser.parse_args()
 
     if args.version:
-        print("PianoRay Driver 0.0.1")
+        print("PianoRay Driver", ".".join(VERSION))
         return
 
     kernels = load_kernels(args.paths.split(os.path.pathsep))
-    ret = execute_graph(os.path.realpath(args.graph), args.output, kernels)
+    ret = execute_pipeline(os.path.realpath(args.pipeline), args.output, kernels)
     sys.exit(ret)
 
 
