@@ -87,6 +87,9 @@ class Kernel:
         self.exe_path = os.path.join(path, entry)
         self.name = os.path.basename(self.dir_path)
 
+    def __repr__(self) -> str:
+        return f"<class pianoray.Kernel(name={self.name})>"
+
     def proc(self, args: Sequence[str] = ()) -> Popen:
         """
         Open a process with all three streams PIPE.
@@ -155,6 +158,9 @@ class KernelRun:
         self._output = None
         self._read_output = False
 
+    def __repr__(self) -> str:
+        return f"<class pianoray.KernelRun(name={self.kernel.name})>"
+
     @property
     def alive(self):
         """
@@ -193,6 +199,9 @@ class KernelWrapper:
 
     def __init__(self, kernel: Kernel) -> None:
         self.kernel = kernel
+
+    def __repr__(self) -> str:
+        return f"<class pianoray.KernelWrapper(name={self.kernel.name})>"
 
     def __call__(self, obj: Any, async_: bool = False,
             args: Sequence[str] = ()) -> Union[Any, KernelRun]:
