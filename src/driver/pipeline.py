@@ -81,7 +81,8 @@ def render_pipeline(pipe: BasePipeline, out_path: str) -> None:
         try:
             img = pipe.render_frame(frame)
         except KernelException as e:
-            logger.error("Stop after KernelException.")
+            logger.error("Stop after KernelException:")
+            logger.error(str(e))
             raise
 
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

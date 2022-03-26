@@ -67,21 +67,21 @@ class Kernel:
         try:
             entry = next(files)
         except StopIteration:
-            raise KernelException("Kernel directory has no main file.")
+            raise KernelException(f"{self} directory has no main file.")
         ext = entry.split(".")[-1]
 
         if ext == "py":
             self.lang = "PYTHON"
             if not PYTHON:
-                raise KernelException("python3 not found.")
+                raise KernelException(f"{self} python3 not found.")
         elif ext == "class":
             self.lang = "JAVA"
             if not JAVA:
-                raise KernelException("java not found.")
+                raise KernelException(f"{self} java not found.")
         elif ext == "out":
             self.lang = "EXEC"
         else:
-            raise KernelException(f"Invalid file ending: {ext}")
+            raise KernelException(f"{self} invalid file ending: {entry}")
 
         self.dir_path = path
         self.exe_path = os.path.join(path, entry)
@@ -118,9 +118,8 @@ class Kernel:
         proc.stdin.close()
         proc.wait()
         if proc.returncode != 0:
-            logger.error(f"Kernel {self.name} exited with code "
+            raise KernelException(f"{self} exited with code "
                 "{proc.returncode}")
-            raise KernelException()
 
         data = readall(proc.stdout)
         return data
@@ -181,10 +180,10 @@ class KernelRun:
         If process is alive, raises KernelException.
         """
         if self.proc.poll() is None:
-            raise KernelException("Cannot read KernelRun.output while running.")
-        if self.proc.returncode != 0:
-            raise KernelException(
-                    f"Exit code of KernelRun is {self.proc.returncode}.")
+            raise KernelException(f"{self} cannot read output while process "
+                "is still running.")
+        if (ret := self.proc.returncode) != 0:
+            raise KernelException(f"{self} exit code is {ret}.")
 
         if not self._read_output:
             self._output = readall(self.proc.stdout)
