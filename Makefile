@@ -19,7 +19,7 @@
 
 PY = python3
 
-.PHONY: driver kernels test install clean docs
+.PHONY: driver kernels test install clean docs all
 
 driver:
 	rm -rf ./build/driver
@@ -30,6 +30,7 @@ driver:
 	$(PY) ./setup.py bdist_wheel sdist; \
 
 kernels:
+	rm -rf ./build/kernels; \
 	cd ./src/kernels; \
 	make python KERNEL=midi; \
 	make java KERNEL=jtest; \
@@ -49,5 +50,14 @@ clean:
 
 docs:
 	cd ./docs; \
+	rm -rf ./_build; \
 	mkdir -p ./_static ./_templates; \
-	make html
+	make html SPHINXOPTS="-W --keep-going"
+
+all:
+	$(PY) -m pip uninstall -y pianoray
+	make driver
+	make kernels
+	make docs
+	make install
+	make test

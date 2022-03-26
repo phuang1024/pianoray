@@ -93,11 +93,12 @@ Output
 
     {
         "midi": [
-            [note, start, end, velocity],
+            [1, 12, 65, 30],
             "..."
         ]
     }
 
 - ``midi``: List of note infos.
-    - Each note is ``[start_frame, end_frame, velocity]``. Start frame is the
-      frame the note starts playing, and end frame is the frame the note stops.
+    - Each note is ``[note_num, start_frame, end_frame, velocity]``. Start
+      frame is the frame the note starts playing, and end frame is the frame
+      the note stops.
