@@ -32,7 +32,7 @@ PATHS = (
     (".",         False, ("*.md", "*.gitignore", "*.txt")),
     ("./docs",    True,  ("*.rst", "*.py", "Makefile")),
     ("./src",     True,  ("*.py", "*.java", "Makefile")),
-    ("./tests",   True,  ("*.py",)),
+    ("./tests",   True,  ("*.py", "*.yml")),
 )
 
 

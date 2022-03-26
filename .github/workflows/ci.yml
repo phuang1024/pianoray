@@ -58,8 +58,7 @@ jobs:
 
       - name: Test video
         run: |
-          cd ./tests
-          pianoray -p ../build/kernels -o a.mp4 ./test.py:Pipeline
+          pianoray -p ./build/kernels -o ./tests/a.mp4 ./tests/test.py:Pipeline
 
       - name: JUnit
         run: |
