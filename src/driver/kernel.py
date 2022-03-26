@@ -177,7 +177,8 @@ class KernelRun:
         if self.proc.poll() is None:
             raise KernelException("Cannot read KernelRun.output while running.")
         if self.proc.returncode != 0:
-            raise KernelException(f"Exit code of KernelRun is {self.proc.returncode}.")
+            raise KernelException(
+                    f"Exit code of KernelRun is {self.proc.returncode}.")
 
         if not self._read_output:
             self._output = readall(self.proc.stdout)

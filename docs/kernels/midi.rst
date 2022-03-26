@@ -25,7 +25,7 @@ Input
                 "..."
             ],
             "attrs": [
-                "note", 
+                "note",
                 "velocity",
                 "control",
                 "..."
