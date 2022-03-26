@@ -3,53 +3,101 @@ MIDI
 
 MIDI parsing and processing kernel.
 
-Input
------
-
-.. code-block:: json
-
-   {
-       "midi": {
-           "file": "/path/to/file.mid",
-           "fps": 30,
-           "capture": [
-               "type1",
-               "type2",
-               "..."
-           ],
-           "attrs": [
-               "type",
-               "velocity",
-               "..."
-           ]
-       }
-   }
-
-- ``midi``:
-    - ``file``: Path to MIDI file to parse.
-    - ``fps``: Frames per second of video.
-    - ``capture``: List of message types to return.
-    - ``attrs``: List of message attributes to include (see output).
-      If an attr is absent, no exception is raised. The attr is
-      omitted from the output.
-
-Output
+Filter
 ------
 
+This operation filters a MIDI file for messages of a given type.
+
+Input
+^^^^^
+
 .. code-block:: json
 
-   {
-       "midi": [
-           {
-               "type": "note_on",
-               "time": 123,
-               "..."
-           },
-           "..."
-       ]
-   }
+    {
+        "midi": {
+            "type": "filter",
+            "file": "/path/to/file.mid",
+            "fps": 30,
+            "types": [
+                "msg_type_1",
+                "note_on",
+                "control_change",
+                "..."
+            ],
+            "attrs": [
+                "note",
+                "velocity",
+                "control",
+                "..."
+            ]
+        }
+    }
 
-- ``midi``: List of captured messages.
-    - Message attributes.
-    - ``time`` attribute is replaced with absolute time in frames,
-      first message is frame 0.
+- ``midi``:
+    - ``type``: Must be ``"filter"`` to specify operation.
+    - ``file``: Path to MIDI file.
+    - ``fps``: Frames per second.
+    - ``types``: List of message types to accept.
+    - ``attrs``: List of message attributes to return. If a message
+      does not have a requested attribute, it is omitted and no error
+      is raised.
+
+Output
+^^^^^^
+
+.. code-block:: json
+
+    {
+        "midi": [
+            {
+                "time": 1,
+                "note": 20,
+                "...": "..."
+            }
+            "..."
+        ]
+    }
+
+- ``midi``: List of filtered MIDI messages.
+    - ``time``: The time attribute is replaced with absolute time in
+      frames, with the first message at frame 0.
+    - All other captured attributes of the message.
+
+Blocks
+------
+
+For each time a note is pressed, record start frame, end frame, and velocity.
+
+Input
+^^^^^
+
+.. code-block:: json
+
+    {
+        "midi": {
+            "type": "blocks",
+            "file": "/path/to/file.mid",
+            "fps": 30
+        }
+    }
+
+- ``midi``:
+    - ``type``: Must be ``"blocks"`` to specify operation.
+    - ``file``: Path to MIDI file.
+    - ``fps``: Frames per second.
+
+Output
+^^^^^^
+
+.. code-block:: json
+
+    {
+        "midi": [
+            [note, start, end, velocity],
+            "..."
+        ]
+    }
+
+- ``midi``: List of note infos.
+    - Each note is ``[start_frame, end_frame, velocity]``. Start frame is the
+      frame the note starts playing, and end frame is the frame the note stops.

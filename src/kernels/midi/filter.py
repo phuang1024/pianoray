@@ -17,26 +17,26 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import sys
 import json
-
-from blocks import compute_blocks
-from filter import filter_midi
+import mido
 
 
-def main():
-    inp = json.load(sys.stdin)["midi"]
+def filter_midi(inp):
+    out = {"midi": []}
 
-    if inp["type"] == "filter":
-        out = filter_midi(inp)
-    elif inp["type"] == "blocks":
-        out = compute_blocks(inp)
-    else:
-        raise TypeError("Type {} not allowed.".format(inp["type"]))
+    midi = mido.MidiFile(inp["file"])
+    fps = inp["fps"]
+    types = inp["types"]
+    attrs = inp["attrs"]
 
-    json.dump(out, sys.stdout)
-    print(flush=True)
+    time = 0  # Frames
+    for msg in midi:
+        time += msg.time * fps
+        if msg.type in types:
+            msg_out = {"time": time}
+            for attr in attrs:
+                if attr != "time" and hasattr(msg, attr):
+                    msg_out[attr] = getattr(msg, attr)
+            out["midi"].append(msg_out)
 
-
-if __name__ == "__main__":
-    main()
+    return out
