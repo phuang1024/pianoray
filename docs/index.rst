@@ -17,6 +17,7 @@ Video rendering pipeline with piano visualization.
    :caption: Manual
 
    manual/cli.rst
+   manual/tutorial.rst
 
 .. toctree::
    :maxdepth: 2
