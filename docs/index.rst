@@ -17,6 +17,15 @@ Video rendering pipeline with piano visualization.
    :caption: Manual
 
    manual/cli.rst
+   manual/tutorial.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: API
+
+   api/kernel.rst
+   api/pipeline.rst
 
 .. toctree::
    :maxdepth: 2

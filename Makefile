@@ -58,6 +58,6 @@ all:
 	$(PY) -m pip uninstall -y pianoray
 	make driver
 	make kernels
-	make docs
 	make install
+	make docs
 	make test
