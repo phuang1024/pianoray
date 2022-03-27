@@ -37,7 +37,7 @@ class Pipeline(BasePipeline):
             # MIDI kernel
             midi_input = {
                 "midi": {
-                    "type": "blocks",
+                    "type": "length",
                     "file": os.path.abspath("./examples/furelise.mid"),
                     "fps": 30,
                     #"types": ["note_on"],
@@ -46,6 +46,7 @@ class Pipeline(BasePipeline):
             }
             print(self.kernels.midi(midi_input))
 
+            """
             # Async kernel
             run = self.kernels.pytest(None, True)
             run.wait()
@@ -53,6 +54,7 @@ class Pipeline(BasePipeline):
 
             # The Java ...
             print(self.kernels.jtest(None))
+            """
 
         res = self.meta["res"]
 

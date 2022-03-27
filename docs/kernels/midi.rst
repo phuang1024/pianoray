@@ -3,6 +3,43 @@ MIDI
 
 MIDI parsing and processing kernel.
 
+Length
+------
+
+Compute the length of the MIDI file from the start of the first note
+to the end of the last note.
+
+If there are no notes, returns 0.
+
+Input
+^^^^^
+
+.. code-block:: json
+
+    {
+        "midi": {
+            "type": "length",
+            "file": "/path/to/file.mid",
+            "fps": 30
+        }
+    }
+
+- ``midi``:
+    - ``type``: Must be ``"length"`` to specify operation.
+    - ``file``: Path to MIDI file.
+    - ``fps``: Frames per second.
+
+Output
+^^^^^^
+
+.. code-block:: json
+
+    {
+        "midi": 123
+    }
+
+- ``midi``: Length of MIDI file in frames.
+
 Filter
 ------
 
