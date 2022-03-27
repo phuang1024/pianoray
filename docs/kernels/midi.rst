@@ -9,6 +9,8 @@ Length
 Compute the length of the MIDI file from the start of the first note
 to the end of the last note.
 
+If there are no notes, returns 0.
+
 Input
 ^^^^^
 
