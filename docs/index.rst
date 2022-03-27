@@ -21,6 +21,14 @@ Video rendering pipeline with piano visualization.
 .. toctree::
    :maxdepth: 2
    :hidden:
+   :caption: API
+
+   api/kernel.rst
+   api/pipeline.rst
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
    :caption: Kernels
 
    kernels/midi.rst
