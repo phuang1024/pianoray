@@ -51,10 +51,11 @@ class BasePipeline:
 
         Return metadata. Required fields:
 
-        * start: Frame start, inclusive. Frame 0 is start of first note.
-        * end: Frame end, inclusive. You can get these values from the ``midi`` kernel.
-        * res: Video resolution, ``(width, height)``.
-        * fps: Video frames per second.
+        - ``start``: Frame start, inclusive. Frame 0 is start of first note.
+        - ``end``: Frame end, inclusive.
+          You can get these values from the ``midi`` kernel.
+        - ``res``: Video resolution, ``(width, height)``.
+        - ``fps``: Video frames per second.
         """
         raise NotImplementedError("Override this in your subclass.")
 
