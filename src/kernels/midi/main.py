@@ -37,6 +37,7 @@ def main():
     else:
         raise TypeError("Type {} not allowed.".format(inp["type"]))
 
+    out = {"midi": out}
     json.dump(out, sys.stdout)
     print(flush=True)
 

@@ -21,17 +21,31 @@ import os
 import numpy as np
 from pianoray import BasePipeline
 
+FPS = 30
+
+MIDI_PATH = os.path.abspath("examples/furelise.mid")
+
 
 class Pipeline(BasePipeline):
-    meta = {
-        "start": 0,
-        "end": 30,
-        "res": (1920, 1080),
-        "fps": 30,
-    }
+    def get_meta(self):
+        length = self.kernels.midi({
+            "midi": {
+                "type": "length",
+                "file": MIDI_PATH,
+                "fps": FPS,
+            }
+        })["midi"]
+        length = int(length)
 
-    def render_frame(self, frame):
-        if frame == 0:
+        return {
+            "start": -60,
+            "end": length + 60,
+            "res": (1920, 1080),
+            "fps": FPS,
+        }
+
+    def render_frame(self, frame, meta):
+        if False and frame == 0:
             # Testing stuff
 
             # MIDI kernel
@@ -56,7 +70,7 @@ class Pipeline(BasePipeline):
             print(self.kernels.jtest(None))
             """
 
-        res = self.meta["res"]
+        res = meta["res"]
 
         img = np.zeros((res[1], res[0], 3), dtype=np.uint8)
         img[..., 0] = 255

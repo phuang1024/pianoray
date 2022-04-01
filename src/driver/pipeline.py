@@ -35,13 +35,6 @@ class BasePipeline:
     """Mapping of loaded kernels."""
 
     meta: Mapping[str, Any]
-    """
-    Metadata. Define in subclass.
-    * start: Frame start, inclusive
-    * end: Frame end, inclusive
-    * res: Video resolution, (width, height)
-    * fps: Video frames per second
-    """
 
     def __init__(self, kernels: Mapping[str, Kernel]) -> None:
         """
@@ -52,9 +45,23 @@ class BasePipeline:
         for key in kernels:
             self.kernels[key] = KernelWrapper(kernels[key])
 
+    def get_meta(self) -> Mapping[str, Any]:
+        """
+        Override this in your subclass.
+
+        Return metadata. Required fields:
+
+        * start: Frame start, inclusive. Frame 0 is start of first note.
+        * end: Frame end, inclusive. You can get these values from the ``midi`` kernel.
+        * res: Video resolution, ``(width, height)``.
+        * fps: Video frames per second.
+        """
+        raise NotImplementedError("Override this in your subclass.")
+
     def render_frame(self, frame: int) -> np.ndarray:
         """
         Override this in your subclass.
+
         Render one frame and return the image as a numpy array.
 
         :param frame: Frame number.
@@ -74,12 +81,13 @@ def render_pipeline(pipe: BasePipeline, out_path: str) -> None:
     """
     Renders each frame.
     """
+    meta = pipe.get_meta()
     video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
-        pipe.meta["fps"], pipe.meta["res"])
+        meta["fps"], meta["res"])
 
-    for frame in trange(pipe.meta["start"], pipe.meta["end"]+1):
+    for frame in trange(meta["start"], meta["end"]+1):
         try:
-            img = pipe.render_frame(frame)
+            img = pipe.render_frame(frame, meta)
         except KernelException as e:
             logger.error("Stop after KernelException:")
             logger.error(str(e))
