@@ -59,13 +59,14 @@ class BasePipeline:
         """
         raise NotImplementedError("Override this in your subclass.")
 
-    def render_frame(self, frame: int) -> np.ndarray:
+    def render_frame(self, frame: int, meta: Mapping[str, Any]) -> np.ndarray:
         """
         Override this in your subclass.
 
         Render one frame and return the image as a numpy array.
 
         :param frame: Frame number.
+        :param meta: Data obtained from ``pipe.get_meta()``.
         :return: np.ndarray shape (height, width, 3), RGB channels.
         """
         raise NotImplementedError("Override this in your subclass.")
