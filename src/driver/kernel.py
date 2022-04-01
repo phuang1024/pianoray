@@ -186,7 +186,7 @@ class KernelRun:
             raise KernelException(f"{self} exit code is {ret}.")
 
         if not self._read_output:
-            self._output = readall(self.proc.stdout)
+            self._output = json.loads(readall(self.proc.stdout))
             self._read_output = True
         return self._output
 
