@@ -3,6 +3,8 @@ PianoRay
 
 Video rendering pipeline with piano visualization.
 
+Currently in development.
+
 .. toctree::
    :maxdepth: 2
    :hidden:
