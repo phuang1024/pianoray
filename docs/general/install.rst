@@ -12,7 +12,8 @@ Requirements
 ------------
 
 - Python 3.8 or later
-- Java
+- Java (all versions of Java are bad for your health. Just choose a recent
+  one and you're good to go.)
 
 .. code-block:: sh
 
