@@ -19,6 +19,7 @@
 
 import sys
 import os
+import time
 import shutil
 import json
 import termcolor
@@ -94,23 +95,25 @@ class Kernel:
     def __repr__(self) -> str:
         return f"<class pianoray.Kernel(name={self.name})>"
 
-    def __call__(self, obj: Any, async_: bool = False,
-            args: Sequence[str] = ()) -> Union[Any, "KernelRun"]:
+    def __call__(self, obj: Any = None, args: Sequence[str] = ()) -> Any:
         """
         Call with json input and output.
 
         :param obj: Input JSON object.
-        :param async_: Whether to run asynchronously.
-            if True, return KernelRun.
-            else, return JSON output.
         :param args: CLI arguments.
         """
-        run = KernelRun(self, obj, args)
-        if async_:
-            return run
-        else:
-            run.wait()
-            return run.output
+        run = KernelRun(self, args)
+        run.send(obj)
+        return run.recv()
+
+    def run(self, args: Sequence[str] = ()) -> "KernelRun":
+        """
+        Return KernelRun.
+
+        :param args: CLI arguments.
+        """
+        run = KernelRun(self, args)
+        return run
 
     def proc(self, args: Sequence[str] = ()) -> Popen:
         """
@@ -143,8 +146,7 @@ class KernelRun:
     _output: Any  # Output object.
     _read_output: bool  # Whether output was read.
 
-    def __init__(self, kernel: Kernel, stdin: Any,
-            args: Sequence[str] = ()) -> None:
+    def __init__(self, kernel: Kernel, args: Sequence[str] = ()) -> None:
         """
         Initialize run.
 
@@ -152,14 +154,8 @@ class KernelRun:
         :param stdin: Input JSON object.
         :param args: CLI arguments.
         """
-        proc = kernel.proc(args)
-        proc.stdin.write(json.dumps(stdin).encode())
-        proc.stdin.write(b"\n")
-        proc.stdin.flush()
-        proc.stdin.close()
-
         self.kernel = kernel
-        self.proc = proc
+        self.proc = kernel.proc(args)
         self._output = None
         self._read_output = False
 
@@ -173,32 +169,25 @@ class KernelRun:
         """
         return self.proc.poll() is not None
 
-    def wait(self):
+    def send(self, obj: Any) -> None:
         """
-        Wait for the process to finish.
+        Dump obj json into process stdin.
         """
-        self.proc.wait()
+        self.proc.stdin.write(json.dumps(obj).encode())
+        self.proc.stdin.write(b"\n")
+        self.proc.stdin.flush()
+        self.proc.stdin.close()
 
-    @property
-    def output(self):
+    def recv(self) -> Any:
         """
-        Get process output as JSON object.
-        If process is alive, raises KernelException.
+        Read next JSON object from process stdout.
+        May hold/wait for the process.
         """
-        if self.proc.poll() is None:
-            raise KernelException(f"{self} cannot read output while process "
-                "is still running.")
-        if (ret := self.proc.returncode) != 0:
+        if (ret := self.proc.returncode):  # != 0 or None
+            err = readall(self.proc.stderr).decode()
             logger.error(f"{self} exit code is {ret}.")
-
-            choice = input("Show stderr text of kernel? [Y/n] ").strip().lower()
-            if choice != "n":
-                err = readall(self.proc.stderr).decode()
-                print(termcolor.colored(err, "white", attrs={"dark"}), end="")
-
+            print(termcolor.colored(err, "white", attrs={"dark"}), end="")
             raise KernelException(f"{self} exit code is {ret}.")
 
-        if not self._read_output:
-            self._output = json.loads(readall(self.proc.stdout))
-            self._read_output = True
-        return self._output
+        output = json.loads(self.proc.stdout.read())
+        return output
