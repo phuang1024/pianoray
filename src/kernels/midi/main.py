@@ -26,6 +26,8 @@ from length import length
 
 
 def main():
+    raise ValueError("test")
+
     inp = json.load(sys.stdin)["midi"]
 
     if inp["type"] == "length":
