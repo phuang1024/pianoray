@@ -17,5 +17,5 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .kernel import Kernel, KernelWrapper, KernelRun
+from .kernel import Kernel, KernelRun
 from .pipeline import BasePipeline

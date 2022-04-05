@@ -38,10 +38,12 @@ class KernelException(Exception):
 class Kernel:
     """
     Represents one kernel.
-    Every kernel is a directory (folder) of files.
-    Detects if it is Python, Java, Executable, etc.
-    The main entry point is ``main.*``, case independent.
-    If there is more than one such file, an arbitrary one will be chosen.
+
+    Every kernel is a directory (folder) of files. Detects if it is Python, Java,
+    Executable, etc. The main entry point is ``main.*``, case independent. If
+    there is more than one such entry point, an arbitrary one will be chosen.
+
+    Use the ``__call__`` method to communicate JSON.
     """
 
     name: str
@@ -90,6 +92,24 @@ class Kernel:
     def __repr__(self) -> str:
         return f"<class pianoray.Kernel(name={self.name})>"
 
+    def __call__(self, obj: Any, async_: bool = False,
+            args: Sequence[str] = ()) -> Union[Any, "KernelRun"]:
+        """
+        Call with json input and output.
+
+        :param obj: Input JSON object.
+        :param async_: Whether to run asynchronously.
+            if True, return KernelRun.
+            else, return JSON output.
+        :param args: CLI arguments.
+        """
+        run = KernelRun(self, obj, args)
+        if async_:
+            return run
+        else:
+            run.wait()
+            return run.output
+
     def proc(self, args: Sequence[str] = ()) -> Popen:
         """
         Open a process with all three streams PIPE.
@@ -106,23 +126,6 @@ class Kernel:
         pre_args.extend(args)
         proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, cwd=self.dir_path)
         return proc
-
-    def run(self, stdin: bytes, args=()) -> bytes:
-        """
-        Run process with bytes input and output.
-        """
-        proc = self.proc(args)
-
-        proc.stdin.write(stdin)
-        proc.stdin.flush()
-        proc.stdin.close()
-        proc.wait()
-        if proc.returncode != 0:
-            raise KernelException(f"{self} exited with code "
-                "{proc.returncode}")
-
-        data = readall(proc.stdout)
-        return data
 
 
 class KernelRun:
@@ -189,36 +192,3 @@ class KernelRun:
             self._output = json.loads(readall(self.proc.stdout))
             self._read_output = True
         return self._output
-
-
-class KernelWrapper:
-    """
-    This is used by the instance of ``pianoray.BasePipeline``.
-    Makes creating a pipeline easier.
-    """
-
-    kernel: Kernel
-
-    def __init__(self, kernel: Kernel) -> None:
-        self.kernel = kernel
-
-    def __repr__(self) -> str:
-        return f"<class pianoray.KernelWrapper(name={self.kernel.name})>"
-
-    def __call__(self, obj: Any, async_: bool = False,
-            args: Sequence[str] = ()) -> Union[Any, KernelRun]:
-        """
-        Call with json input and output.
-
-        :param obj: Input JSON object.
-        :param async_: Whether to run asynchronously.
-            if True, return KernelRun.
-            else, return JSON output.
-        :param args: CLI arguments.
-        """
-        run = KernelRun(self.kernel, obj, args)
-        if async_:
-            return run
-        else:
-            run.wait()
-            return run.output

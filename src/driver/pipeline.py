@@ -22,7 +22,7 @@ import cv2
 from tqdm import trange
 from typing import Any, Mapping
 from . import logger
-from .kernel import Kernel, KernelWrapper, KernelException
+from .kernel import Kernel, KernelException
 from .utils import Namespace
 
 
@@ -43,7 +43,7 @@ class BasePipeline:
         """
         self.kernels = Namespace()
         for key in kernels:
-            self.kernels[key] = KernelWrapper(kernels[key])
+            self.kernels[key] = kernels[key]
 
     def get_meta(self) -> Mapping[str, Any]:
         """
