@@ -79,23 +79,33 @@ def check_version(real, require):
     """
     # TODO
 
-def render_pipeline(pipe: BasePipeline, out_path: str) -> None:
+def render_pipeline(pipe: BasePipeline, out_path: str) -> int:
     """
     Renders each frame.
+    Returns system return code.
     """
-    meta = pipe.get_meta()
-    video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
-        meta["fps"], meta["res"])
+    video = None
+    try:
+        meta = pipe.get_meta()
+        video = cv2.VideoWriter(out_path, cv2.VideoWriter_fourcc(*"mp4v"),
+            meta["fps"], meta["res"])
 
-    for frame in trange(meta["start"], meta["end"]+1):
-        try:
+        for frame in trange(meta["start"], meta["end"]+1):
             img = pipe.render_frame(frame, meta)
-        except KernelException as e:
-            logger.error("Stop after KernelException:")
-            logger.error(str(e))
-            raise
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            video.write(img)
 
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        video.write(img)
+    except KernelException as e:
+        logger.error("Stop after KernelException:")
+        logger.error(str(e))
+        return 1
 
-    video.release()
+    except KeyboardInterrupt:
+        logger.error("Stop after KeyboardInterrupt.")
+        return 2
+
+    finally:
+        if video is not None:
+            video.release()
+
+    return 0

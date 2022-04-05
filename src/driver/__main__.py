@@ -68,9 +68,8 @@ def execute_pipeline(path, output, kernels):
         return 1
 
     pipe = cls(kernels)
-    render_pipeline(pipe, output)
-
-    return 0
+    exit_code = render_pipeline(pipe, output)
+    return exit_code
 
 
 def main():
