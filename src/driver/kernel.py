@@ -17,9 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import sys
 import os
 import shutil
 import json
+import termcolor
 from subprocess import Popen, PIPE
 from typing import Any, Sequence, Union
 from . import logger
@@ -31,7 +33,7 @@ JAVA = shutil.which("java")
 
 class KernelException(Exception):
     """
-    An error occured with ``pianoray.Kernel``.
+    An error occured.
     """
 
 
@@ -104,7 +106,7 @@ class Kernel:
             pre_args = [self.exe_path]
 
         pre_args.extend(args)
-        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, cwd=self.dir_path)
+        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, cwd=self.dir_path)
         return proc
 
     def run(self, stdin: bytes, args=()) -> bytes:
@@ -183,6 +185,11 @@ class KernelRun:
             raise KernelException(f"{self} cannot read output while process "
                 "is still running.")
         if (ret := self.proc.returncode) != 0:
+            logger.error(f"{self} exit code is {ret}.")
+            if input("Show stderr text of kernel? [Y/n] ").strip().lower() != "n":
+                err = readall(self.proc.stderr).decode()
+                print(termcolor.colored(err, "white", attrs={"dark"}), end="")
+
             raise KernelException(f"{self} exit code is {ret}.")
 
         if not self._read_output:

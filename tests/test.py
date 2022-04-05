@@ -45,7 +45,7 @@ class Pipeline(BasePipeline):
         }
 
     def render_frame(self, frame, meta):
-        if frame == 0:
+        if False and frame == 0:
             # Testing stuff
 
             # MIDI kernel
