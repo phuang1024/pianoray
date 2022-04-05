@@ -98,8 +98,11 @@ def render_pipeline(pipe: BasePipeline, out_path: str) -> int:
     except KernelException as e:
         logger.error("Stop after KernelException:")
         logger.error(str(e))
-
         return 1
+
+    except KeyboardInterrupt:
+        logger.error("Stop after KeyboardInterrupt.")
+        return 2
 
     finally:
         if video is not None:
