@@ -106,7 +106,8 @@ class Kernel:
             pre_args = [self.exe_path]
 
         pre_args.extend(args)
-        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE, cwd=self.dir_path)
+        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+            cwd=self.dir_path)
         return proc
 
     def run(self, stdin: bytes, args=()) -> bytes:
@@ -186,7 +187,9 @@ class KernelRun:
                 "is still running.")
         if (ret := self.proc.returncode) != 0:
             logger.error(f"{self} exit code is {ret}.")
-            if input("Show stderr text of kernel? [Y/n] ").strip().lower() != "n":
+
+            choice = input("Show stderr text of kernel? [Y/n] ").strip().lower()
+            if choice != "n":
                 err = readall(self.proc.stderr).decode()
                 print(termcolor.colored(err, "white", attrs={"dark"}), end="")
 
