@@ -17,27 +17,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-JUNIT = ../../../lib/hamcrest-core-1.3.jar:../../../lib/junit-4.13.2.jar
 
-.PHONY: java junit python cpp
-
-java:
-	mkdir -p ../../build/kernels/$(KERNEL)
-	cd ./$(KERNEL); \
-	ls | grep -F ".java" | grep -v "JUTest.java" | xargs javac
-	cp ./$(KERNEL)/*.class ../../build/kernels/$(KERNEL)
-
-junit:
-	cd ./$(KERNEL); \
-	javac -cp .:$(JUNIT) JUTest.java; \
-	java -cp .:$(JUNIT) JUTest
-
-python:
-	mkdir -p ../../build/kernels/$(KERNEL)
-	cp ./$(KERNEL)/*.py ../../build/kernels/$(KERNEL)
-	cp ../utils/*.py ../../build/kernels/$(KERNEL)
-
-cpp:
-	mkdir -p ../../build/kernels/$(KERNEL)
-	g++ -O3 -Wall ./$(KERNEL)/*.cpp -o a.out
-	mv ./a.out ../../build/kernels/$(KERNEL)/main.out
+def asdf(a):
+    print("asf", a)
