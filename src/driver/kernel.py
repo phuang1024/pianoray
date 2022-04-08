@@ -156,8 +156,7 @@ class KernelRun:
         """
         self.kernel = kernel
         self.proc = kernel.proc(args)
-        self._output = None
-        self._read_output = False
+        self.args = args
 
     def __repr__(self) -> str:
         return f"<class pianoray.KernelRun(name={self.kernel.name})>"
@@ -178,10 +177,13 @@ class KernelRun:
         self.proc.stdin.flush()
         self.proc.stdin.close()
 
-    def recv(self) -> Any:
+    def recv(self, restart=True) -> Any:
         """
         Read next JSON object from process stdout.
         May hold/wait for the process.
+
+        :param restart: Whether to restart the kernel. Please read the
+            kernel's documentation for info about this.
         """
         if (ret := self.proc.returncode):  # != 0 or None
             err = readall(self.proc.stderr).decode()
@@ -190,4 +192,9 @@ class KernelRun:
             raise KernelException(f"{self} exit code is {ret}.")
 
         output = json.loads(self.proc.stdout.read())
+
+        if restart:
+            self.proc.kill()
+            self.proc = self.kernel.proc(args)
+
         return output
