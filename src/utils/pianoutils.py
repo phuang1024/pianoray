@@ -18,5 +18,7 @@
 #
 
 
-def asdf(a):
-    print("asf", a)
+def is_white_key(k):
+    """
+
+    """
