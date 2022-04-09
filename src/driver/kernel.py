@@ -23,6 +23,7 @@ import time
 import shutil
 import json
 import termcolor
+from collections import deque
 from subprocess import Popen, PIPE
 from typing import Any, Sequence, Union
 from . import logger
@@ -40,13 +41,13 @@ class KernelException(Exception):
 
 class Kernel:
     """
-    Represents one kernel.
+    This class handles the file aspect of kernels. Use KernelWrapper to
+    communicate JSON. Pipeline classes automatically create KernelWrapper
+    instances.
 
     Every kernel is a directory (folder) of files. Detects if it is Python, Java,
     Executable, etc. The main entry point is ``main.*``, case independent. If
     there is more than one such entry point, an arbitrary one will be chosen.
-
-    Use the ``__call__`` method to communicate JSON.
     """
 
     name: str
@@ -95,26 +96,6 @@ class Kernel:
     def __repr__(self) -> str:
         return f"<class pianoray.Kernel(name={self.name})>"
 
-    def __call__(self, obj: Any = None, args: Sequence[str] = ()) -> Any:
-        """
-        Call with json input and output.
-
-        :param obj: Input JSON object.
-        :param args: CLI arguments.
-        """
-        run = KernelRun(self, args)
-        run.send(obj)
-        return run.recv()
-
-    def run(self, args: Sequence[str] = ()) -> "KernelRun":
-        """
-        Return KernelRun.
-
-        :param args: CLI arguments.
-        """
-        run = KernelRun(self, args)
-        return run
-
     def proc(self, args: Sequence[str] = ()) -> Popen:
         """
         Open a process with all three streams PIPE.
@@ -132,6 +113,22 @@ class Kernel:
         proc = Popen(pre_args, stdin=PIPE, stdout=PIPE,# stderr=PIPE,
             cwd=self.dir_path)
         return proc
+
+
+class KernelWrapper:
+    """
+    Handles JSON communication and the process.
+
+    Keeps second thread running in the background, calling the kernel
+    when input data arrives.
+
+    Use ``send(obj)`` and ``recv()`` to communicate.
+    """
+
+
+
+    def __init__(self, kernel: Kernel) -> None:
+        self.kernel = kernel
 
 
 class KernelRun:
