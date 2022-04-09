@@ -17,34 +17,22 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PYTHON = python3
+import os
 
-.PHONY: help wheel install docs all
+import numpy as np
+from tqdm import trange
 
-help:
-	@echo Makefile help:
-	@echo - make wheel: Build wheel in ./build
-	@echo - make install: Install wheel file
-	@echo - make docs: Documentation.
-	@echo - make all: Uninstall, build, install. Useful for developers.
+from .video import Video
+from .settings import Settings
 
-wheel:
-	mkdir -p ./build
-	rm -rf ./build/pianoray
-	cp -r ./src ./build/pianoray
-	cp ./setup.py ./build
-	cd ./build; \
-	$(PYTHON) setup.py bdist_wheel sdist
 
-install:
-	$(PYTHON) -m pip install ./build/dist/*.whl
+def render_video(settings: Settings, out: str, cache: str) -> None:
+    os.makedirs(cache, exist_ok=True)
 
-docs:
-	cd ./docs; \
-	mkdir -p _static _templates; \
-	make html SPHINXOPTS="-W --keep-going"
+    v = Video(cache)
+    for i in trange(255):
+        img = np.empty((1080, 1920, 3), dtype=np.uint8)
+        img[...] = i
+        v.save(img)
 
-all:
-	$(PYTHON) -m pip uninstall -y pianoray
-	make wheel
-	make install
+    v.compile(out, 30)

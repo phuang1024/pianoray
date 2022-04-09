@@ -1,6 +1,6 @@
 #
 #  PianoRay
-#  Piano performance visualizer.
+#  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -17,34 +17,27 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PYTHON = python3
+import sys
+import termcolor
 
-.PHONY: help wheel install docs all
 
-help:
-	@echo Makefile help:
-	@echo - make wheel: Build wheel in ./build
-	@echo - make install: Install wheel file
-	@echo - make docs: Documentation.
-	@echo - make all: Uninstall, build, install. Useful for developers.
+def info(msg: str) -> None:
+    """
+    Info log to stderr.
+    Color: blue
+    """
+    print(termcolor.colored("INFO:  "+msg, "blue"), file=sys.stderr)
 
-wheel:
-	mkdir -p ./build
-	rm -rf ./build/pianoray
-	cp -r ./src ./build/pianoray
-	cp ./setup.py ./build
-	cd ./build; \
-	$(PYTHON) setup.py bdist_wheel sdist
+def warn(msg: str) -> None:
+    """
+    Warning log to stderr.
+    Color: yellow
+    """
+    print(termcolor.colored("WARN:  "+msg, "yellow"), file=sys.stderr)
 
-install:
-	$(PYTHON) -m pip install ./build/dist/*.whl
-
-docs:
-	cd ./docs; \
-	mkdir -p _static _templates; \
-	make html SPHINXOPTS="-W --keep-going"
-
-all:
-	$(PYTHON) -m pip uninstall -y pianoray
-	make wheel
-	make install
+def error(msg: str) -> None:
+    """
+    Error log to stderr.
+    Color: red
+    """
+    print(termcolor.colored("ERROR: "+msg, "red"), file=sys.stderr)

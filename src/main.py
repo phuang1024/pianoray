@@ -17,26 +17,47 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import json
 import argparse
+import json
+import sys
 
+from . import logger
+from .render import render_video
 from .settings import Settings
+from .utils import VERSION
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Piano performance visualizer.")
+    parser.add_argument("-V", "--version",
+        help="Show version info.", action="store_true")
     parser.add_argument("-s", "--settings",
-        help="Path to settings JSON file.", required=True)
+        help="Path to settings JSON file.")
     parser.add_argument("-o", "--output",
-        help="Output video file.", required=True)
+        help="Output video file.")
     parser.add_argument("-c", "--cache",
         help="Cache path (default .prcache)", default=".prcache")
     args = parser.parse_args()
 
+    if args.version:
+        print(f"Pianoray v{VERSION}")
+        return 0
+
+    if args.settings is None:
+        logger.error("Please provide an argument for settings.")
+        return 1
+    if args.output is None:
+        logger.error("Please provide an argument for output.")
+        return 1
+
     with open(args.settings, "r") as fp:
         settings = Settings(json.load(fp))
 
+    render_video(settings, args.output, args.cache)
+
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
