@@ -3,7 +3,3 @@ numpy
 opencv-python
 termcolor
 tqdm
-
-wheel
-sphinx
-sphinx_rtd_theme
