@@ -22,6 +22,7 @@ import json
 import sys
 
 from . import logger
+from .render import render_video
 from .settings import Settings
 from .utils import VERSION
 
@@ -52,6 +53,8 @@ def main():
 
     with open(args.settings, "r") as fp:
         settings = Settings(json.load(fp))
+
+    render_video(settings, args.output, args.cache)
 
     return 0
 

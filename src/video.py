@@ -54,7 +54,7 @@ class Video:
         """
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         path = os.path.join(self.cache, str(self.frame)+".jpg")
-        cv2.imwrite(img, path)
+        cv2.imwrite(path, img)
 
         self.frame += 1
         return self.frame - 1
@@ -69,19 +69,18 @@ class Video:
         :param crf: Constant rate factor. Higher values produce smaller
             file sizes but lower quality.
         """
-        args = [
+        args = list(map(str, [
             FFMPEG,
-            "-i", "%d.jpg",
+            "-i", os.path.join(self.cache, "%d.jpg"),
             "-c:v", vcodec,
             "-crf", crf,
             "-r", fps,
             out,
-        ]
+        ]))
 
         proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         proc.wait()
 
         if proc.returncode != 0:
-            msg = f"FFmpeg exited with code {proc.returncode} when compiling
-                {out}")
+            msg = f"FFmpeg exited with code {proc.returncode} when compiling {out}"
             raise ValueError(msg)
