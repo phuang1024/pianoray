@@ -19,12 +19,13 @@
 
 PYTHON = python3
 
-.PHONY: help wheel install all
+.PHONY: help wheel install docs all
 
 help:
 	@echo Makefile help:
 	@echo - make wheel: Build wheel in ./build
 	@echo - make install: Install wheel file
+	@echo - make docs: Documentation.
 	@echo - make all: Uninstall, build, install. Useful for developers.
 
 wheel:
@@ -36,6 +37,11 @@ wheel:
 
 install:
 	$(PYTHON) -m pip install ./build/dist/*.whl
+
+docs:
+	cd ./docs; \
+	mkdir -p _static _templates; \
+	make html SPHINXOPTS="-W --keep-going"
 
 all:
 	$(PYTHON) -m pip uninstall -y pianoray
