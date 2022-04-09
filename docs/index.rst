@@ -5,4 +5,6 @@ PianoRay
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Contents:
+   :caption: General
+
+   general/install.rst
