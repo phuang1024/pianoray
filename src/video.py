@@ -81,6 +81,6 @@ class Video:
         proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         proc.wait()
 
-        if proc.returncode != 0:
-            msg = f"FFmpeg exited with code {proc.returncode} when compiling {out}"
+        if (code := proc.returncode) != 0:
+            msg = f"FFmpeg exited with code {code} when compiling {out}"
             raise ValueError(msg)
