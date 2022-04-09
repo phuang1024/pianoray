@@ -58,7 +58,13 @@ class Pipeline(BasePipeline):
                     #"attrs": ["type", "note", "velocity"],
                 }
             }
-            print(self.kernels.midi(midi_input))
+            run = self.kernels.midi.run()
+            run.send(midi_input)
+            print(run.recv())
+            run.send(midi_input)
+            print(run.recv())
+
+            #print(self.kernels.midi(midi_input))
 
             """
             # Async kernel

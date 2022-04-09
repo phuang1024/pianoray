@@ -129,7 +129,7 @@ class Kernel:
             pre_args = [self.exe_path]
 
         pre_args.extend(args)
-        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE,# stderr=PIPE,
             cwd=self.dir_path)
         return proc
 
@@ -171,7 +171,11 @@ class KernelRun:
     def send(self, obj: Any) -> None:
         """
         Dump obj json into process stdin.
+        Restarts process if dead.
         """
+        if not self.alive:
+            self._restart_proc()
+
         self.proc.stdin.write(json.dumps(obj).encode())
         self.proc.stdin.write(b"\n")
         self.proc.stdin.flush()
@@ -191,10 +195,13 @@ class KernelRun:
             print(termcolor.colored(err, "white", attrs={"dark"}), end="")
             raise KernelException(f"{self} exit code is {ret}.")
 
-        output = json.loads(self.proc.stdout.read())
+        output = json.loads(self.proc.stdout.readline())
 
         if restart:
-            self.proc.kill()
-            self.proc = self.kernel.proc(args)
+            self._restart_proc()
 
         return output
+
+    def _restart_proc(self):
+        self.proc.kill()
+        self.proc = self.kernel.proc(self.args)

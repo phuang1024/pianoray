@@ -26,7 +26,8 @@ from length import length
 
 
 def main():
-    inp = json.load(sys.stdin)["midi"]
+    print("STARTED", file=sys.stderr)
+    inp = json.loads(sys.stdin.readline())["midi"]
 
     if inp["type"] == "length":
         out = length(inp)
@@ -40,7 +41,9 @@ def main():
     out = {"midi": out}
     json.dump(out, sys.stdout)
     print(flush=True)
+    sys.stdout.close()
 
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
