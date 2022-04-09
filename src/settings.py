@@ -1,6 +1,6 @@
 #
 #  PianoRay
-#  Video rendering pipeline with piano visualization.
+#  Piano performance visualizer.
 #  Copyright  PianoRay Authors  2022
 #
 #  This program is free software: you can redistribute it and/or modify

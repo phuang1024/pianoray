@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Style
+        run: |
+          python ./tests/style.py
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        run: |
+          make wheel
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build-files
+          path: ./build
+
+  docs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-files
+          path: ./build
+
+      - name: Install dependencies
+        run: |
+          pip install sphinx sphinx-rtd-theme
+          make install
+      - name: Docs
+        run: |
+          make docs
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-files
+          path: ./build
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          make install
+      - name: Test video
+        run: |
+          pianoray -s ./tests/settings.json -o a.mp4
+
+  clean:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: build-files
