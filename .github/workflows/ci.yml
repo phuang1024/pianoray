@@ -51,6 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: FedericoCarboni/setup-ffmpeg@v1
+        id: setup-ffmpeg
       - uses: actions/download-artifact@v3
         with:
           name: build-files
