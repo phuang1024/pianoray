@@ -1,6 +1,6 @@
 #
 #  PianoRay
-#  Piano performance visualizer.
+#  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,23 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import json
-import argparse
-
-from settings import Settings
+from typing import Mapping
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Piano performance visualizer.")
-    parser.add_argument("-s", "--settings", help="Path to settings JSON file.", required=True)
-    parser.add_argument("-o", "--output", help="Output video file.", required=True)
-    parser.add_argument("-c", "--cache", help="Cache path (default .prcache)", default=".prcache")
-    args = parser.parse_args()
+class Settings:
+    """
+    Settings.
+    """
 
-    with open(args.output, "r") as fp:
-        settings = Settings(json.load(fp))
+    _data: Mapping[str, Any]
 
+    def __init__(self, data: Mapping[str, Any]) -> None:
+        self._data = {}
+        for key in data:
+            obj = data[key]
+            if isinstance(obj, dict):
+                obj = Settings(obj)
+            self._data[key] = obj
 
-if __name__ == "__main__":
-    main()
+    def __getattr__(self, name: str) -> Any:
+        return self._data[name]
