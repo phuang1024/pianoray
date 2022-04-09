@@ -17,7 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from typing import Mapping
+from typing import Any, Mapping
 
 
 class Settings:

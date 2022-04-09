@@ -30,7 +30,7 @@ def main():
     parser.add_argument("-c", "--cache", help="Cache path (default .prcache)", default=".prcache")
     args = parser.parse_args()
 
-    with open(args.output, "r") as fp:
+    with open(args.settings, "r") as fp:
         settings = Settings(json.load(fp))
 
 
