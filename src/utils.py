@@ -17,34 +17,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PYTHON = python3
+import shutil
 
-.PHONY: help wheel install docs all
+VERSION = "0.0.1"
 
-help:
-	@echo Makefile help:
-	@echo - make wheel: Build wheel in ./build
-	@echo - make install: Install wheel file
-	@echo - make docs: Documentation.
-	@echo - make all: Uninstall, build, install. Useful for developers.
-
-wheel:
-	mkdir -p ./build
-	rm -rf ./build/pianoray
-	cp -r ./src ./build/pianoray
-	cp ./setup.py ./build
-	cd ./build; \
-	$(PYTHON) setup.py bdist_wheel sdist
-
-install:
-	$(PYTHON) -m pip install ./build/dist/*.whl
-
-docs:
-	cd ./docs; \
-	mkdir -p _static _templates; \
-	make html SPHINXOPTS="-W --keep-going"
-
-all:
-	$(PYTHON) -m pip uninstall -y pianoray
-	make wheel
-	make install
+FFMPEG = shutil.which("ffmpeg")
+assert FFMPEG is not None
