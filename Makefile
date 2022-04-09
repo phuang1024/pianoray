@@ -17,22 +17,27 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import json
-import argparse
+PYTHON = python3
 
-from .settings import Settings
+.PHONY: help wheel install all
 
+help:
+	@echo Makefile help:
+	@echo - make wheel: Build wheel in ./build
+	@echo - make install: Install wheel file
+	@echo - make all: Uninstall, build, install. Useful for developers.
 
-def main():
-    parser = argparse.ArgumentParser(description="Piano performance visualizer.")
-    parser.add_argument("-s", "--settings", help="Path to settings JSON file.", required=True)
-    parser.add_argument("-o", "--output", help="Output video file.", required=True)
-    parser.add_argument("-c", "--cache", help="Cache path (default .prcache)", default=".prcache")
-    args = parser.parse_args()
+wheel:
+	mkdir -p ./build
+	cp -r ./src ./build/pianoray
+	cp ./setup.py ./build
+	cd ./build; \
+	$(PYTHON) setup.py bdist_wheel sdist
 
-    with open(args.settings, "r") as fp:
-        settings = Settings(json.load(fp))
+install:
+	$(PYTHON) -m pip install ./build/dist/*.whl
 
-
-if __name__ == "__main__":
-    main()
+all:
+	$(PYTHON) -m pip uninstall -y pianoray
+	make wheel
+	make install

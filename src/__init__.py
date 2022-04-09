@@ -17,22 +17,4 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import json
-import argparse
-
-from .settings import Settings
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Piano performance visualizer.")
-    parser.add_argument("-s", "--settings", help="Path to settings JSON file.", required=True)
-    parser.add_argument("-o", "--output", help="Output video file.", required=True)
-    parser.add_argument("-c", "--cache", help="Cache path (default .prcache)", default=".prcache")
-    args = parser.parse_args()
-
-    with open(args.settings, "r") as fp:
-        settings = Settings(json.load(fp))
-
-
-if __name__ == "__main__":
-    main()
+__version__ = "0.0.1"
