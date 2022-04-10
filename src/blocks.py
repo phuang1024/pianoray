@@ -40,9 +40,10 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
         end_y = note_coords(settings, end, frame)
         start_x, end_x = key_coords(settings, note)
 
+
         start_x, end_x, start_y, end_y = map(int,
             (start_x, end_x, start_y, end_y))
-        start_y = min(start_y, half)
-
         if start_y > 0 and end_y < half:
+            start_y = max(min(start_y, half), 0)
+            end_y = max(min(end_y, half), 0)
             img[end_y:start_y, start_x:end_x, ...] = 255

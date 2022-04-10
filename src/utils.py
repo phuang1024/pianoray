@@ -36,7 +36,7 @@ SETTINGS_DEFAULT = {
         "black_width_fac": 0.6,
     },
     "blocks": {
-        "speed": 1,
+        "speed": 0.8,
     },
     "midi": {
         "file": None,
