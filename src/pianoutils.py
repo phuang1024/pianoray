@@ -28,14 +28,14 @@ def is_white_key(key: int) -> bool:
     """
     If the key is a white key on piano.
     """
-    return (key % 12) in (1, 4, 6, 9, 11)
+    return (key % 12) not in (1, 4, 6, 9, 11)
 
 def key_pos(key: int) -> float:
     """
     Position of the center of the key on the keyboard.
     Factor from 0 to 1 (start of first key to end of last).
     """
-    white_width = 1 / 88
+    white_width = 1 / 52
 
     last_white = False  # Last key was white
     pos = 0
@@ -59,7 +59,7 @@ def key_coords(settings: Settings, key: int) -> Tuple[float, float]:
     :return: ``(start_coord, end_coord)`` of key.
     """
     center = np.interp(key_pos(key), (0, 1), (0, settings.resolution[0]))
-    white_width = settings.resolution[0] / 88
+    white_width = settings.resolution[0] / 52
     black_width = white_width * settings.piano.black_width_fac
     width = white_width if is_white_key(key) else black_width
     half = width / 2

@@ -50,7 +50,7 @@ def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:
             started = True
 
             vel = msg.velocity
-            note = msg.note
+            note = msg.note - 21
             if msg.type == "note_on" and vel > 0:
                 starts[note] = t
             else:

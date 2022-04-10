@@ -33,6 +33,8 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
     :param notes: MIDI notes.
     :param frame: Current frame.
     """
+    half = int(settings.resolution[1] / 2)
+
     for note, vel, start, end in notes:
         start_y = note_coords(settings, start, frame)
         end_y = note_coords(settings, end, frame)
@@ -40,5 +42,7 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
 
         start_x, end_x, start_y, end_y = map(int,
             (start_x, end_x, start_y, end_y))
+        start_y = min(start_y, half)
 
-        img[start_y:end_y, start_x:end_x, ...] = 255
+        if start_y > 0 and end_y < half:
+            img[end_y:start_y, start_x:end_x, ...] = 255
