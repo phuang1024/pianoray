@@ -82,8 +82,10 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
         h = start_y - end_y
         x, y, w, h = map(int, (x, y, w, h))
 
-        for px in range(bounds(x-2, 0, width-1), bounds(x+w+3, 0, width-1)):
-            for py in range(bounds(y-2, 0, height-1), bounds(y+h+3, 0, height-1)):
+        xrange = range(bounds(x-2, 0, width-1), bounds(x+w+3, 0, width-1))
+        yrange = range(bounds(y-2, 0, height-1), bounds(y+h+3, 0, height-1))
+        for px in xrange:
+            for py in yrange:
                 dist = dist_to_block(px, py, x, y, w, h, 5)
 
                 color = np.interp(dist, (0, 2), (0, 255))
