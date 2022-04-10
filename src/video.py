@@ -18,7 +18,9 @@
 #
 
 import os
+import shutil
 from subprocess import Popen, PIPE
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -35,16 +37,20 @@ class Video:
     final video.
     """
 
-    def __init__(self, cache: str) -> None:
+    def __init__(self, cache: str, audio: str = None,
+            audio_offset: float = 0) -> None:
         """
         Initializes video.
 
         :param cache: Cache directory. Frames stored there.
+        :param audio: Path to audio file.
+        :param audio_offset: Seconds. Positive values play audio later.
         """
         self.cache = cache
+        self.audio = audio
         self.frame = 0
 
-        os.makedirs(cache, exist_ok=True)
+        os.makedirs(os.path.join(self.cache, "frames"), exist_ok=True)
 
     def write(self, img: np.ndarray) -> int:
         """
@@ -55,7 +61,7 @@ class Video:
         :return: This frame number.
         """
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        path = os.path.join(self.cache, str(self.frame)+".jpg")
+        path = os.path.join(self.cache, "frames", str(self.frame)+".jpg")
         cv2.imwrite(path, img)
 
         self.frame += 1
@@ -63,7 +69,7 @@ class Video:
 
     def compile(self, out: str, fps: int, vcodec="libx265", crf=24) -> None:
         """
-        Use ffmpeg to compile frames to video.
+        Use ffmpeg to compile frames and audio to video.
 
         :param out: Output video path.
         :param fps: Frames per second.
@@ -71,19 +77,50 @@ class Video:
         :param crf: Constant rate factor. Higher values produce smaller
             file sizes but lower quality.
         """
-        args = list(map(str, [
+        # Frames to video
+        args = [
             FFMPEG,
             "-y",
             "-i", os.path.join(self.cache, "%d.jpg"),
             "-c:v", vcodec,
             "-crf", crf,
             "-r", fps,
-            out,
-        ]))
+            os.path.join(self.cache, "no_audio.mp4"),
+        ]
+        run_ffmpeg(args)
 
-        proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        proc.wait()
+        # Delay audio
+        if self.audio is not None:
+            delay = int(self.audio_offset * 1000)
+            args = [
+                FFMPEG,
+                "-y",
+                "-i", self.audio,
+                "-af", f"adelay={delay}",
+                os.path.join(self.cache, "offset.mp3"),
+            ]
+            run_ffmpeg(args)
 
-        if (code := proc.returncode) != 0:
-            msg = f"FFmpeg exited with code {code} when compiling {out}"
-            raise ValueError(msg)
+            args = [
+                FFMPEG,
+                "-i", os.path.join(self.cache, "no_audio.mp4"),
+                "-i", os.path.join(self.cache, "offset.mp3"),
+                "-c", "copy",
+                out,
+            ]
+
+            run_ffmpeg(args)
+
+        else:
+            shutil.copy(os.path.join(self.cache, "no_audio.mp4"), out)
+
+
+def run_ffmpeg(args: Sequence[str]):
+    args = list(map(str, args))
+    proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    proc.wait()
+
+    if (code := proc.returncode) != 0:
+        msg = f"FFmpeg exited with code {code} when compiling {out}. " + \
+            "Command: " + " ".join(args)
+        raise ValueError(msg)
