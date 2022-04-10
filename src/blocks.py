@@ -37,9 +37,9 @@ def dist_to_block(px, py, x, y, w, h, r) -> float:
     half_x = x + w/2
     half_y = y + h/2
     if px > half_x:
-        px -= 2 * (px-x)
+        px -= 2 * (px-half_x)
     if py > half_y:
-        py -= 2 * (py-y)
+        py -= 2 * (py-half_y)
 
     cx = x + r
     cy = y + r
@@ -47,9 +47,9 @@ def dist_to_block(px, py, x, y, w, h, r) -> float:
     if px < cx and py < cy:
         return hypot(cx-px, cy-py) - r
     elif px < x and py >= cy:
-        return px - x
+        return x - px
     elif px >= cx and py < y:
-        return py - y
+        return y - py
     else:
         return 0
 
@@ -82,10 +82,10 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
         h = start_y - end_y
         x, y, w, h = map(int, (x, y, w, h))
 
-        for py in range(bounds(x-2, 0, height-1), bounds(x+w+3, 0, height-1)):
-            for px in range(bounds(y-2, 0, width-1), bounds(y+h+3, 0, width-1)):
+        for px in range(bounds(x-2, 0, width-1), bounds(x+w+3, 0, width-1)):
+            for py in range(bounds(y-2, 0, height-1), bounds(y+h+3, 0, height-1)):
                 dist = dist_to_block(px, py, x, y, w, h, 5)
 
-                color = np.interp(dist, (1, 0), (0, 255))
-                color = bounds(color, 0, 255)
+                color = np.interp(dist, (0, 2), (0, 255))
+                color = 255 - bounds(color, 0, 255)
                 img[py, px, :] = color
