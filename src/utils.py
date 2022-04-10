@@ -37,6 +37,8 @@ SETTINGS_DEFAULT = {
     },
     "blocks": {
         "speed": 0.8,
+        "color": [185, 200, 255],
+        "radius": 5,
     },
     "midi": {
         "file": None,
