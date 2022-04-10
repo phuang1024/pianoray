@@ -24,6 +24,9 @@ VERSION = "0.0.1"
 FFMPEG = shutil.which("ffmpeg")
 assert FFMPEG is not None
 
+GCC = shutil.which("g++")
+assert GCC is not None
+
 SETTINGS_DEFAULT = {
     "fps": 30,
     "resolution": (1920, 1080),
