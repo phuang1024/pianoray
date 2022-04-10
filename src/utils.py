@@ -43,3 +43,10 @@ SETTINGS_DEFAULT = {
         "speed": 1,
     },
 }
+
+
+def bounds(v, vmin, vmax):
+    """
+    Bound v between vmin and vmax.
+    """
+    return min(max(v, vmin), vmax)

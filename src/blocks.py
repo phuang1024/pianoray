@@ -17,10 +17,41 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from math import hypot
+
 import numpy as np
 
 from .pianoutils import key_coords, note_coords
 from .settings import Settings
+from .utils import bounds
+
+
+def dist_to_block(px, py, x, y, w, h, r) -> float:
+    """
+    Distance to a block.
+
+    :param px, py: Point coordinates.
+    :param x, y, w, h: Coordinates of block.
+    :param r: Radius of block corners.
+    """
+    half_x = x + w/2
+    half_y = y + h/2
+    if px > half_x:
+        px -= 2 * (px-x)
+    if py > half_y:
+        py -= 2 * (py-y)
+
+    cx = x + r
+    cy = y + r
+
+    if px < cx and py < cy:
+        return hypot(cx-px, cy-py) - r
+    elif px < x and py >= cy:
+        return px - x
+    elif px >= cx and py < y:
+        return py - y
+    else:
+        return 0
 
 
 def render_blocks(settings: Settings, img: np.ndarray, notes,
@@ -33,17 +64,31 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
     :param notes: MIDI notes.
     :param frame: Current frame.
     """
-    half = int(settings.resolution[1] / 2)
+    width, height = settings.resolution
 
-    for note, vel, start, end in notes:
-        start_y = note_coords(settings, start, frame)
-        end_y = note_coords(settings, end, frame)
-        start_x, end_x = key_coords(settings, note)
+    for py in range(0, height // 2):
+        for px in range(0, width):
+            min_dist = 100
+            for note, vel, start, end in notes:
+                start_y = note_coords(settings, start, frame)
+                end_y = note_coords(settings, end, frame)
+                if start_y < 0 or end_y > height/2:
+                    continue
 
+                start_y = bounds(start_y, 0, height/2)
+                end_y = bounds(end_y, 0, height/2)
+                start_x, end_x = key_coords(settings, note)
 
-        start_x, end_x, start_y, end_y = map(int,
-            (start_x, end_x, start_y, end_y))
-        if start_y > 0 and end_y < half:
-            start_y = max(min(start_y, half), 0)
-            end_y = max(min(end_y, half), 0)
-            img[end_y:start_y, start_x:end_x, ...] = 255
+                x = start_x
+                y = end_y
+                w = end_x - start_x
+                h = start_y - end_y
+                x, y, w, h = map(int, (x, y, w, h))
+
+                dist = dist_to_block(px, py, x, y, w, h, 5)
+                if dist < min_dist:
+                    min_dist = dist
+
+            color = np.interp(min_dist, (1, 0), (0, 255))
+            color = bounds(color, 0, 255)
+            img[y, x, :] = color
