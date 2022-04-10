@@ -26,7 +26,8 @@ help:
 	@echo - make wheel: Build wheel in ./build
 	@echo - make install: Install wheel file
 	@echo - make docs: Documentation.
-	@echo - make all: Uninstall, build, install. Useful for developers.
+	@echo - make all: Uninstall, build, install, docs.
+	@echo   Useful for developers.
 
 wheel:
 	mkdir -p ./build
@@ -41,6 +42,7 @@ install:
 
 docs:
 	cd ./docs; \
+	rm -rf _build; \
 	mkdir -p _static _templates; \
 	make html SPHINXOPTS="-W --keep-going"
 
@@ -48,3 +50,4 @@ all:
 	$(PYTHON) -m pip uninstall -y pianoray
 	make wheel
 	make install
+	make docs

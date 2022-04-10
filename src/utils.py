@@ -23,3 +23,17 @@ VERSION = "0.0.1"
 
 FFMPEG = shutil.which("ffmpeg")
 assert FFMPEG is not None
+
+SETTINGS_DEFAULT = {
+    "fps": 30,
+    "resolution": (1920, 1080),
+    "vcodec": "libx265",
+    "composition": {
+        "margin_start": 2,
+        "margin_end": 2,
+    },
+    "midi": {
+        "file": None,
+        "speed": 1,
+    },
+}
