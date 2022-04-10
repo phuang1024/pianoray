@@ -36,10 +36,19 @@ SETTINGS_DEFAULT = {
         "black_width_fac": 0.6,
     },
     "blocks": {
-        "speed": 1,
+        "speed": 0.5,
+        "color": [185, 200, 255],
+        "radius": 5,
     },
     "midi": {
         "file": None,
         "speed": 1,
     },
 }
+
+
+def bounds(v, vmin, vmax):
+    """
+    Bound v between vmin and vmax.
+    """
+    return min(max(v, vmin), vmax)
