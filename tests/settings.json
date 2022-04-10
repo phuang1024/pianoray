@@ -1,5 +1,9 @@
 {
     "midi": {
         "file": "examples/furelise.mid"
+    },
+    "audio": {
+        "path": "examples/furelise.mp3",
+        "start": 0
     }
 }
