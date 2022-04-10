@@ -48,6 +48,7 @@ class Video:
         """
         self.cache = cache
         self.audio = audio
+        self.audio_offset = audio_offset
         self.frame = 0
 
         os.makedirs(os.path.join(self.cache, "frames"), exist_ok=True)
@@ -81,7 +82,7 @@ class Video:
         args = [
             FFMPEG,
             "-y",
-            "-i", os.path.join(self.cache, "%d.jpg"),
+            "-i", os.path.join(self.cache, "frames", "%d.jpg"),
             "-c:v", vcodec,
             "-crf", crf,
             "-r", fps,
@@ -90,13 +91,12 @@ class Video:
         run_ffmpeg(args)
 
         if self.audio is not None:
-            # Delay audio
-            delay = int(self.audio_offset * 1000)
+            # Cut audio
             args = [
                 FFMPEG,
                 "-y",
+                "-ss", self.audio_offset, "-t", 100000,
                 "-i", self.audio,
-                "-af", f"adelay={delay}",
                 os.path.join(self.cache, "offset.mp3"),
             ]
             run_ffmpeg(args)
@@ -104,6 +104,7 @@ class Video:
             # Mix
             args = [
                 FFMPEG,
+                "-y",
                 "-i", os.path.join(self.cache, "no_audio.mp4"),
                 "-i", os.path.join(self.cache, "offset.mp3"),
                 "-c", "copy",
@@ -123,6 +124,6 @@ def run_ffmpeg(args: Sequence[str]):
     proc.wait()
 
     if (code := proc.returncode) != 0:
-        msg = f"FFmpeg exited with code {code} when compiling {out}. " + \
+        msg = f"FFmpeg exited with code {code}. " + \
             "Command: " + " ".join(args)
         raise ValueError(msg)

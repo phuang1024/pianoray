@@ -36,7 +36,8 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     duration = int(max(x[3] for x in notes))
 
     video = Video(os.path.join(cache, "output"), settings.audio.path,
-        -settings.audio.start)
+        settings.audio.start)
+
     for frame in trange(duration):
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
         render_blocks(settings, img, notes, frame)

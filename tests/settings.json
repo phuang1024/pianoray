@@ -1,9 +1,16 @@
 {
+    "video": {
+        "resolution": [960, 540],
+        "fps": 24
+    },
     "midi": {
         "file": "examples/furelise.mid"
     },
     "audio": {
         "path": "examples/furelise.mp3",
         "start": 14.73
+    },
+    "blocks": {
+        "speed": 1
     }
 }
