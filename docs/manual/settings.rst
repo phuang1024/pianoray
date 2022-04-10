@@ -20,8 +20,8 @@ Save a JSON file of your settings, and pass to ``pianoray``.
         }
     }
 
-Available Settings
-------------------
+Available
+---------
 
 Most settings have default values. See ``src/utils.py`` for the default
 settings.
