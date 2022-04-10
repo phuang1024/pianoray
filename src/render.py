@@ -31,4 +31,4 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     os.makedirs(cache, exist_ok=True)
 
     notes = parse_midi(settings)
-    print("\n".join(notes))
+    print("\n".join(map(str, notes)))
