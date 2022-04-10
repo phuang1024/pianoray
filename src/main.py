@@ -56,8 +56,6 @@ def main():
     default = Settings(SETTINGS_DEFAULT)
     settings._merge(default)
 
-    print(list(settings))
-
     render_video(settings, args.output, args.cache)
 
     return 0
