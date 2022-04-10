@@ -33,6 +33,8 @@ settings.
 - ``composition``:
     - ``margin_start``: Seconds of video before the first note.
     - ``margin_end``: Seconds of video after the last note ends.
+- ``piano``:
+    - ``black_width_fac``: Black key width as factor of white key width.
 - ``midi``:
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.

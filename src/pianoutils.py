@@ -17,6 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+from typing import Tuple
+
+import numpy as np
+
+from .settings import Settings
+
 
 def is_white_key(key: int) -> bool:
     """
@@ -44,3 +50,20 @@ def key_pos(key: int) -> float:
             pos += white_width / 2
 
     return pos
+
+def key_coords(settings: Settings, key: int, start: float,
+        end: float) -> Tuple[float, float]:
+    """
+    Coordinates of key.
+
+    :param key: Key.
+    :param start: Starting position of keyboard.
+    :param end: Ending position of keyboard.
+    :return: ``(start_coord, end_coord)`` of key.
+    """
+    center = np.interp(key_pos(key), (0, 1), (start, end))
+    white_width = (end-start) / 88
+    black_width = white_width * settings.piano.black_width_fac
+    width = white_width if is_white_key(key) else black_width
+    half = width / 2
+    return (center-half, center+half)

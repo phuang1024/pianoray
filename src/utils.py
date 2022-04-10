@@ -32,6 +32,9 @@ SETTINGS_DEFAULT = {
         "margin_start": 2,
         "margin_end": 2,
     },
+    "piano": {
+        "black_width_fac": 0.6,
+    },
     "midi": {
         "file": None,
         "speed": 1,
