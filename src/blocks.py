@@ -1,6 +1,6 @@
 #
 #  PianoRay
-#  Piano performance visualizer.
+#  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -17,28 +17,28 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-
 import numpy as np
-from tqdm import trange
 
-from . import logger
-from .blocks import render_blocks
-from .midi import parse_midi
+from .pianoutils import key_coords, note_coords
 from .settings import Settings
-from .video import Video
 
 
-def render_video(settings: Settings, out: str, cache: str) -> None:
-    os.makedirs(cache, exist_ok=True)
+def render_blocks(settings: Settings, img: np.ndarray, notes,
+        frame: int) -> None:
+    """
+    Render blocks.
 
-    notes = parse_midi(settings)
+    :param settings: Settings.
+    :param img: Image.
+    :param notes: MIDI notes.
+    :param frame: Current frame.
+    """
+    for note, vel, start, end in notes:
+        start_y = note_coords(settings, start, frame)
+        end_y = note_coords(settings, end, frame)
+        start_x, end_x = key_coords(settings, note)
 
-    video = Video(os.path.join(cache, "output"))
-    for frame in trange(100):
-        img = np.zeros((*settings.resolution[::-1], 3), dtype=np.uint8)
-        render_blocks(settings, img, notes, frame)
-        video.write(img)
+        start_x, end_x, start_y, end_y = map(int,
+            (start_x, end_x, start_y, end_y))
 
-    logger.info("Compiling video.")
-    video.compile(out, settings.fps)
+        img[start_y:end_y, start_x:end_x, ...] = 255

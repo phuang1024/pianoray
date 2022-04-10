@@ -51,19 +51,32 @@ def key_pos(key: int) -> float:
 
     return pos
 
-def key_coords(settings: Settings, key: int, start: float,
-        end: float) -> Tuple[float, float]:
+def key_coords(settings: Settings, key: int) -> Tuple[float, float]:
     """
-    Coordinates of key.
+    Horizontal (x) coordinates of key on the screen.
 
     :param key: Key.
-    :param start: Starting position of keyboard.
-    :param end: Ending position of keyboard.
     :return: ``(start_coord, end_coord)`` of key.
     """
-    center = np.interp(key_pos(key), (0, 1), (start, end))
-    white_width = (end-start) / 88
+    center = np.interp(key_pos(key), (0, 1), (0, settings.resolution[0]))
+    white_width = settings.resolution[0] / 88
     black_width = white_width * settings.piano.black_width_fac
     width = white_width if is_white_key(key) else black_width
     half = width / 2
     return (center-half, center+half)
+
+def note_coords(settings: Settings, event_frame: float,
+        frame: float) -> float:
+    """
+    Vertical (y) coordinates of an event as it is dropping from the top
+    to the keyboard.
+
+    :param event_frame: The time of the event.
+    :param frame: Current frame.
+    :return: Y pixel position.
+    """
+    height = settings.resolution[1] / 2
+    speed = (settings.blocks.speed * height / settings.fps)
+    delta = speed * (frame-event_frame)
+    return height + delta
+

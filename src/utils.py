@@ -35,6 +35,9 @@ SETTINGS_DEFAULT = {
     "piano": {
         "black_width_fac": 0.6,
     },
+    "blocks": {
+        "speed": 1,
+    },
     "midi": {
         "file": None,
         "speed": 1,

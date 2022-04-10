@@ -35,6 +35,9 @@ settings.
     - ``margin_end``: Seconds of video after the last note ends.
 - ``piano``:
     - ``black_width_fac``: Black key width as factor of white key width.
+- ``blocks``:
+    - ``speed``: If ``X`` is the distance between the top of the screen and the
+      top of the keyboard, the blocks travel ``speed * X`` per second.
 - ``midi``:
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.
