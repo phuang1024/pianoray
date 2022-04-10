@@ -66,29 +66,26 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
     """
     width, height = settings.resolution
 
-    for py in range(0, height // 2):
-        for px in range(0, width):
-            min_dist = 100
-            for note, vel, start, end in notes:
-                start_y = note_coords(settings, start, frame)
-                end_y = note_coords(settings, end, frame)
-                if start_y < 0 or end_y > height/2:
-                    continue
+    for note, vel, start, end in notes:
+        start_y = note_coords(settings, start, frame)
+        end_y = note_coords(settings, end, frame)
+        if start_y < 0 or end_y > height/2:
+            continue
 
-                start_y = bounds(start_y, 0, height/2)
-                end_y = bounds(end_y, 0, height/2)
-                start_x, end_x = key_coords(settings, note)
+        start_y = bounds(start_y, 0, height/2)
+        end_y = bounds(end_y, 0, height/2)
+        start_x, end_x = key_coords(settings, note)
 
-                x = start_x
-                y = end_y
-                w = end_x - start_x
-                h = start_y - end_y
-                x, y, w, h = map(int, (x, y, w, h))
+        x = start_x
+        y = end_y
+        w = end_x - start_x
+        h = start_y - end_y
+        x, y, w, h = map(int, (x, y, w, h))
 
+        for py in range(bounds(x-2, 0, height-1), bounds(x+w+3, 0, height-1)):
+            for px in range(bounds(y-2, 0, width-1), bounds(y+h+3, 0, width-1)):
                 dist = dist_to_block(px, py, x, y, w, h, 5)
-                if dist < min_dist:
-                    min_dist = dist
 
-            color = np.interp(min_dist, (1, 0), (0, 255))
-            color = bounds(color, 0, 255)
-            img[y, x, :] = color
+                color = np.interp(dist, (1, 0), (0, 255))
+                color = bounds(color, 0, 255)
+                img[py, px, :] = color
