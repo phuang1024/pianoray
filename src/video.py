@@ -44,9 +44,11 @@ class Video:
         self.cache = cache
         self.frame = 0
 
-    def save(self, img: np.ndarray) -> int:
+        os.makedirs(cache, exist_ok=True)
+
+    def write(self, img: np.ndarray) -> int:
         """
-        Save a frame.
+        Write a frame.
         Converts from RGB to BGR.
 
         :param img: Frame of shape ``(height, width, 3)``
@@ -71,6 +73,7 @@ class Video:
         """
         args = list(map(str, [
             FFMPEG,
+            "-y",
             "-i", os.path.join(self.cache, "%d.jpg"),
             "-c:v", vcodec,
             "-crf", crf,

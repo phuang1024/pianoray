@@ -19,6 +19,7 @@
 
 import argparse
 import json
+import os
 import sys
 
 from . import logger
@@ -38,6 +39,8 @@ def main():
         help="Output video file.")
     parser.add_argument("-c", "--cache",
         help="Cache path (default .prcache)", default=".prcache")
+    parser.add_argument("-p", "--preview",
+        help="Open output file after rendering", action="store_true")
     args = parser.parse_args()
 
     if args.version:
@@ -56,9 +59,10 @@ def main():
     default = Settings(SETTINGS_DEFAULT)
     settings._merge(default)
 
-    print(list(settings))
-
     render_video(settings, args.output, args.cache)
+
+    if args.preview:
+        os.system(f"xdg-open {args.output}")
 
     return 0
 

@@ -22,6 +22,8 @@ import os
 import numpy as np
 from tqdm import trange
 
+from . import logger
+from .blocks import render_blocks
 from .midi import parse_midi
 from .settings import Settings
 from .video import Video
@@ -31,4 +33,12 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     os.makedirs(cache, exist_ok=True)
 
     notes = parse_midi(settings)
-    print("\n".join(map(str, notes)))
+
+    video = Video(os.path.join(cache, "output"))
+    for frame in trange(100):
+        img = np.zeros((*settings.resolution[::-1], 3), dtype=np.uint8)
+        render_blocks(settings, img, notes, frame)
+        video.write(img)
+
+    logger.info("Compiling video.")
+    video.compile(out, settings.fps)
