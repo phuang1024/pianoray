@@ -24,7 +24,7 @@ import sys
 from . import logger
 from .render import render_video
 from .settings import Settings
-from .utils import VERSION
+from .utils import SETTINGS_DEFAULT, VERSION
 
 
 def main():
@@ -53,6 +53,10 @@ def main():
 
     with open(args.settings, "r") as fp:
         settings = Settings(json.load(fp))
+    default = Settings(SETTINGS_DEFAULT)
+    settings._merge(default)
+
+    print(list(settings))
 
     render_video(settings, args.output, args.cache)
 

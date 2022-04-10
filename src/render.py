@@ -22,17 +22,13 @@ import os
 import numpy as np
 from tqdm import trange
 
-from .video import Video
+from .midi import parse_midi
 from .settings import Settings
+from .video import Video
 
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
     os.makedirs(cache, exist_ok=True)
 
-    v = Video(cache)
-    for i in trange(255):
-        img = np.empty((1080, 1920, 3), dtype=np.uint8)
-        img[...] = i
-        v.save(img)
-
-    v.compile(out, 30)
+    notes = parse_midi(settings)
+    print("\n".join(notes))

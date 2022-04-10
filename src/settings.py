@@ -35,5 +35,24 @@ class Settings:
                 obj = Settings(obj)
             self._data[key] = obj
 
+    def _merge(self, other: "Settings") -> None:
+        """
+        Merge other settings with self, keeping self if conflict.
+        """
+        for key in other:
+            obj = getattr(other, key)
+            if not hasattr(self, key):
+                self._data[key] = obj
+            else:
+                if isinstance(obj, Settings):
+                    getattr(self, key)._merge(obj)
+
+    def __iter__(self):
+        return iter(self._data)
+
     def __getattr__(self, name: str) -> Any:
-        return self._data[name]
+        if name in self._data:
+            return self._data[name]
+        else:
+            raise AttributeError(
+                f"\"Settings\" object has no attribute {name}")
