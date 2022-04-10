@@ -26,6 +26,8 @@ Available
 Most settings have default values. See ``src/utils.py`` for the default
 settings.
 
+Colors are ``[R, G, B]`` from 0 to 255.
+
 - ``fps``: Frames per second.
 - ``resolution``: Video resolution ``[width, height]``.
 - ``vcodec``: Video codec. This will be passed to FFmpeg, so please
@@ -38,6 +40,8 @@ settings.
 - ``blocks``:
     - ``speed``: If ``X`` is the distance between the top of the screen and the
       top of the keyboard, the blocks travel ``speed * X`` per second.
+    - ``color``: RGB color of the blocks.
+    - ``radius``: Block corner rounding radius.
 - ``midi``:
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.

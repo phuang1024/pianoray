@@ -65,6 +65,8 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
     :param frame: Current frame.
     """
     width, height = settings.resolution
+    color = np.array(settings.blocks.color)
+    radius = settings.blocks.radius
 
     for note, vel, start, end in notes:
         start_y = note_coords(settings, start, frame)
@@ -86,8 +88,10 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
         yrange = range(bounds(y-2, 0, height-1), bounds(y+h+3, 0, height-1))
         for px in xrange:
             for py in yrange:
-                dist = dist_to_block(px, py, x, y, w, h, 5)
+                dist = dist_to_block(px, py, x, y, w, h, radius)
 
-                color = np.interp(dist, (0, 2), (0, 255))
-                color = 255 - bounds(color, 0, 255)
-                img[py, px, :] = color
+                alpha = np.interp(dist, (0, 1.5), (1, 0))
+                alpha = bounds(alpha, 0, 1)
+                curr = img[py, px, :]
+                mix = curr * (1-alpha) + color * alpha
+                img[py, px, :] = mix
