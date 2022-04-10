@@ -1,5 +1,8 @@
 {
     "midi": {
         "file": "examples/furelise.mid"
+    },
+    "blocks": {
+        "speed": 0.5
     }
 }

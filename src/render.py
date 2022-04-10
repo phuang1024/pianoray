@@ -33,9 +33,10 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     os.makedirs(cache, exist_ok=True)
 
     notes = parse_midi(settings)
+    duration = int(max(x[3] for x in notes))
 
     video = Video(os.path.join(cache, "output"))
-    for frame in trange(100):
+    for frame in trange(duration):
         img = np.zeros((*settings.resolution[::-1], 3), dtype=np.uint8)
         render_blocks(settings, img, notes, frame)
         video.write(img)

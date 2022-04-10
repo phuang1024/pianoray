@@ -39,7 +39,7 @@ def key_pos(key: int) -> float:
 
     last_white = False  # Last key was white
     pos = 0
-    for k in range(key):
+    for k in range(key+1):
         white = is_white_key(k)
         if white:
             if last_white:
@@ -48,6 +48,7 @@ def key_pos(key: int) -> float:
                 pos += white_width / 2
         else:
             pos += white_width / 2
+        last_white = white
 
     return pos
 

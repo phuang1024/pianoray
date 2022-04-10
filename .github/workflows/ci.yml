@@ -64,7 +64,9 @@ jobs:
           make install
       - name: Test video
         run: |
-          pianoray -s ./tests/settings.json -o a.mp4
+          # Disabled, takes too long.
+          echo Disabled
+          #pianoray -s ./tests/settings.json -o a.mp4
 
   clean:
     needs: test
