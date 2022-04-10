@@ -89,8 +89,8 @@ class Video:
         ]
         run_ffmpeg(args)
 
-        # Delay audio
         if self.audio is not None:
+            # Delay audio
             delay = int(self.audio_offset * 1000)
             args = [
                 FFMPEG,
@@ -101,6 +101,7 @@ class Video:
             ]
             run_ffmpeg(args)
 
+            # Mix
             args = [
                 FFMPEG,
                 "-i", os.path.join(self.cache, "no_audio.mp4"),
@@ -112,6 +113,7 @@ class Video:
             run_ffmpeg(args)
 
         else:
+            # Copy to output.
             shutil.copy(os.path.join(self.cache, "no_audio.mp4"), out)
 
 

@@ -64,7 +64,7 @@ def render_blocks(settings: Settings, img: np.ndarray, notes,
     :param notes: MIDI notes.
     :param frame: Current frame.
     """
-    width, height = settings.resolution
+    width, height = settings.video.resolution
     color = np.array(settings.blocks.color)
     radius = settings.blocks.radius
 

@@ -35,11 +35,12 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     notes = parse_midi(settings)
     duration = int(max(x[3] for x in notes))
 
-    video = Video(os.path.join(cache, "output"))
+    video = Video(os.path.join(cache, "output"), settings.audio.path,
+        -settings.audio.start)
     for frame in trange(duration):
-        img = np.zeros((*settings.resolution[::-1], 3), dtype=np.uint8)
+        img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
         render_blocks(settings, img, notes, frame)
         video.write(img)
 
     logger.info("Compiling video.")
-    video.compile(out, settings.fps)
+    video.compile(out, settings.video.fps, settings.video.vcodec)
