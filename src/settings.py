@@ -35,6 +35,22 @@ class Settings:
                 obj = Settings(obj)
             self._data[key] = obj
 
+    def __iter__(self):
+        return iter(self._data)
+
+    def __getattr__(self, name: str) -> Any:
+        if name in self._data:
+            return self._data[name]
+        else:
+            raise AttributeError(
+                f"\"Settings\" object has no attribute {name}")
+
+    def __eq__(self, other: Any) -> bool:
+        if not isinstance(other, Settings):
+            return False
+
+        return self._data == other._data
+
     def _merge(self, other: "Settings") -> None:
         """
         Merge other settings with self, keeping self if conflict.
@@ -46,13 +62,3 @@ class Settings:
             else:
                 if isinstance(obj, Settings):
                     getattr(self, key)._merge(obj)
-
-    def __iter__(self):
-        return iter(self._data)
-
-    def __getattr__(self, name: str) -> Any:
-        if name in self._data:
-            return self._data[name]
-        else:
-            raise AttributeError(
-                f"\"Settings\" object has no attribute {name}")
