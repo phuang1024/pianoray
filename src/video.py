@@ -68,23 +68,26 @@ class Video:
         self.frame += 1
         return self.frame - 1
 
-    def compile(self, out: str, fps: int, margin_start: float,
-            vcodec="libx265", crf=24) -> None:
+    def compile(self, out: str, fps: int, num_frames: int,
+            margin_start: float, vcodec="libx265", crf=24) -> None:
         """
         Use ffmpeg to compile frames and audio to video.
 
         :param out: Output video path.
         :param fps: Frames per second.
+        :param num_frames: Total number of frames to compile.
         :param margin_start: settings.composition.margin_start
         :param vcodec: Video codec. Use libx264 if libx265 fails.
         :param crf: Constant rate factor. Higher values produce smaller
             file sizes but lower quality.
         """
         # Frames to video
+        logger.info("Compiling frames to video.")
         args = [
             FFMPEG,
             "-y",
             "-i", os.path.join(self.cache, "frames", "%d.jpg"),
+            "-vframes", num_frames,
             "-c:v", vcodec,
             "-crf", crf,
             "-r", fps,
@@ -94,6 +97,7 @@ class Video:
 
         if self.audio is not None:
             # Cut audio
+            logger.info("Processing audio.")
             args = [
                 FFMPEG,
                 "-y",
@@ -104,6 +108,7 @@ class Video:
             run_ffmpeg(args)
 
             # Mix
+            logger.info("Combining audio and video.")
             args = [
                 FFMPEG,
                 "-y",
@@ -118,6 +123,8 @@ class Video:
         else:
             # Copy to output.
             shutil.copy(os.path.join(self.cache, "no_audio.mp4"), out)
+
+        logger.info(f"Video saved to {out}")
 
 
 def run_ffmpeg(args: Sequence[str]):
