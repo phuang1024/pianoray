@@ -80,4 +80,3 @@ def note_coords(settings: Settings, event_frame: float,
     speed = (settings.blocks.speed * height / settings.video.fps)
     delta = speed * (frame-event_frame)
     return height + delta
-

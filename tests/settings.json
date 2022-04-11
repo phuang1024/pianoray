@@ -9,8 +9,5 @@
     "audio": {
         "path": "examples/furelise.mp3",
         "start": 14.73
-    },
-    "blocks": {
-        "speed": 1
     }
 }
