@@ -44,9 +44,12 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     video = Video(os.path.join(cache, "output"), settings.audio.path,
         settings.audio.start)
 
+    num_frames = 0
     for frame in trange(frame_start, frame_end):
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
         render_blocks(settings, img, notes, frame)
         video.write(img)
+        num_frames += 1
 
-    video.compile(out, settings.video.fps, m_start, settings.video.vcodec)
+    video.compile(out, settings.video.fps, num_frames,
+        m_start, settings.video.vcodec)

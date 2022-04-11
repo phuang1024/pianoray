@@ -68,13 +68,14 @@ class Video:
         self.frame += 1
         return self.frame - 1
 
-    def compile(self, out: str, fps: int, margin_start: float,
-            vcodec="libx265", crf=24) -> None:
+    def compile(self, out: str, fps: int, num_frames: int,
+            margin_start: float, vcodec="libx265", crf=24) -> None:
         """
         Use ffmpeg to compile frames and audio to video.
 
         :param out: Output video path.
         :param fps: Frames per second.
+        :param num_frames: Total number of frames to compile.
         :param margin_start: settings.composition.margin_start
         :param vcodec: Video codec. Use libx264 if libx265 fails.
         :param crf: Constant rate factor. Higher values produce smaller
@@ -86,6 +87,7 @@ class Video:
             FFMPEG,
             "-y",
             "-i", os.path.join(self.cache, "frames", "%d.jpg"),
+            "-vframes", num_frames,
             "-c:v", vcodec,
             "-crf", crf,
             "-r", fps,
