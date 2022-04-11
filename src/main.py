@@ -41,6 +41,8 @@ def main():
         help="Cache path (default .prcache)", default=".prcache")
     parser.add_argument("-p", "--preview",
         help="Open output file after rendering", action="store_true")
+    parser.add_argument("-y", "--yes",
+        help="Don't prompt overwrite.", action="store_true")
     args = parser.parse_args()
 
     if args.version:
@@ -53,6 +55,11 @@ def main():
     if args.output is None:
         logger.error("Please provide an argument for output.")
         return 1
+
+    if os.path.isfile(args.output) and not args.yes:
+        print(f"Output file {args.output} already exists.")
+        if input("Overwrite file? [y/N] ").lower().strip() != "y":
+            return 3
 
     with open(args.settings, "r") as fp:
         settings = Settings(json.load(fp))
