@@ -49,5 +49,4 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
         render_blocks(settings, img, notes, frame)
         video.write(img)
 
-    logger.info("Compiling video.")
     video.compile(out, settings.video.fps, m_start, settings.video.vcodec)

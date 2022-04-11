@@ -81,6 +81,7 @@ class Video:
             file sizes but lower quality.
         """
         # Frames to video
+        logger.info("Compiling frames to video.")
         args = [
             FFMPEG,
             "-y",
@@ -94,6 +95,7 @@ class Video:
 
         if self.audio is not None:
             # Cut audio
+            logger.info("Processing audio.")
             args = [
                 FFMPEG,
                 "-y",
@@ -104,6 +106,7 @@ class Video:
             run_ffmpeg(args)
 
             # Mix
+            logger.info("Combining audio and video.")
             args = [
                 FFMPEG,
                 "-y",
@@ -118,6 +121,8 @@ class Video:
         else:
             # Copy to output.
             shutil.copy(os.path.join(self.cache, "no_audio.mp4"), out)
+
+        logger.info(f"Video saved to {out}")
 
 
 def run_ffmpeg(args: Sequence[str]):
