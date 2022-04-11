@@ -62,3 +62,13 @@ class Settings:
             else:
                 if isinstance(obj, Settings):
                     getattr(self, key)._merge(obj)
+
+    def _json(self) -> Mapping[str, Any]:
+        ret = {}
+        for key in self._data:
+            obj = self._data[key]
+            if isinstance(obj, Settings):
+                obj = obj._json()
+            ret[key] = obj
+
+        return ret

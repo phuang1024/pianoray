@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import json
 import os
 
 import numpy as np
@@ -31,6 +32,8 @@ from .video import Video
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
     os.makedirs(cache, exist_ok=True)
+    with open(os.path.join(cache, "settings.json"), "w") as fp:
+        json.dump(settings._json(), fp)
 
     notes = parse_midi(settings)
     duration = int(max(x[3] for x in notes))
@@ -46,6 +49,9 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
 
     num_frames = 0
     for frame in trange(frame_start, frame_end):
+        with open(os.path.join(cache, "currently_rendering.txt"), "w") as fp:
+            fp.write(str(frame))
+
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
         render_blocks(settings, img, notes, frame)
         video.write(img)
