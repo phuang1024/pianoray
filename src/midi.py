@@ -44,7 +44,7 @@ def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:
     starts = [0] * 255
     for msg in midi:
         if started:  # Only increment after first note
-            t += msg.time * settings.fps / settings.midi.speed
+            t += msg.time * settings.video.fps / settings.midi.speed
 
         if msg.type.startswith("note_"):
             started = True
