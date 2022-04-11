@@ -44,7 +44,7 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
                 real_start = int(fp.read())
             print("Last render has same settings as this render, "
                   f"and stopped at frame {real_start}.")
-            if input("Continue from last render? [Y/n] ").lower().strip() == "n":
+            if input("Continue last render? [Y/n] ").lower().strip() == "n":
                 real_start = None
 
     os.makedirs(cache, exist_ok=True)
