@@ -19,9 +19,11 @@
 
 import sys
 import os
+import time
 import shutil
 import json
 import termcolor
+from collections import deque
 from subprocess import Popen, PIPE
 from typing import Any, Sequence, Union
 from . import logger
@@ -39,11 +41,13 @@ class KernelException(Exception):
 
 class Kernel:
     """
-    Represents one kernel.
-    Every kernel is a directory (folder) of files.
-    Detects if it is Python, Java, Executable, etc.
-    The main entry point is ``main.*``, case independent.
-    If there is more than one such file, an arbitrary one will be chosen.
+    This class handles the file aspect of kernels. Use KernelWrapper to
+    communicate JSON. Pipeline classes automatically create KernelWrapper
+    instances.
+
+    Every kernel is a directory (folder) of files. Detects if it is Python, Java,
+    Executable, etc. The main entry point is ``main.*``, case independent. If
+    there is more than one such entry point, an arbitrary one will be chosen.
     """
 
     name: str
@@ -106,26 +110,25 @@ class Kernel:
             pre_args = [self.exe_path]
 
         pre_args.extend(args)
-        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE, stderr=PIPE,
+        proc = Popen(pre_args, stdin=PIPE, stdout=PIPE,# stderr=PIPE,
             cwd=self.dir_path)
         return proc
 
-    def run(self, stdin: bytes, args=()) -> bytes:
-        """
-        Run process with bytes input and output.
-        """
-        proc = self.proc(args)
 
-        proc.stdin.write(stdin)
-        proc.stdin.flush()
-        proc.stdin.close()
-        proc.wait()
-        if proc.returncode != 0:
-            raise KernelException(f"{self} exited with code "
-                "{proc.returncode}")
+class KernelWrapper:
+    """
+    Handles JSON communication and the process.
 
-        data = readall(proc.stdout)
-        return data
+    Keeps second thread running in the background, calling the kernel
+    when input data arrives.
+
+    Use ``send(obj)`` and ``recv()`` to communicate.
+    """
+
+
+
+    def __init__(self, kernel: Kernel) -> None:
+        self.kernel = kernel
 
 
 class KernelRun:
@@ -140,8 +143,7 @@ class KernelRun:
     _output: Any  # Output object.
     _read_output: bool  # Whether output was read.
 
-    def __init__(self, kernel: Kernel, stdin: Any,
-            args: Sequence[str] = ()) -> None:
+    def __init__(self, kernel: Kernel, args: Sequence[str] = ()) -> None:
         """
         Initialize run.
 
@@ -149,16 +151,9 @@ class KernelRun:
         :param stdin: Input JSON object.
         :param args: CLI arguments.
         """
-        proc = kernel.proc(args)
-        proc.stdin.write(json.dumps(stdin).encode())
-        proc.stdin.write(b"\n")
-        proc.stdin.flush()
-        proc.stdin.close()
-
         self.kernel = kernel
-        self.proc = proc
-        self._output = None
-        self._read_output = False
+        self.proc = kernel.proc(args)
+        self.args = args
 
     def __repr__(self) -> str:
         return f"<class pianoray.KernelRun(name={self.kernel.name})>"
@@ -170,65 +165,40 @@ class KernelRun:
         """
         return self.proc.poll() is not None
 
-    def wait(self):
+    def send(self, obj: Any) -> None:
         """
-        Wait for the process to finish.
+        Dump obj json into process stdin.
+        Restarts process if dead.
         """
-        self.proc.wait()
+        if not self.alive:
+            self._restart_proc()
 
-    @property
-    def output(self):
+        self.proc.stdin.write(json.dumps(obj).encode())
+        self.proc.stdin.write(b"\n")
+        self.proc.stdin.flush()
+        self.proc.stdin.close()
+
+    def recv(self, restart=True) -> Any:
         """
-        Get process output as JSON object.
-        If process is alive, raises KernelException.
+        Read next JSON object from process stdout.
+        May hold/wait for the process.
+
+        :param restart: Whether to restart the kernel. Please read the
+            kernel's documentation for info about this.
         """
-        if self.proc.poll() is None:
-            raise KernelException(f"{self} cannot read output while process "
-                "is still running.")
-        if (ret := self.proc.returncode) != 0:
+        if (ret := self.proc.returncode):  # != 0 or None
+            err = readall(self.proc.stderr).decode()
             logger.error(f"{self} exit code is {ret}.")
-
-            choice = input("Show stderr text of kernel? [Y/n] ").strip().lower()
-            if choice != "n":
-                err = readall(self.proc.stderr).decode()
-                print(termcolor.colored(err, "white", attrs={"dark"}), end="")
-
+            print(termcolor.colored(err, "white", attrs={"dark"}), end="")
             raise KernelException(f"{self} exit code is {ret}.")
 
-        if not self._read_output:
-            self._output = json.loads(readall(self.proc.stdout))
-            self._read_output = True
-        return self._output
+        output = json.loads(self.proc.stdout.readline())
 
+        if restart:
+            self._restart_proc()
 
-class KernelWrapper:
-    """
-    This is used by the instance of ``pianoray.BasePipeline``.
-    Makes creating a pipeline easier.
-    """
+        return output
 
-    kernel: Kernel
-
-    def __init__(self, kernel: Kernel) -> None:
-        self.kernel = kernel
-
-    def __repr__(self) -> str:
-        return f"<class pianoray.KernelWrapper(name={self.kernel.name})>"
-
-    def __call__(self, obj: Any, async_: bool = False,
-            args: Sequence[str] = ()) -> Union[Any, KernelRun]:
-        """
-        Call with json input and output.
-
-        :param obj: Input JSON object.
-        :param async_: Whether to run asynchronously.
-            if True, return KernelRun.
-            else, return JSON output.
-        :param args: CLI arguments.
-        """
-        run = KernelRun(self.kernel, obj, args)
-        if async_:
-            return run
-        else:
-            run.wait()
-            return run.output
+    def _restart_proc(self):
+        self.proc.kill()
+        self.proc = self.kernel.proc(self.args)
