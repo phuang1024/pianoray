@@ -20,6 +20,25 @@
 import ctypes
 import os
 from subprocess import Popen
+from typing import Sequence
+
+import numpy as np
+from numpy.ctypeslib import ndpointer
+
+
+class Types:
+    _arr_flags = "aligned, c_contiguous"
+
+    char = ctypes.c_int8
+    uchar = ctypes.c_uint8
+    int = ctypes.c_int32
+    uint = ctypes.c_uint32
+    float = ctypes.c_float
+    double = ctypes.c_double
+
+    arr_uchar = ndpointer(dtype=uchar, ndim=1, flags=_arr_flags)
+
+    img = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
 
 
 def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
