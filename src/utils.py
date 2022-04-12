@@ -28,9 +28,15 @@ GCC = shutil.which("g++")
 assert GCC is not None
 
 SETTINGS_DEFAULT = {
-    "fps": 30,
-    "resolution": (1920, 1080),
-    "vcodec": "libx265",
+    "video": {
+        "fps": 30,
+        "resolution": (1920, 1080),
+        "vcodec": "libx265",
+    },
+    "audio": {
+        "path": None,
+        "start": 0,
+    },
     "composition": {
         "margin_start": 2,
         "margin_end": 2,
@@ -39,7 +45,7 @@ SETTINGS_DEFAULT = {
         "black_width_fac": 0.6,
     },
     "blocks": {
-        "speed": 0.8,
+        "speed": 0.5,
         "color": [185, 200, 255],
         "radius": 5,
     },
