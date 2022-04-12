@@ -23,4 +23,5 @@ PianoRay
    :hidden:
    :caption: Developers
 
+   devs/setup.rst
    devs/info.rst
