@@ -16,6 +16,7 @@ PianoRay
    :hidden:
    :caption: Manual
 
+   manual/cli.rst
    manual/settings.rst
 
 .. toctree::
