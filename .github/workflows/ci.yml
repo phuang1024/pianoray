@@ -67,7 +67,7 @@ jobs:
           pianoray -y -s ./tests/short.json -o out.mp4
 
   clean:
-    needs: docs test
+    needs: [docs, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
