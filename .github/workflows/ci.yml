@@ -50,9 +50,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
       - uses: FedericoCarboni/setup-ffmpeg@v1
         id: setup-ffmpeg
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           name: build-files
@@ -67,7 +67,7 @@ jobs:
           pianoray -y -s ./tests/short.json -o out.mp4
 
   clean:
-    needs: test
+    needs: docs test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
