@@ -67,8 +67,9 @@ extern "C" void render_blocks(
     int num_notes, int* note_starts, int* note_ends)
 {
     Image img(img_data, width, height, 3);
-    for (int x = 0; x < width; x++)
-        img.set(x, 0, 0, 255);
+
+    for (int note = 0; note < num_notes; note++) {
+    }
 }
 
 
