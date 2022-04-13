@@ -33,9 +33,11 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``resolution``: Video resolution ``[width, height]``.
     - ``vcodec``: Video codec. This will be passed to FFmpeg, so please
       provide a value that FFmpeg recognizes, e.g. ``libx264``.
+    - ``duration``: Duration, in seconds from the time you press the first note
+      to the time you press the last note.
 - ``audio``: Settings about audio.
     - ``path``: Path to audio file.
-    - ``start``: Time, in seconds, you play the first note in the audio.
+    - ``start``: Timestamp, in seconds, you play the first note in the audio.
 - ``composition``: Settings about the structure of the video.
     - ``margin_start``: Seconds of video before the first note.
     - ``margin_end``: Seconds of video after the last note ends.

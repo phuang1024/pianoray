@@ -32,6 +32,7 @@ SETTINGS_DEFAULT = {
         "fps": 30,
         "resolution": (1920, 1080),
         "vcodec": "libx265",
+        "duration": None,
     },
     "audio": {
         "path": None,
