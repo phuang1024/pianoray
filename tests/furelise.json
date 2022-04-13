@@ -4,10 +4,10 @@
         "fps": 24
     },
     "midi": {
-        "file": "examples/furelise.mid"
+        "file": "examples/furelise/midi.mid"
     },
     "audio": {
-        "path": "examples/furelise.mp3",
+        "path": "examples/furelise/audio.mp3",
         "start": 14.73
     }
 }
