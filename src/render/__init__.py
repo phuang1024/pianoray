@@ -17,41 +17,5 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import shutil
-
-VERSION = "0.0.1"
-
-FFMPEG = shutil.which("ffmpeg")
-assert FFMPEG is not None
-
-GCC = shutil.which("g++")
-assert GCC is not None
-
-SETTINGS_DEFAULT = {
-    "video": {
-        "fps": 30,
-        "resolution": (1920, 1080),
-        "vcodec": "libx265",
-        "duration": None,
-    },
-    "audio": {
-        "path": None,
-        "start": 0,
-    },
-    "composition": {
-        "margin_start": 2,
-        "margin_end": 2,
-    },
-    "piano": {
-        "black_width_fac": 0.6,
-    },
-    "blocks": {
-        "speed": 0.5,
-        "color": [185, 200, 255],
-        "radius": 5,
-    },
-    "midi": {
-        "file": None,
-        "speed": 1,
-    },
-}
+from .render import render_video
+from .video import Video

@@ -23,10 +23,10 @@ import os
 import numpy as np
 from tqdm import trange
 
-from . import logger
-from .blocks import render_blocks
-from .midi import parse_midi
-from .settings import Settings
+from .. import logger
+from ..effects import render_blocks
+from ..effects import parse_midi
+from ..settings import Settings
 from .video import Video
 
 

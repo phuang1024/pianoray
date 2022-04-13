@@ -19,4 +19,6 @@
 
 __version__ = "0.0.1"
 
+from . import effects
+from . import render
 from . import utils

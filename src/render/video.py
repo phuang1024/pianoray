@@ -25,8 +25,8 @@ from typing import Sequence
 import cv2
 import numpy as np
 
-from . import logger
-from .utils import FFMPEG
+from .. import logger
+from ..utils import FFMPEG
 
 
 class Video:
