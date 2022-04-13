@@ -29,7 +29,7 @@ from .utils import GCC
 
 PARENT = os.path.dirname(os.path.abspath(__file__))
 
-CPP_UTILS = os.path.join(PARENT, "cpp_utils")
+CPP_UTILS = os.path.join(PARENT, "cutils")
 CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
     for f in os.listdir(CPP_UTILS) if f.endswith(".cpp")]
 

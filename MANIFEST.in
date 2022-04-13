@@ -1,4 +1,4 @@
-include  pianoray/cpp_utils/*.cpp
-include  pianoray/cpp_utils/*.hpp
+include  pianoray/cutils/*.cpp
+include  pianoray/cutils/*.hpp
 
 include  pianoray/effects/blocks/*.cpp
