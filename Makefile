@@ -33,7 +33,7 @@ wheel:
 	mkdir -p ./build
 	rm -rf ./build/pianoray
 	cp -r ./src ./build/pianoray
-	cp ./setup.py ./build
+	cp ./setup.py ./MANIFEST.in ./build
 	cd ./build; \
 	$(PYTHON) setup.py bdist_wheel sdist
 

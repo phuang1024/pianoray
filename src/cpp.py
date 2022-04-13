@@ -25,6 +25,12 @@ from typing import Sequence
 import numpy as np
 from numpy.ctypeslib import ndpointer
 
+from .utils import PARENT
+
+CPP_UTILS = os.path.join(PARENT, "cpp_utils")
+CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
+    for f in os.listdir(CPP_UTILS) if f.endswith(".cpp")]
+
 
 class Types:
     _arr_flags = "aligned, c_contiguous"
@@ -51,23 +57,25 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     :return: C library.
     """
     cache = os.path.join(cache, name)
-    os.makedirs(self.cache, exist_ok=True)
+    os.makedirs(cache, exist_ok=True)
+
+    files.extend(CPP_UTILS_FILES)
 
     obj_files = []
     for f in files:
         name = os.path.basename(f)
         obj_name = os.path.splitext(name)[0] + ".o"
-        obj_path = os.path.join(self.cache, obj_name)
+        obj_path = os.path.join(cache, obj_name)
         obj_files.append(obj_path)
         _compile(f, obj_path)
 
-    lib_path = os.path.join(self.cache, f"lib{name}.so")
+    lib_path = os.path.join(cache, f"lib{name}.so")
     _link(obj_files, lib_path)
 
     return ctypes.CDLL(lib_path)
 
 def _compile(cpp, obj):
-    args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj]
+    args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj, "-I", CPP_UTILS]
     Popen(args).wait()
 
 def _link(obj_files, lib_path):
