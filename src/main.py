@@ -23,32 +23,14 @@ import os
 import sys
 
 from . import logger
-from .render import render_video
 from .settings import Settings
 from .utils import SETTINGS_DEFAULT, VERSION
 
+from .render import render_video
+from .view import view_video
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Piano performance visualizer.")
-    parser.add_argument("-V", "--version",
-        help="Show version info.", action="store_true")
-    parser.add_argument("-s", "--settings",
-        help="Path to settings JSON file.")
-    parser.add_argument("-o", "--output",
-        help="Output video file.")
-    parser.add_argument("-c", "--cache",
-        help="Cache path (default .prcache)", default=".prcache")
-    parser.add_argument("-p", "--preview",
-        help="Open output file after rendering", action="store_true")
-    parser.add_argument("-y", "--yes",
-        help="Don't prompt overwrite.", action="store_true")
-    args = parser.parse_args()
 
-    if args.version:
-        print(f"Pianoray v{VERSION}")
-        return 0
-
+def render(args):
     if args.settings is None:
         logger.error("Please provide an argument for settings.")
         return 1
@@ -71,7 +53,44 @@ def main():
     if args.preview:
         os.system(f"xdg-open {args.output}")
 
-    return 0
+
+def view(args):
+    if len(args.options) == 0:
+        logger.error("Please provide the video file to view.")
+        return 1
+
+    view_video(args.options[0])
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Piano performance visualizer.")
+    parser.add_argument("-V", "--version",
+        help="Show version info.", action="store_true")
+    parser.add_argument("-s", "--settings",
+        help="Path to settings JSON file.")
+    parser.add_argument("-o", "--output",
+        help="Output video file.")
+    parser.add_argument("-c", "--cache",
+        help="Cache path (default .prcache)", default=".prcache")
+    parser.add_argument("-p", "--preview",
+        help="Open output file after rendering", action="store_true")
+    parser.add_argument("-y", "--yes",
+        help="Don't prompt overwrite.", action="store_true")
+    parser.add_argument("mode", choices={"render", "view"}, nargs="?",
+        help="Mode to run.")
+    parser.add_argument("options", nargs="*",
+        help="Any other positional arguments.")
+    args = parser.parse_args()
+
+    if args.version:
+        print(f"Pianoray v{VERSION}")
+        return 0
+
+    if args.mode is None or args.mode == "render":
+        return render(args)
+    elif args.mode == "view":
+        return view(args)
 
 
 if __name__ == "__main__":
