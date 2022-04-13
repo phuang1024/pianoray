@@ -17,17 +17,42 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import ctypes
 import json
 import os
+from typing import Mapping
 
 import numpy as np
 from tqdm import trange
 
 from .. import logger
+from ..cpp import build_lib, Types
 from ..effects import render_blocks
 from ..effects import parse_midi
 from ..settings import Settings
 from .video import Video
+
+
+def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
+    """
+    Load libraries.
+    """
+    cache = os.path.join(cache, "c_libs")
+    os.makedirs(cache, exist_ok=True)
+
+    blocks = build_lib(
+        ["effects/blocks/blocks.cpp"],
+        cache,
+        "blocks",
+    )
+    blocks.render_blocks.argtypes = [
+        Types.img, Types.int, Types.int,
+        Types.int, Types.arr_int, Types.arr_int,
+    ]
+
+    return {
+        "blocks": blocks,
+    }
 
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
@@ -51,9 +76,10 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     with open(cache_settings, "w") as fp:
         json.dump(settings._json(), fp)
 
+    libs = load_libs(cache)
     video = Video(os.path.join(cache, "output"), settings.audio.path,
         settings.audio.start)
-    num_frames = render_frames(settings, video, cache, real_start)
+    num_frames = render_frames(settings, libs, video, cache, real_start)
     video.compile(out, settings.video.fps, num_frames,
         settings.composition.margin_start, settings.video.vcodec)
 
@@ -61,7 +87,7 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
         os.remove(cache_curr)
 
 
-def render_frames(settings, video, cache, real_start=None) -> int:
+def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
     Render frames.
 
@@ -87,7 +113,7 @@ def render_frames(settings, video, cache, real_start=None) -> int:
             continue
 
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
-        render_blocks(settings, img, notes, frame)
+        render_blocks(libs["blocks"], settings, img, notes, frame)
         video.write(img)
 
     return num_frames

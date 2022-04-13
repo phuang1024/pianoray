@@ -23,8 +23,52 @@
 namespace Pianoray {
 
 
-extern "C" int asdf(int x) {
-    return add_one(x);
+/**
+ * Distance to a block.
+ *
+ * @param px, py  Point coordinates.
+ * @param x, y, w, h  Block dimensions.
+ * @param r  Block corner radius.
+ */
+double dist_to_block(double px, double py, double x, double y,
+    double w, double h, double radius)
+{
+    // Mirror across block center to simply calcs.
+    double half_x = x + w/2;
+    double half_y = y + h/2;
+    if (px > half_x)
+        px -= 2 * (px-half_x);
+    if (py > half_y)
+        py -= 2 * (py-half_y);
+
+    // Center of rounding.
+    double cx = x + r, cy = y + r;
+
+    if (px < cx && py < cy)
+        return hypot(cx-px, cy-py) - r;
+    else if (px < x && py >= cy)
+        return x - px;
+    else if (px >= cx && py < y)
+        return y - py;
+    else
+        return 0;
+}
+
+
+/**
+ * Render blocks.
+ *
+ * @param num_notes  Number of MIDI notes passed in.
+ * @param note_starts  Start frame of each note.
+ * @param note_ends  End frame of each note.
+ */
+extern "C" void render_blocks(
+    UCH* img_data, int width, int height,
+    int num_notes, int* note_starts, int* note_ends)
+{
+    Image img(img_data, width, height, 3);
+    for (int x = 0; x < width; x++)
+        img.set(x, 0, 0, 255);
 }
 
 

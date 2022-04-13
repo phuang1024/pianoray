@@ -70,4 +70,9 @@ public:
 };
 
 
+double hypot(double x, double y) {
+    return pow(x*x + y*y, 0.5);
+}
+
+
 }  // namespace Pianoray

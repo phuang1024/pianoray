@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import ctypes
 import os
 from math import hypot
 
@@ -28,84 +29,14 @@ from ..utils import bounds, key_coords, note_coords
 
 PARENT = os.path.dirname(os.path.abspath(__file__))
 
-LIB = build_lib(
-    [os.path.join(PARENT, "blocks.cpp")],
-    "/tmp",
-    "blocks",
-)
 
-LIB.asdf.argtypes = [Types.int]
-LIB.asdf.restype = Types.int
-
-print(LIB.asdf(1))
-
-
-def dist_to_block(px, py, x, y, w, h, r) -> float:
+def render_blocks(lib: ctypes.CDLL, settings: Settings,
+        img: np.ndarray, notes, frame: int):
     """
-    Distance to a block.
+    Render the blocks.
 
-    :param px, py: Point coordinates.
-    :param x, y, w, h: Coordinates of block.
-    :param r: Radius of block corners.
-    """
-    half_x = x + w/2
-    half_y = y + h/2
-    if px > half_x:
-        px -= 2 * (px-half_x)
-    if py > half_y:
-        py -= 2 * (py-half_y)
-
-    cx = x + r
-    cy = y + r
-
-    if px < cx and py < cy:
-        return hypot(cx-px, cy-py) - r
-    elif px < x and py >= cy:
-        return x - px
-    elif px >= cx and py < y:
-        return y - py
-    else:
-        return 0
-
-
-def render_blocks(settings: Settings, img: np.ndarray, notes,
-        frame: int) -> None:
-    """
-    Render blocks.
-
-    :param settings: Settings.
-    :param img: Image.
+    :param lib: C library for blocks.
     :param notes: MIDI notes.
-    :param frame: Current frame.
     """
-    width, height = settings.video.resolution
-    color = np.array(settings.blocks.color)
-    radius = settings.blocks.radius
-
-    for note, vel, start, end in notes:
-        start_y = note_coords(settings, start, frame)
-        end_y = note_coords(settings, end, frame)
-        if start_y < 0 or end_y > height/2:
-            continue
-
-        start_y = bounds(start_y, 0, height/2)
-        end_y = bounds(end_y, 0, height/2)
-        start_x, end_x = key_coords(settings, note)
-
-        x = start_x
-        y = end_y
-        w = end_x - start_x
-        h = start_y - end_y
-        x, y, w, h = map(int, (x, y, w, h))
-
-        xrange = range(bounds(x-2, 0, width-1), bounds(x+w+3, 0, width-1))
-        yrange = range(bounds(y-2, 0, height-1), bounds(y+h+3, 0, height-1))
-        for px in xrange:
-            for py in yrange:
-                dist = dist_to_block(px, py, x, y, w, h, radius)
-
-                alpha = np.interp(dist, (0, 1.5), (1, 0))
-                alpha = bounds(alpha, 0, 1)
-                curr = img[py, px, :]
-                mix = curr * (1-alpha) + color * alpha
-                img[py, px, :] = mix
+    lib.render_blocks(img, img.shape[1], img.shape[0],
+            0, np.array([1], dtype=np.int32), np.array([1], dtype=np.int32))

@@ -45,6 +45,7 @@ class Types:
     double = ctypes.c_double
 
     arr_uchar = ndpointer(dtype=uchar, ndim=1, flags=_arr_flags)
+    arr_int = ndpointer(dtype=int, ndim=1, flags=_arr_flags)
 
     img = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
 
@@ -53,7 +54,7 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     """
     Initialize the lib.
 
-    :param files: C files.
+    :param files: C files relative to THIS file.
     :param cache: Cache directory.
     :param name: Name of the library.
     :return: C library.
@@ -61,6 +62,7 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     cache = os.path.join(cache, name)
     os.makedirs(cache, exist_ok=True)
 
+    files = [os.path.join(PARENT, f) for f in files]
     files.extend(CPP_UTILS_FILES)
 
     obj_files = []
