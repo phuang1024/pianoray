@@ -25,7 +25,9 @@ from typing import Sequence
 import numpy as np
 from numpy.ctypeslib import ndpointer
 
-from .utils import PARENT
+from .utils import GCC
+
+PARENT = os.path.dirname(os.path.abspath(__file__))
 
 CPP_UTILS = os.path.join(PARENT, "cpp_utils")
 CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
@@ -63,8 +65,8 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
 
     obj_files = []
     for f in files:
-        name = os.path.basename(f)
-        obj_name = os.path.splitext(name)[0] + ".o"
+        fname = os.path.basename(f)
+        obj_name = os.path.splitext(fname)[0] + ".o"
         obj_path = os.path.join(cache, obj_name)
         obj_files.append(obj_path)
         _compile(f, obj_path)
@@ -76,8 +78,12 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
 
 def _compile(cpp, obj):
     args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj, "-I", CPP_UTILS]
-    Popen(args).wait()
+    p = Popen(args)
+    p.wait()
+    assert p.returncode == 0
 
 def _link(obj_files, lib_path):
     args = [GCC, "-shared", "-o", lib_path, *obj_files]
-    Popen(args).wait()
+    p = Popen(args)
+    p.wait()
+    assert p.returncode == 0

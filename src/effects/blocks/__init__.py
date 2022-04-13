@@ -17,12 +17,27 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 from math import hypot
 
 import numpy as np
 
-from ..settings import Settings
-from .utils import bounds, key_coords, note_coords
+from ...cpp import build_lib, Types
+from ...settings import Settings
+from ..utils import bounds, key_coords, note_coords
+
+PARENT = os.path.dirname(os.path.abspath(__file__))
+
+LIB = build_lib(
+    [os.path.join(PARENT, "blocks.cpp")],
+    "/tmp",
+    "blocks",
+)
+
+LIB.asdf.argtypes = [Types.int]
+LIB.asdf.restype = Types.int
+
+print(LIB.asdf(1))
 
 
 def dist_to_block(px, py, x, y, w, h, r) -> float:
