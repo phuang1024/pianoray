@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Style
         run: |
-          python ./tests/style.py
+          python ./scripts/style.py
 
   build:
     runs-on: ubuntu-latest
@@ -64,9 +64,7 @@ jobs:
           make install
       - name: Test video
         run: |
-          # Disabled, takes too long.
-          echo Disabled
-          #pianoray -s ./tests/settings.json -o a.mp4
+          pianoray -y -s ./tests/short.json -o out.mp4
 
   clean:
     needs: test

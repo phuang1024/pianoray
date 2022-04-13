@@ -21,7 +21,14 @@ from typing import Tuple
 
 import numpy as np
 
-from .settings import Settings
+from ..settings import Settings
+
+
+def bounds(v, vmin, vmax):
+    """
+    Bound v between vmin and vmax.
+    """
+    return min(max(v, vmin), vmax)
 
 
 def is_white_key(key: int) -> bool:
@@ -65,6 +72,7 @@ def key_coords(settings: Settings, key: int) -> Tuple[float, float]:
     width = white_width if is_white_key(key) else black_width
     half = width / 2
     return (center-half, center+half)
+
 
 def note_coords(settings: Settings, event_frame: float,
         frame: float) -> float:

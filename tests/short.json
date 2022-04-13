@@ -1,0 +1,13 @@
+{
+    "video": {
+        "resolution": [640, 360],
+        "fps": 24
+    },
+    "midi": {
+        "file": "examples/short/midi.mid"
+    },
+    "audio": {
+        "path": "examples/short/audio.mp3",
+        "start": 2.4
+    }
+}

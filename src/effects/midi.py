@@ -22,7 +22,7 @@ from typing import Sequence, Tuple
 
 import mido
 
-from .settings import Settings
+from ..settings import Settings
 
 
 def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:

@@ -21,9 +21,8 @@ from math import hypot
 
 import numpy as np
 
-from .pianoutils import key_coords, note_coords
-from .settings import Settings
-from .utils import bounds
+from ..settings import Settings
+from .utils import bounds, key_coords, note_coords
 
 
 def dist_to_block(px, py, x, y, w, h, r) -> float:
