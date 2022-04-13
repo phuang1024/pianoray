@@ -36,6 +36,9 @@ def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:
     print(path)
     print(os.path.abspath(path))
     print(os.path.isfile(path))
+    print(os.listdir("."))
+    print(os.listdir("examples"))
+    print(os.listdir("examples/short"))
     if path is None or not os.path.isfile(path):
         raise ValueError("Setting midi.file invalid.")
 
