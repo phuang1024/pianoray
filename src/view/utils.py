@@ -19,6 +19,7 @@
 
 import os
 import random
+from threading import Thread
 from typing import Tuple
 
 import cv2
@@ -28,26 +29,58 @@ from tqdm import trange
 TMP = "/tmp"
 
 
-def extract_frames(path: str) -> Tuple[int, str]:
+class Video:
     """
-    Save frames to tmp directory.
-
-    :return: Number of frames and directory they are stored in.
-        Frames files are ``%d.jpg``, starting from frame 0.
+    Handles extracting and managing frames.
+    Saves to tmp directory and extracts in the background.
     """
-    video = cv2.VideoCapture(path)
-    frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    rand = str(random.randint(0, 10000000))
-    tmpdir = os.path.join(TMP, f"pianoray_viewer_{rand}")
-    os.makedirs(tmpdir, exist_ok=True)
+    run: bool
+    tmpdir: str
+    num_frames: int
+    extracted: int
 
-    for frame in trange(frames):
-        ret, img = video.read()
-        if not ret:
-            break
+    def __init__(self, path: str):
+        """
+        :param path: Path to video.
+        """
+        self.run = True
 
-        path = os.path.join(tmpdir, f"{frame}.jpg")
-        cv2.imwrite(path, img)
+        rand = str(random.randint(0, 10000000))
+        self.tmpdir = os.path.join(TMP, f"pianoray_viewer_{rand}")
+        os.makedirs(self.tmpdir, exist_ok=True)
 
-    return (frames, tmpdir)
+        self._video = cv2.VideoCapture(path)
+        self.num_frames = int(self._video.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        Thread(target=self.extract).start()
+
+    def get(self, frame: int) -> np.ndarray:
+        """
+        Get the frame image.
+
+        :return: np array if successful, None else.
+        """
+        if frame > self.extracted:
+            return None
+
+        path = os.path.join(self.tmpdir, f"{frame}.jpg")
+        return cv2.imread(path)
+
+    def extract(self):
+        """
+        Extract all the frames.
+        Run this in a different thread.
+        Set self.run to False to stop.
+        """
+        for frame in range(self.num_frames):
+            if not self.run:
+                break
+            ret, img = self._video.read()
+            if not ret:
+                break
+
+            path = os.path.join(self.tmpdir, f"{frame}.jpg")
+            cv2.imwrite(path, img)
+
+            self.extracted = frame

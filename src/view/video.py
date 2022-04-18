@@ -21,16 +21,16 @@ import time
 
 import pygame
 
-from .utils import extract_frames
+from .utils import Video
 
 pygame.init()
 
 
 def view_video(path: str) -> None:
-    num_frames, tmpdir = extract_frames(path)
+    video = Video(path)
 
     resized = False  # Redraw if resized
-    display = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+    display = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
     pygame.display.set_caption("PianoRay Viewer")
 
     run = True
@@ -49,3 +49,4 @@ def view_video(path: str) -> None:
         display.fill((0, 0, 0))
 
     pygame.quit()
+    video.run = False
