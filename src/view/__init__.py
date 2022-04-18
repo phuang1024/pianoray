@@ -17,4 +17,4 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .video import view_video
+from .viewer import view_video

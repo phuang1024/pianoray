@@ -17,39 +17,68 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import time
+import os
+import random
+from threading import Thread
 
-import pygame
+import cv2
+import numpy as np
 
-from .. import logger
-from .utils import Video
-
-pygame.init()
+from .utils import TMP
 
 
-def view_video(path: str) -> None:
-    video = Video(path)
-    logger.info(f"Extracting frames to {video.tmpdir}")
-    logger.warn("This feature is not complete yet.")
+class Video:
+    """
+    Handles extracting and managing frames.
+    Saves to tmp directory and extracts in the background.
+    """
 
-    resized = False  # Redraw if resized
-    display = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
-    pygame.display.set_caption("PianoRay Viewer")
+    run: bool
+    tmpdir: str
+    num_frames: int
+    extracted: int
 
-    run = True
-    while run:
-        time.sleep(1/30)
-        pygame.display.update()
-        events = pygame.event.get()
+    def __init__(self, path: str):
+        """
+        :param path: Path to video.
+        """
+        self.run = True
 
-        for event in events:
-            if event.type == pygame.QUIT:
-                run = False
+        rand = str(random.randint(0, 10000000))
+        self.tmpdir = os.path.join(TMP, f"pianoray_viewer_{rand}")
+        os.makedirs(self.tmpdir, exist_ok=True)
 
-            elif event.type == pygame.VIDEORESIZE:
-                resized = True
+        self._video = cv2.VideoCapture(path)
+        self.num_frames = int(self._video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        display.fill((0, 0, 0))
+        Thread(target=self.extract).start()
 
-    pygame.quit()
-    video.run = False
+    def get(self, frame: int) -> np.ndarray:
+        """
+        Get the frame image.
+
+        :return: np array if successful, None else.
+        """
+        if frame > self.extracted:
+            return None
+
+        path = os.path.join(self.tmpdir, f"{frame}.jpg")
+        return cv2.imread(path)
+
+    def extract(self):
+        """
+        Extract all the frames.
+        Run this in a different thread.
+        Set self.run to False to stop.
+        """
+        for frame in range(self.num_frames):
+            if not self.run:
+                break
+            ret, img = self._video.read()
+            if not ret:
+                break
+
+            path = os.path.join(self.tmpdir, f"{frame}.jpg")
+            cv2.imwrite(path, img)
+
+            self.extracted = frame
