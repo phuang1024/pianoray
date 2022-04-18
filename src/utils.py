@@ -55,3 +55,11 @@ SETTINGS_DEFAULT = {
         "speed": 1,
     },
 }
+
+
+def forever():
+    """
+    Generator for indefinite tqdm progressbar.
+    """
+    while True:
+        yield

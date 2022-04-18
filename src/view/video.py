@@ -17,6 +17,35 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import time
+
+import pygame
+
+from .utils import extract_frames
+
+pygame.init()
+
 
 def view_video(path: str) -> None:
-    print("Not implemented yet.")
+    num_frames, tmpdir = extract_frames(path)
+
+    resized = False  # Redraw if resized
+    display = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+    pygame.display.set_caption("PianoRay Viewer")
+
+    run = True
+    while run:
+        time.sleep(1/30)
+        pygame.display.update()
+        events = pygame.event.get()
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                run = False
+
+            elif event.type == pygame.VIDEORESIZE:
+                resized = True
+
+        display.fill((0, 0, 0))
+
+    pygame.quit()

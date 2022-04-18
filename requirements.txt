@@ -1,5 +1,6 @@
 mido
 numpy
 opencv-python
+pygame
 termcolor
 tqdm
