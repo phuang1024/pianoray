@@ -17,26 +17,20 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import ctypes
-import os
-from math import hypot
-
 import numpy as np
 
-from ...cpp import build_lib, Types
-from ...settings import Settings
-from ..utils import bounds, key_coords, note_coords
 
-PARENT = os.path.dirname(os.path.abspath(__file__))
-
-
-def render_blocks(lib: ctypes.CDLL, settings: Settings,
-        img: np.ndarray, notes, frame: int):
+def render_blocks(lib, settings, img: np.ndarray, notes: np.ndarray, frame: int):
     """
     Render the blocks.
 
     :param lib: C library for blocks.
-    :param notes: MIDI notes.
+    :param notes: MIDI notes from parse_midi.
     """
-    lib.render_blocks(img, img.shape[1], img.shape[0],
-            0, np.array([1], dtype=np.int32), np.array([1], dtype=np.int32))
+    starts = np.array([n[2] for n in notes], dtype=Types.double)
+    ends = np.array([n[3] for n in notes], dtype=Types.double)
+
+    lib.render_blocks(
+        img, img.shape[1], img.shape[0],
+        len(notes), starts, ends,
+    )

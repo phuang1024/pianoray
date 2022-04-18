@@ -64,7 +64,7 @@ double dist_to_block(double px, double py, double x, double y,
  */
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
-    int num_notes, int* note_starts, int* note_ends)
+    int num_notes, double* note_starts, double* note_ends)
 {
     Image img(img_data, width, height, 3);
 
