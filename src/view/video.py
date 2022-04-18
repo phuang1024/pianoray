@@ -21,6 +21,7 @@ import time
 
 import pygame
 
+from .. import logger
 from .utils import Video
 
 pygame.init()
@@ -28,6 +29,8 @@ pygame.init()
 
 def view_video(path: str) -> None:
     video = Video(path)
+    logger.info(f"Extracting frames to {video.tmpdir}")
+    logger.warn("This feature is not complete yet.")
 
     resized = False  # Redraw if resized
     display = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
