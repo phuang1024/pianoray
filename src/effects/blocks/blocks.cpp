@@ -96,7 +96,7 @@ void draw_rect(
  * @param note_ends  End frame of each note.
  * @param fps  settings.video.fps
  * @param speed  settings.blocks.speed
- * @param black_width_fac  settings.piano.black_width_fac
+ * @param black_width  settings.piano.black_width_fac
  * @param radius  settings.blocks.radius
  * @param color_data  settings.blocks.color
  */
@@ -104,7 +104,7 @@ extern "C" void render_blocks(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double speed, double black_width_fac, double radius, UCH* color_data)
+    int fps, double speed, double black_width, double radius, UCH* color_data)
 {
     Image img(img_data, width, height, 3);
     Color color(color_data);
@@ -118,7 +118,7 @@ extern "C" void render_blocks(
         y_start = dbounds(y_start, 0, height/2);
         y_end = dbounds(y_end, 0, height/2);
         double x_start, x_end;
-        key_coords(x_start, x_end, note_keys[i], width, black_width_fac);
+        key_coords(x_start, x_end, note_keys[i], width, black_width);
 
         double x = x_start;
         double y = y_end;
