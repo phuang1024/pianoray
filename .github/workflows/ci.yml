@@ -36,7 +36,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: build-files
-          path: ./build
+          path: |
+            ./build
+            ./dist
+            ./*.egg-info
 
       - name: Install dependencies
         run: |
