@@ -26,7 +26,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: build-files
-          path: ./build
+          path: ./dist
 
   docs:
     needs: build
@@ -36,10 +36,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: build-files
-          path: |
-            ./build
-            ./dist
-            ./*.egg-info
+          path: ./dist
 
       - name: Install dependencies
         run: |

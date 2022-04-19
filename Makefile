@@ -23,7 +23,7 @@ PYTHON = python3
 
 help:
 	@echo Makefile help:
-	@echo - make wheel: Build wheel in ./build
+	@echo - make wheel: Build wheel in ./dist
 	@echo - make install: Install wheel file
 	@echo - make docs: Documentation.
 	@echo - make all: Uninstall, build, install, docs.
