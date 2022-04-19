@@ -17,15 +17,18 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 import shutil
 
 VERSION = "0.0.1"
 
-FFMPEG = shutil.which("ffmpeg")
-assert FFMPEG is not None
+PARENT = os.path.dirname(os.path.abspath(__file__))
 
+FFMPEG = shutil.which("ffmpeg")
 GCC = shutil.which("g++")
+assert FFMPEG is not None
 assert GCC is not None
+
 
 SETTINGS_DEFAULT = {
     "video": {
@@ -48,7 +51,7 @@ SETTINGS_DEFAULT = {
     "blocks": {
         "speed": 0.5,
         "color": [185, 200, 255],
-        "radius": 5,
+        "radius": 0.25,
     },
     "midi": {
         "file": None,

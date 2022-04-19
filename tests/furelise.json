@@ -1,6 +1,6 @@
 {
     "video": {
-        "resolution": [960, 540],
+        "resolution": [1280, 720],
         "fps": 24
     },
     "midi": {

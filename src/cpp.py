@@ -25,6 +25,14 @@ from typing import Sequence
 import numpy as np
 from numpy.ctypeslib import ndpointer
 
+from .utils import GCC
+
+PARENT = os.path.dirname(os.path.abspath(__file__))
+
+CPP_UTILS = os.path.join(PARENT, "cutils")
+CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
+    for f in os.listdir(CPP_UTILS) if f.endswith(".cpp")]
+
 
 class Types:
     _arr_flags = "aligned, c_contiguous"
@@ -37,6 +45,8 @@ class Types:
     double = ctypes.c_double
 
     arr_uchar = ndpointer(dtype=uchar, ndim=1, flags=_arr_flags)
+    arr_int = ndpointer(dtype=int, ndim=1, flags=_arr_flags)
+    arr_double = ndpointer(dtype=double, ndim=1, flags=_arr_flags)
 
     img = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
 
@@ -45,31 +55,38 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     """
     Initialize the lib.
 
-    :param files: C files.
+    :param files: C files relative to THIS file.
     :param cache: Cache directory.
     :param name: Name of the library.
     :return: C library.
     """
     cache = os.path.join(cache, name)
-    os.makedirs(self.cache, exist_ok=True)
+    os.makedirs(cache, exist_ok=True)
+
+    files = [os.path.join(PARENT, f) for f in files]
+    files.extend(CPP_UTILS_FILES)
 
     obj_files = []
     for f in files:
-        name = os.path.basename(f)
-        obj_name = os.path.splitext(name)[0] + ".o"
-        obj_path = os.path.join(self.cache, obj_name)
+        fname = os.path.basename(f)
+        obj_name = os.path.splitext(fname)[0] + ".o"
+        obj_path = os.path.join(cache, obj_name)
         obj_files.append(obj_path)
         _compile(f, obj_path)
 
-    lib_path = os.path.join(self.cache, f"lib{name}.so")
+    lib_path = os.path.join(cache, f"lib{name}.so")
     _link(obj_files, lib_path)
 
     return ctypes.CDLL(lib_path)
 
 def _compile(cpp, obj):
-    args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj]
-    Popen(args).wait()
+    args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj, "-I", CPP_UTILS]
+    p = Popen(args)
+    p.wait()
+    assert p.returncode == 0
 
 def _link(obj_files, lib_path):
     args = [GCC, "-shared", "-o", lib_path, *obj_files]
-    Popen(args).wait()
+    p = Popen(args)
+    p.wait()
+    assert p.returncode == 0
