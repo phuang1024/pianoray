@@ -38,7 +38,7 @@ bool is_white_key(int key) {
  * @return  Factor from 0 to 1 (start of first key to end of last).
  */
 double key_pos(int key) {
-    double white_width = 1 / 52;
+    double white_width = 1.0 / 52;
 
     bool last_white = false;  // Last key is white
     double pos = 0;

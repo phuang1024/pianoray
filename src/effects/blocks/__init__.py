@@ -29,10 +29,16 @@ def render_blocks(lib, settings, img: np.ndarray, notes: np.ndarray, frame: int)
     :param lib: C library for blocks.
     :param notes: MIDI notes from parse_midi.
     """
+    keys = np.array([n[0] for n in notes], dtype=Types.int)
     starts = np.array([n[2] for n in notes], dtype=Types.double)
     ends = np.array([n[3] for n in notes], dtype=Types.double)
 
+    settings_args = [settings.video.fps, settings.blocks.speed,
+        settings.piano.black_width_fac, settings.blocks.radius]
+
     lib.render_blocks(
         img, img.shape[1], img.shape[0],
-        len(notes), starts, ends,
+        frame,
+        len(notes), keys, starts, ends,
+        *settings_args,
     )

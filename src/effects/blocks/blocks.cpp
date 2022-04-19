@@ -17,6 +17,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <iostream>
+
 #include "pr_image.hpp"
 #include "pr_math.hpp"
 #include "pr_piano.hpp"
@@ -87,18 +89,42 @@ void draw_rect(
 /**
  * Render blocks.
  *
+ * @param img_data, width, height  Image parameters.
+ * @param frame  Frame to render.
  * @param num_notes  Number of MIDI notes passed in.
+ * @param note_keys  Key (note number) for each note.
  * @param note_starts  Start frame of each note.
  * @param note_ends  End frame of each note.
+ * @param fps  settings.video.fps
+ * @param speed  settings.blocks.speed
+ * @param black_width_fac  settings.piano.black_width_fac
+ * @param radius  settings.blocks.radius
  */
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
-    int num_notes, double* note_starts, double* note_ends)
+    int frame,
+    int num_notes, int* note_keys, double* note_starts, double* note_ends,
+    int fps, double speed, double black_width_fac, double radius)
 {
     Image img(img_data, width, height, 3);
-    draw_rect(img, width, height, 50, 50, 50, 100, 5);
+    std::cout << key_pos(10) << " " << key_pos(50) << std::endl;
 
-    for (int note = 0; note < num_notes; note++) {
+    for (int i = 0; i < num_notes; i++) {
+        double y_start = event_coord(note_starts[i], frame, height, fps, speed);
+        double y_end = event_coord(note_ends[i], frame, height, fps, speed);
+        if (y_start < 0 || y_end > height/2)
+            continue;
+
+        y_start = dbounds(y_start, 0, height/2);
+        y_end = dbounds(y_end, 0, height/2);
+        double x_start, x_end;
+        key_coords(x_start, x_end, note_keys[i], width, black_width_fac);
+
+        double x = x_start;
+        double y = y_end;
+        double w = x_end - x_start;
+        double h = y_start - y_end;
+        draw_rect(img, width, height, x, y, w, h, radius);
     }
 }
 
