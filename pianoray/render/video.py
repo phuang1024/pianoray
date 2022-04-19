@@ -86,6 +86,7 @@ class Video:
         args = [
             FFMPEG,
             "-y",
+            "-r", fps,
             "-i", os.path.join(self.cache, "frames", "%d.jpg"),
             "-vframes", num_frames,
             "-c:v", vcodec,

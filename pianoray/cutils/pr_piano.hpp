@@ -92,7 +92,7 @@ double event_coord(
     int height, int fps, double speed)
 {
     height /= 2;  // Piano takes up half of screen.
-    speed *= height / fps;  // Convert to pixels per frame.
+    speed *= (double)height / fps;  // Convert to pixels per frame.
     double delta = speed * (frame-event_frame);
     return height + delta;
 }
