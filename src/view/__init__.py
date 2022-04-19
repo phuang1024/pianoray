@@ -17,8 +17,4 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-import os
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
-
-from .render import render_video
-from .video import Video
+from .viewer import view_video
