@@ -25,6 +25,7 @@ from typing import Sequence
 import numpy as np
 from numpy.ctypeslib import ndpointer
 
+from . import logger
 from .utils import GCC
 
 PARENT = os.path.dirname(os.path.abspath(__file__))
@@ -60,6 +61,8 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     :param name: Name of the library.
     :return: C library.
     """
+    logger.info(f"Building C library {name}")
+
     cache = os.path.join(cache, name)
     os.makedirs(cache, exist_ok=True)
 
@@ -72,20 +75,20 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
         obj_name = os.path.splitext(fname)[0] + ".o"
         obj_path = os.path.join(cache, obj_name)
         obj_files.append(obj_path)
-        _compile(f, obj_path)
+        compile(f, obj_path)
 
     lib_path = os.path.join(cache, f"lib{name}.so")
-    _link(obj_files, lib_path)
+    link(obj_files, lib_path)
 
     return ctypes.CDLL(lib_path)
 
-def _compile(cpp, obj):
+def compile(cpp, obj):
     args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj, "-I", CPP_UTILS]
     p = Popen(args)
     p.wait()
     assert p.returncode == 0
 
-def _link(obj_files, lib_path):
+def link(obj_files, lib_path):
     args = [GCC, "-shared", "-o", lib_path, *obj_files]
     p = Popen(args)
     p.wait()

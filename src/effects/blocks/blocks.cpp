@@ -72,15 +72,14 @@ void draw_rect(
     int y_min = (int)(dbounds(y-2, 0, height-1));
     int y_max = (int)(dbounds(y+h+3, 0, height-1));
 
-    Color white(255, 255, 255);
-    Color black(0, 0, 0);
-
     for (int px = x_min; px < x_max; px++) {
         for (int py = y_min; py < y_max; py++) {
             double dist = dist_to_block(px, py, x, y, w, h, r);
             double alpha = interp(dist, 0, 1.5, 1, 0);
             alpha = dbounds(alpha, 0, 1);
-            img.setc(px, py, mix_cols(black, white, alpha));
+
+            Color curr = img.getc(px, py);
+            img.setc(px, py, mix_cols(curr, color, alpha));
         }
     }
 }
