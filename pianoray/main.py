@@ -65,16 +65,16 @@ def view(args):
 def main():
     parser = argparse.ArgumentParser(
         description="Piano performance visualizer.")
-    parser.add_argument("-V", "--version",
-        help="Show version info.", action="store_true")
+    parser.add_argument("-V", "--version", action="version",
+        help="Show version info.", version=f"Pianoray v{VERSION}")
     parser.add_argument("-s", "--settings",
         help="Path to settings JSON file.")
     parser.add_argument("-o", "--output",
         help="Output video file.")
     parser.add_argument("-c", "--cache",
         help="Cache path (default .prcache)", default=".prcache")
-    parser.add_argument("-p", "--preview",
-        help="Open output file after rendering", action="store_true")
+    parser.add_argument("-p", "--preview", action="store_true",
+        help="Open output file after rendering")
     parser.add_argument("-y", "--yes",
         help="Don't prompt overwrite.", action="store_true")
     parser.add_argument("mode", choices={"render", "view"}, nargs="?",
@@ -82,10 +82,6 @@ def main():
     parser.add_argument("options", nargs="*",
         help="Any other positional arguments.")
     args = parser.parse_args()
-
-    if args.version:
-        print(f"Pianoray v{VERSION}")
-        return 0
 
     if args.mode is None or args.mode == "render":
         return render(args)
