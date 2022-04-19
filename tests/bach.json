@@ -1,0 +1,13 @@
+{
+    "video": {
+        "resolution": [1280, 720],
+        "fps": 24
+    },
+    "midi": {
+        "file": "examples/bach/midi.mid"
+    },
+    "audio": {
+        "path": "examples/bach/audio.mp3",
+        "start": 10.02
+    }
+}
