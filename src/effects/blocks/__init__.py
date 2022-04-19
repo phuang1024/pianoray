@@ -22,7 +22,7 @@ import numpy as np
 from ...cpp import Types
 
 
-def render_blocks(lib, settings, img: np.ndarray, notes: np.ndarray, frame: int):
+def render_blocks(lib, settings, img: np.ndarray, notes, frame: int):
     """
     Render the blocks.
 

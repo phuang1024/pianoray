@@ -69,7 +69,8 @@ void key_coords(
 {
     double center = interp(key_pos(key), 0, 1, 0, width);
     double white_width = width / 52;
-    double key_width = is_white_key(key) ? white_width : white_width * black_width_fac;
+    double key_width = is_white_key(key) ? white_width :
+        white_width * black_width_fac;
     double half = key_width / 2;
 
     left = center - half;
