@@ -17,33 +17,30 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PYTHON = python3
+import ctypes
+from typing import Mapping
 
-.PHONY: help wheel install docs all
+import numpy as np
 
-help:
-	@echo Makefile help:
-	@echo - make wheel: Build wheel in ./dist
-	@echo - make install: Install wheel file
-	@echo - make docs: Documentation.
-	@echo - make all: Uninstall, build, install, docs.
-	@echo   Useful for developers.
+from ..settings import Settings
 
-wheel:
-	rm -rf ./build ./dist ./*.egg-info
-	$(PYTHON) setup.py bdist_wheel sdist
 
-install:
-	$(PYTHON) -m pip install ./dist/*.whl
+class Effect:
+    """
+    Base class for all effects.
+    """
 
-docs:
-	cd ./docs; \
-	rm -rf _build; \
-	mkdir -p _static _templates; \
-	make html SPHINXOPTS="-W --keep-going"
+    settings: Settings
+    cache: str
+    libs: Mapping[str, ctypes.CDLL]
 
-all:
-	$(PYTHON) -m pip uninstall -y pianoray
-	make wheel
-	make install
-	make docs
+    def __init__(self, settings: Settings, cache: str, libs) -> None:
+        self.settings = settings
+        self.cache = cache
+        self.libs = libs
+
+    def render(self, img: np.ndarray, frame: int, *args, **kwargs) -> None:
+        """
+        Override this in the subclass.
+        """
+        raise NotImplementedError("Override Effect.render")

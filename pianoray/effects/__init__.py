@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .blocks import render_blocks
 from .midi import parse_midi
 from . import utils
+
+from .blocks import Blocks

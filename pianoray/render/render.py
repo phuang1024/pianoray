@@ -27,8 +27,8 @@ from tqdm import trange
 
 from .. import logger
 from ..cpp import build_lib, Types
-from ..effects import render_blocks
 from ..effects import parse_midi
+from ..effects import Blocks
 from ..settings import Settings
 from .video import Video
 
@@ -43,13 +43,13 @@ def preprocess(settings: Settings):
 
 def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
     """
-    Load libraries.
+    Load C libraries.
     """
     cache = os.path.join(cache, "c_libs")
     os.makedirs(cache, exist_ok=True)
 
     blocks = build_lib(
-        ["effects/blocks/blocks.cpp"],
+        ["effects/blocks.cpp"],
         cache,
         "blocks",
     )
@@ -67,7 +67,11 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
     preprocess(settings)
-    libs = load_libs(cache)
+    try:
+        libs = load_libs(cache)
+    except AssertionError:
+        logger.error("Failed to build libraries.")
+        raise
 
     cache_settings = os.path.join(cache, "settings.json")
     cache_curr = os.path.join(cache, "currently_rendering.txt")
@@ -107,17 +111,23 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     :param real_start: If applicable, currently_rendering
     :return: Number of frames rendered.
     """
+    # Parse MIDI.
     notes = parse_midi(settings)
     duration = int(max(x[3] for x in notes))
 
+    # Calculate start and end.
     fps = settings.video.fps
     m_start = settings.composition.margin_start
     m_end = settings.composition.margin_end
     frame_start = -fps * m_start
     frame_end = duration + fps*m_end
 
+    # OOP effects
+    blocks = Blocks(settings, cache, libs)
+
+    # Render
     num_frames = 0
-    for frame in trange(frame_start, frame_end):
+    for frame in trange(frame_start, frame_end, desc="Rendering"):
         num_frames += 1
         with open(os.path.join(cache, "currently_rendering.txt"), "w") as fp:
             fp.write(str(frame))
@@ -126,7 +136,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
             continue
 
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
-        render_blocks(libs["blocks"], settings, img, notes, frame)
+        blocks.render(img, frame, notes)
         video.write(img)
 
     return num_frames
