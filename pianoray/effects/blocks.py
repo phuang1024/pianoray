@@ -41,7 +41,7 @@ class Blocks(Effect):
         settings_args = [settings.video.fps, settings.blocks.speed,
             settings.piano.black_width_fac, settings.blocks.radius,
             np.array(settings.blocks.color, dtype=np.uint8)]
-    
+
         self.libs["blocks"].render_blocks(
             img, img.shape[1], img.shape[0],
             frame,
