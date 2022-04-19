@@ -57,7 +57,7 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
         Types.img, Types.int, Types.int,
         Types.int,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
-        Types.int, Types.double, Types.double, Types.double
+        Types.int, Types.double, Types.double, Types.double, Types.arr_uchar,
     ]
 
     return {
@@ -67,6 +67,7 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
     preprocess(settings)
+    libs = load_libs(cache)
 
     cache_settings = os.path.join(cache, "settings.json")
     cache_curr = os.path.join(cache, "currently_rendering.txt")
@@ -89,7 +90,6 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     with open(cache_settings, "w") as fp:
         json.dump(settings._json(), fp)
 
-    libs = load_libs(cache)
     video = Video(os.path.join(cache, "output"), settings.audio.path,
         settings.audio.start)
     num_frames = render_frames(settings, libs, video, cache, real_start)
