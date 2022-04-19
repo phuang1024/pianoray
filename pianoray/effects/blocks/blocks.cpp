@@ -115,8 +115,8 @@ extern "C" void render_blocks(
         if (y_start < 0 || y_end > height/2)
             continue;
 
-        y_start = dbounds(y_start, 0, height/2);
-        y_end = dbounds(y_end, 0, height/2);
+        y_start = dbounds(y_start, -radius, height/2 + radius);
+        y_end = dbounds(y_end, -radius, height/2 + radius);
         double x_start, x_end;
         key_coords(x_start, x_end, note_keys[i], width, black_width);
 
