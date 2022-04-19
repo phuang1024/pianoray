@@ -1,0 +1,4 @@
+include  pianoray/cutils/*.cpp
+include  pianoray/cutils/*.hpp
+
+include  pianoray/effects/blocks/*.cpp
