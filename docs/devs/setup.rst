@@ -11,12 +11,13 @@ First, fork the GitHub repository and clone your fork.
 Dependencies
 ------------
 
-- Python3.8 or above
-- Make
-- FFmpeg
+See dependencies in the ``General/Installation`` page.
 
-Python packages: Install from ``requirements.txt``:
-``pip install -r requirements.txt``
+Additional dependencies for development:
+
+- Git
+- GNU Make
+
 
 Test Video
 ----------
@@ -26,4 +27,7 @@ Test Video
    cd /path/to/pianoray
    make wheel
    make install
-   pianoray -s tests/settings.json -o out.mp4 -p
+   pianoray -s tests/furelise.json -o out.mp4 -p
+
+This should render the video and open it in your video player. Rendering
+may take a few minutes.

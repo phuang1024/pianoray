@@ -1,15 +1,23 @@
 Installation
 ============
 
+Dependencies
+------------
+
+- Python3.8 or higher.
+- FFmpeg
+- C++ compiler (``g++``)
+- Python packages: Install from ``requirements.txt``:
+  ``pip install -r requirements.txt``.
+
 Latest
 ------
 
-1. Go to the latest release on GitHub:
-   https://github.com/phuang1024/pianoray/releases/latest
-2. Download the wheel file (ending in ``.whl``).
+PianoRay is distributed on PyPI. Install with
 
-3. Install: ``pip install ~/Downloads/pianoray_0.0.1.whl``.
-   File name and directories vary.
+.. code-block:: sh
+
+   pip install pianoray
 
 Master Branch
 -------------
@@ -18,7 +26,6 @@ May be unstable or have bugs.
 
 .. code-block:: sh
 
-   git clone https://github.com/phuang1024/pianoray
-   cd ./pianoray
-   make wheel
-   make install
+   pip install git+https://github.com/phuang1024/pianoray
+
+See ``Developers/Setup`` for building instructions.
