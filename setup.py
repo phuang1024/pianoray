@@ -17,7 +17,11 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
 import setuptools
+
+VERSION = os.environ.get("PYPI_VERSION", "0.0.1")
+VERSION = VERSION.split("/")[-1]  # GitHub input
 
 
 with open("README.md", "r") as fp:
@@ -28,7 +32,7 @@ with open("requirements.txt", "r") as fp:
 
 setuptools.setup(
     name="pianoray",
-    version="0.0.1",
+    version=VERSION,
     author="PianoRay Authors",
     author_email="phuang1024@gmail.com",
     description="Piano performance visualizer.",
