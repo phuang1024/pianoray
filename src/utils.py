@@ -51,7 +51,7 @@ SETTINGS_DEFAULT = {
     "blocks": {
         "speed": 0.5,
         "color": [185, 200, 255],
-        "radius": 5,
+        "radius": 0.25,
     },
     "midi": {
         "file": None,

@@ -33,6 +33,14 @@ from ..settings import Settings
 from .video import Video
 
 
+def preprocess(settings: Settings):
+    """
+    Does stuff to settings, e.g. change coords to pixels.
+    """
+    coord = settings.video.resolution[0] / 52
+    settings.blocks.radius *= coord
+
+
 def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
     """
     Load libraries.
@@ -58,9 +66,12 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
 
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
+    preprocess(settings)
+
     cache_settings = os.path.join(cache, "settings.json")
     cache_curr = os.path.join(cache, "currently_rendering.txt")
 
+    # Check if continue previous render
     real_start = None
     if os.path.isfile(cache_settings) and os.path.isfile(cache_curr):
         with open(cache_settings, "r") as fp:

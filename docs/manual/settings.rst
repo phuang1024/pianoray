@@ -26,6 +26,8 @@ Available
 Most settings have default values. See ``src/utils.py`` for the default
 settings.
 
+See devs/info to understand what a "coord" is.
+
 Colors are ``[R, G, B]`` from 0 to 255.
 
 - ``video``: Settings about video export.
