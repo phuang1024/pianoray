@@ -17,8 +17,6 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
-
 #include "pr_image.hpp"
 #include "pr_math.hpp"
 #include "pr_piano.hpp"
@@ -107,7 +105,6 @@ extern "C" void render_blocks(
     int fps, double speed, double black_width_fac, double radius)
 {
     Image img(img_data, width, height, 3);
-    std::cout << key_pos(10) << " " << key_pos(50) << std::endl;
 
     for (int i = 0; i < num_notes; i++) {
         double y_start = event_coord(note_starts[i], frame, height, fps, speed);
