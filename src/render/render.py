@@ -47,7 +47,7 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
     )
     blocks.render_blocks.argtypes = [
         Types.img, Types.int, Types.int,
-        Types.int, Types.arr_int, Types.arr_int,
+        Types.int, Types.arr_double, Types.arr_double,
     ]
 
     return {

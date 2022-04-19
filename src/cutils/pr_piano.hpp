@@ -86,7 +86,7 @@ void key_coords(
  * @param fps  settings.video.fps
  * @param speed  settings.blocks.speed
  */
-void note_coords(
+double event_coord(
     double event_frame, double frame,
     int height, int fps, double speed)
 {
