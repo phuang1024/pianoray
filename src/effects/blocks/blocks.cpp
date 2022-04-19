@@ -64,21 +64,23 @@ double dist_to_block(double px, double py, double x, double y,
  */
 void draw_rect(
     Image& img, int width, int height,
-    double x, double y, double w, double h, double r)
+    double x, double y, double w, double h, double r,
+    const Color& color)
 {
     int x_min = (int)(dbounds(x-2, 0, width-1));
     int x_max = (int)(dbounds(x+w+3, 0, width-1));
     int y_min = (int)(dbounds(y-2, 0, height-1));
     int y_max = (int)(dbounds(y+h+3, 0, height-1));
 
+    Color white(255, 255, 255);
+    Color black(0, 0, 0);
+
     for (int px = x_min; px < x_max; px++) {
         for (int py = y_min; py < y_max; py++) {
             double dist = dist_to_block(px, py, x, y, w, h, r);
             double alpha = interp(dist, 0, 1.5, 1, 0);
-            alpha = dbounds(alpha, 0, 1) * 255;
-
-            for (int i = 0; i < 3; i++)
-                img.set(px, py, i, alpha);
+            alpha = dbounds(alpha, 0, 1);
+            img.setc(px, py, mix_cols(black, white, alpha));
         }
     }
 }
@@ -97,14 +99,16 @@ void draw_rect(
  * @param speed  settings.blocks.speed
  * @param black_width_fac  settings.piano.black_width_fac
  * @param radius  settings.blocks.radius
+ * @param color_data  settings.blocks.color
  */
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double speed, double black_width_fac, double radius)
+    int fps, double speed, double black_width_fac, double radius, UCH* color_data)
 {
     Image img(img_data, width, height, 3);
+    Color color(color_data);
 
     for (int i = 0; i < num_notes; i++) {
         double y_start = event_coord(note_starts[i], frame, height, fps, speed);
@@ -121,7 +125,7 @@ extern "C" void render_blocks(
         double y = y_end;
         double w = x_end - x_start;
         double h = y_start - y_end;
-        draw_rect(img, width, height, x, y, w, h, radius);
+        draw_rect(img, width, height, x, y, w, h, radius, color);
     }
 }
 

@@ -34,7 +34,8 @@ def render_blocks(lib, settings, img: np.ndarray, notes, frame: int):
     ends = np.array([n[3] for n in notes], dtype=Types.double)
 
     settings_args = [settings.video.fps, settings.blocks.speed,
-        settings.piano.black_width_fac, settings.blocks.radius]
+        settings.piano.black_width_fac, settings.blocks.radius,
+        np.array(settings.blocks.color, dtype=np.uint8)]
 
     lib.render_blocks(
         img, img.shape[1], img.shape[0],
