@@ -30,15 +30,10 @@ help:
 	@echo   Useful for developers.
 
 wheel:
-	mkdir -p ./build
-	rm -rf ./build/pianoray ./build/build ./build/dist ./build/*.egg-info
-	cp -r ./src ./build/pianoray
-	cp ./setup.py ./MANIFEST.in ./build
-	cd ./build; \
 	$(PYTHON) setup.py bdist_wheel sdist
 
 install:
-	$(PYTHON) -m pip install ./build/dist/*.whl
+	$(PYTHON) -m pip install ./dist/*.whl
 
 docs:
 	cd ./docs; \
