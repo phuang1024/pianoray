@@ -31,7 +31,8 @@ GREEN = "\x1b[32m"
 PATHS = (
     (".",         False, ("*.md", "*.gitignore", "*.txt", "Makefile")),
     ("./docs",    True,  ("*.rst", "*.py", "Makefile")),
-    ("./src",     True,  ("*.py", "*.cpp", "*.hpp", "Makefile")),
+    ("./pianoray",     True,  ("*.py", "*.cpp", "*.hpp", "Makefile")),
+    ("./scripts",   True,  ("*.py",)),
     ("./tests",   True,  ("*.py",)),
     ("./.github", True,  ("*.md", "*.yml")),
 )
