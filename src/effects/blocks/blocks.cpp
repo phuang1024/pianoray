@@ -17,7 +17,9 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include "pianoray.hpp"
+#include "pr_image.hpp"
+#include "pr_math.hpp"
+#include "pr_piano.hpp"
 
 
 namespace Pianoray {

@@ -19,70 +19,8 @@
 
 #pragma once
 
-#include <algorithm>
-
 
 namespace Pianoray {
-
-
-typedef  unsigned char  UCH;
-
-
-class Image {
-public:
-    UCH* data;
-    int width, height, channels;
-
-    /**
-     * Initialize.
-     * @param data  Memory of values.
-     *              Shape should be (height, width, channel)
-     */
-    Image(UCH* data, int width, int height, int channels) {
-        this->data = data;
-        this->width = width;
-        this->height = height;
-        this->channels = channels;
-    }
-
-    /**
-     * Index of data for corresponding coords.
-     */
-    int index(int x, int y, int ch) {
-        return (
-            y * width * channels +
-            x * channels +
-            ch
-        );
-    }
-
-    /**
-     * Get value at coord.
-     */
-    UCH get(int x, int y, int ch) {
-        return data[index(x, y, ch)];
-    }
-
-    /**
-     * Set value at coord.
-     */
-    void set(int x, int y, int ch, UCH v) {
-        data[index(x, y, ch)] = v;
-    }
-};
-
-
-double hypot(double x, double y) {
-    return pow(x*x + y*y, 0.5);
-}
-
-int ibounds(int v, int min, int max) {
-    return std::min(std::max(v, min), max);
-}
-
-double dbounds(double v, double min, double max) {
-    return std::min(std::max(v, min), max);
-}
 
 
 /**
