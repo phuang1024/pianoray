@@ -57,43 +57,44 @@ double key_pos(int key) {
 
 /**
  * Horizontal X coordinates of the left and right ends of a key.
+ *
  * @param left, right  References which will be modified to contain the returns.
  * @param key  Key number.
+ * @param width  settings.video.resolution[0]
+ * @param black_width_fac  settings.piano.black_width_fac
  */
-void key_coords(double& left, double& right, int key) {
+void key_coords(
+    double& left, double& right, int key,
+    int width, double black_width_fac)
+{
+    double center = interp(key_pos(key), 0, 1, 0, width);
+    double white_width = width / 52;
+    double key_width = is_white_key(key) ? white_width : white_width * black_width_fac;
+    double half = key_width / 2;
+
+    left = center - half;
+    right = center + half;
 }
 
-
-
-/*
-def key_coords(settings: Settings, key: int) -> Tuple[float, float]:
-    """
-    Horizontal (x) coordinates of key on the screen.
-    :param key: Key.
-    :return: ``(start_coord, end_coord)`` of key.
-    """
-    center = np.interp(key_pos(key), (0, 1), (0, settings.video.resolution[0]))
-    white_width = settings.video.resolution[0] / 52
-    black_width = white_width * settings.piano.black_width_fac
-    width = white_width if is_white_key(key) else black_width
-    half = width / 2
-    return (center-half, center+half)
-
-
-def note_coords(settings: Settings, event_frame: float,
-        frame: float) -> float:
-    """
-    Vertical (y) coordinates of an event as it is dropping from the top
-    to the keyboard.
-    :param event_frame: The time of the event.
-    :param frame: Current frame.
-    :return: Y pixel position.
-    """
-    height = settings.video.resolution[1] / 2
-    speed = (settings.blocks.speed * height / settings.video.fps)
-    delta = speed * (frame-event_frame)
-    return height + delta
-*/
+/**
+ * Vertical Y coordinates of a MIDI event as it is dropping from the top
+ * to the keyboard.
+ *
+ * @param event_frame  Frame the event happens.
+ * @param frame  Current frame.
+ * @param height  settings.video.resolution[1]
+ * @param fps  settings.video.fps
+ * @param speed  settings.blocks.speed
+ */
+void note_coords(
+    double event_frame, double frame,
+    int height, int fps, double speed)
+{
+    height /= 2;  // Piano takes up half of screen.
+    speed *= height / fps;  // Convert to pixels per frame.
+    double delta = speed * (frame-event_frame);
+    return height + delta;
+}
 
 
 }  // namespace Pianoray

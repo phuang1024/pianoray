@@ -37,5 +37,10 @@ double dbounds(double v, double min, double max) {
     return std::min(std::max(v, min), max);
 }
 
-
+double interp(double v, double old_min, double old_max, double new_min, double new_max) {
+    double fac = (v-old_min) / (old_max-old_min);
+    return new_min + fac * (new_max-new_min);
 }
+
+
+}  // namespace Pianoray
