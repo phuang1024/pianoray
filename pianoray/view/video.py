@@ -43,6 +43,7 @@ class Video:
         :param path: Path to video.
         """
         self.run = True
+        self.extracted = 0
 
         rand = str(random.randint(0, 10000000))
         self.tmpdir = os.path.join(TMP, f"pianoray_viewer_{rand}")
