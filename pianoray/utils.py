@@ -69,3 +69,10 @@ def forever():
     """
     while True:
         yield
+
+
+def bounds(v, vmin, vmax):
+    """
+    Bound v between vmin and vmax.
+    """
+    return min(max(v, vmin), vmax)

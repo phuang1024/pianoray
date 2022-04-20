@@ -24,13 +24,6 @@ import numpy as np
 from ..settings import Settings
 
 
-def bounds(v, vmin, vmax):
-    """
-    Bound v between vmin and vmax.
-    """
-    return min(max(v, vmin), vmax)
-
-
 def is_white_key(key: int) -> bool:
     """
     If the key is a white key on piano.
