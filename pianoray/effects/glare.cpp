@@ -17,9 +17,12 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <iostream>
+
 #include "pr_image.hpp"
 #include "pr_math.hpp"
 #include "pr_piano.hpp"
+#include "pr_random.hpp"
 
 
 namespace Pianoray {
@@ -31,7 +34,7 @@ namespace Pianoray {
  * @param cx, cy  Glare center pixel coordinates.
  */
 void render_one_glare(Image& img, double cx, double cy,
-    double radius, double intensity)
+    double radius, double intensity, double jitter)
 {
     const Color white(255, 255, 255);
 
@@ -42,12 +45,14 @@ void render_one_glare(Image& img, double cx, double cy,
     int y_start = ibounds((int)(cy-radius), 0, h-1);
     int y_end = ibounds((int)(cy+radius+1), 0, h-1);
 
+    double rand_mult = Random::uniform(1-jitter, 1+jitter);
     for (int x = x_start; x <= x_end; x++) {
         for (int y = y_start; y <= y_end; y++) {
+
             int r = hypot(x-cx, y-cy);
             double fac = dbounds(1 - r/radius, 0, 1);
             fac = interp(fac, 0, 1, 0, intensity);
-            fac = dbounds(fac, 0, 1);
+            fac *= rand_mult;
 
             Color curr = img.getc(x, y);
             img.setc(x, y, mix_cols(curr, white, fac));
@@ -70,12 +75,13 @@ void render_one_glare(Image& img, double cx, double cy,
  * @param black_width  settings.piano.black_width_fac
  * @param radius  settings.glare.radius
  * @param intensity  settings.glare.intensity
+ * @param jitter  settings.glare.jitter
  */
 extern "C" void render_glare(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    double black_width, double radius, double intensity)
+    double black_width, double radius, double intensity, double jitter)
 {
     Image img(img_data, width, height, 3);
     int half = height / 2;
@@ -86,7 +92,7 @@ extern "C" void render_glare(
 
         if (start < frame && frame < end) {
             double key_x = key_pos(note_keys[i]) * width;
-            render_one_glare(img, key_x, half, radius, intensity);
+            render_one_glare(img, key_x, half, radius, intensity, jitter);
         }
     }
 }

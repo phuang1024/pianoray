@@ -40,7 +40,8 @@ class Glare(Effect):
 
         settings = self.settings
         settings_args = [settings.piano.black_width_fac,
-            settings.glare.radius, settings.glare.intensity]
+            settings.glare.radius, settings.glare.intensity,
+            settings.glare.jitter]
 
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],

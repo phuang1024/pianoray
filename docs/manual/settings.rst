@@ -63,3 +63,4 @@ Colors are ``[R, G, B]`` from 0 to 255.
 - ``glare``: Settings about rendering glare.
     - ``radius``: Radius of glare in coords.
     - ``intensity``: Intensity value.
+    - ``jitter``: Random intensity change for each frame.

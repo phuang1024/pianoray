@@ -63,6 +63,7 @@ SETTINGS_DEFAULT = {
     "glare": {
         "radius": 1.5,
         "intensity": 1,
+        "jitter": 0.1,
     }
 }
 
