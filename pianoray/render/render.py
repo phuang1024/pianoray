@@ -26,10 +26,10 @@ import numpy as np
 from tqdm import trange
 
 from .. import logger
-from ..cpp import build_lib, Types
 from ..effects import parse_midi
-from ..effects import Blocks, Keyboard
+from ..effects import Blocks, Keyboard, Glare
 from ..settings import Settings
+from .lib import load_libs
 from .video import Video
 
 
@@ -39,30 +39,7 @@ def preprocess(settings: Settings):
     """
     coord = settings.video.resolution[0] / 52
     settings.blocks.radius *= coord
-
-
-def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
-    """
-    Load C libraries.
-    """
-    cache = os.path.join(cache, "c_libs")
-    os.makedirs(cache, exist_ok=True)
-
-    blocks = build_lib(
-        ["effects/blocks.cpp"],
-        cache,
-        "blocks",
-    )
-    blocks.render_blocks.argtypes = [
-        Types.img, Types.int, Types.int,
-        Types.int,
-        Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
-        Types.int, Types.double, Types.double, Types.double, Types.arr_uchar,
-    ]
-
-    return {
-        "blocks": blocks,
-    }
+    settings.glare.radius *= coord
 
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
@@ -125,6 +102,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     # OOP effects
     blocks = Blocks(settings, cache, libs)
     keyboard = Keyboard(settings, cache, libs)
+    glare = Glare(settings, cache, libs)
 
     # Render
     num_frames = 0
@@ -140,6 +118,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
 
         blocks.render(settings, img, frame, notes)
         keyboard.render(settings, img, frame)
+        glare.render(settings, img, frame, notes)
 
         video.write(img)
 

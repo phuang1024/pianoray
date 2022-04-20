@@ -60,6 +60,11 @@ SETTINGS_DEFAULT = {
         "file": None,
         "start": 0,
     },
+    "glare": {
+        "radius": 1.5,
+        "intensity": 1,
+        "jitter": 0.1,
+    }
 }
 
 

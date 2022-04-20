@@ -90,10 +90,12 @@ void draw_rect(
  *
  * @param img_data, width, height  Image parameters.
  * @param frame  Frame to render.
+ *
  * @param num_notes  Number of MIDI notes passed in.
  * @param note_keys  Key (note number) for each note.
  * @param note_starts  Start frame of each note.
  * @param note_ends  End frame of each note.
+ *
  * @param fps  settings.video.fps
  * @param speed  settings.blocks.speed
  * @param black_width  settings.piano.black_width_fac

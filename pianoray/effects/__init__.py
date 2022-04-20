@@ -18,7 +18,7 @@
 #
 
 from .midi import parse_midi
-from . import utils
 
 from .blocks import Blocks
+from .glare import Glare
 from .keyboard import Keyboard
