@@ -35,6 +35,7 @@ class Video:
 
     run: bool
     tmpdir: str
+    fps: int
     num_frames: int
     extracted: int
 
@@ -50,6 +51,7 @@ class Video:
         os.makedirs(self.tmpdir, exist_ok=True)
 
         self._video = cv2.VideoCapture(path)
+        self.fps = self._video.get(cv2.CAP_PROP_FPS)
         self.num_frames = int(self._video.get(cv2.CAP_PROP_FRAME_COUNT))
 
         Thread(target=self.extract).start()
