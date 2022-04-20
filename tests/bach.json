@@ -9,5 +9,9 @@
     "audio": {
         "path": "examples/bach/audio.mp3",
         "start": 10.02
+    },
+    "keyboard": {
+        "file": "examples/bach/video.mp4",
+        "start": 3.75
     }
 }
