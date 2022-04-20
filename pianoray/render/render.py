@@ -28,7 +28,7 @@ from tqdm import trange
 from .. import logger
 from ..cpp import build_lib, Types
 from ..effects import parse_midi
-from ..effects import Blocks
+from ..effects import Blocks, Keyboard
 from ..settings import Settings
 from .video import Video
 
@@ -124,6 +124,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
 
     # OOP effects
     blocks = Blocks(settings, cache, libs)
+    keyboard = Keyboard(settings, cache, libs)
 
     # Render
     num_frames = 0
@@ -136,7 +137,10 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
             continue
 
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
-        blocks.render(img, frame, notes)
+
+        blocks.render(settings, img, frame, notes)
+        keyboard.render(settings, img, frame)
+
         video.write(img)
 
     return num_frames
