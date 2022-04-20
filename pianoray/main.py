@@ -51,6 +51,7 @@ def render(args):
     render_video(settings, args.output, args.cache)
 
     if args.preview:
+        logger.info("Opening output with xdg-open")
         os.system(f"xdg-open {args.output}")
 
 

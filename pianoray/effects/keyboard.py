@@ -47,7 +47,10 @@ class VideoRead:
         self.in_fps = self._video.get(cv2.CAP_PROP_FPS)
         self.out_fps = fps
 
+        # _frame stores frame number with first note = 0
+        # _real_frame stores frame number with first frame of video=0
         self._frame = int(-1 * offset * self.in_fps)
+        self._real_frame = 0
         self._last = None
 
     def _get_frame(self, frame: int) -> int:
@@ -66,6 +69,7 @@ class VideoRead:
         :param inc: Whether to increment.
         """
         ret, img = self._video.read()
+        self._real_frame += 1
         if inc:
             self._frame += 1
         if ret:
