@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import shutil
 import time
 
 import pygame
@@ -51,5 +52,8 @@ def view_video(path: str) -> None:
 
         display.fill((0, 0, 0))
 
-    pygame.quit()
     video.run = False
+    time.sleep(0.05)  # Wait for thread to stop
+
+    pygame.quit()
+    shutil.rmtree(video.tmpdir)
