@@ -98,8 +98,30 @@ class Keyboard(Effect):
         self.video = VideoRead(settings.keyboard.file,
             settings.video.fps, settings.keyboard.start)
 
-    def render(self, img: np.ndarray, frame: int):
+        # Compute perspective warp
+        crop = np.array(settings.keyboard.crop)
+        src_width = np.linalg.norm(crop[1]-crop[0])
+        src_height = np.linalg.norm(crop[3]-crop[0])
+        dst_width = settings.video.resolution[0]
+        dst_height = dst_width * src_height / src_width
+
+        width = settings.video.resolution[0]
+        half = settings.video.resolution[1] / 2
+        src_points = crop.astype(np.float32)
+        dst_points = np.array(((0,half), (width,half),
+            (width,half+dst_height), (0,half+dst_height)), dtype=np.float32)
+
+        self.persp = cv2.getPerspectiveTransform(src_points, dst_points)
+        self.dst_shape = (int(dst_width), int(dst_height))
+
+    def render(self, settings, img: np.ndarray, frame: int):
         """
         Render the keyboard.
         """
-        img = self.video.read(frame)
+        dst = self.dst_shape
+
+        kbd = self.video.read(frame)
+        kbd = cv2.warpPerspective(kbd, self.persp, dst)
+
+        half = int(settings.video.resolution[1] / 2)
+        img[half:half+dst[1], 0:dst[0], ...] = kbd

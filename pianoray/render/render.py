@@ -138,8 +138,8 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
 
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
 
-        blocks.render(img, frame, notes)
-        keyboard.render(img, frame)
+        blocks.render(settings, img, frame, notes)
+        keyboard.render(settings, img, frame)
 
         video.write(img)
 
