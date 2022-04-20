@@ -41,10 +41,14 @@ class Info:
 
         :param rect: ``(x, y, w, h)`` coordinates to draw.
         """
+        frame = self.timeline.frame
+        fps = self.video.fps
         text = [
-            f"Frame: {self.timeline.frame}",
+            f"Frame: {frame}",
             f"Cached frames: {self.video.extracted}",
+            f"Timestamp: {frame/fps:.3f}s",
         ]
+
         x = rect[0] + 20
         for i, t in enumerate(text):
             y = rect[1] + 10 + 20*i

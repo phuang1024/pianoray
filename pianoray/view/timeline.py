@@ -20,6 +20,7 @@
 import numpy as np
 import pygame
 
+from ..utils import bounds
 from .utils import *
 from .video import Video
 
@@ -61,6 +62,12 @@ class Timeline:
         # Draw marker
         marker = Timeline.fac_to_pix(x, w, self.frame/total_frames)
         pygame.draw.line(surface, BLUE, (marker, y), (marker, y+h))
+
+    def next_frame(self):
+        self.frame = bounds(self.frame+1, 0, self.video.num_frames)
+
+    def prev_frame(self):
+        self.frame = bounds(self.frame-1, 0, self.video.num_frames)
 
     @staticmethod
     def fac_to_pix(x, w, fac):
