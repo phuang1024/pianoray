@@ -17,6 +17,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import numpy as np
 import pygame
 
 from .utils import *
@@ -43,6 +44,7 @@ class Timeline:
         """
         x, y, w, h = rect
 
+        # Handle events
         if pygame.mouse.get_pressed()[0]:
             mx, my = pygame.mouse.get_pos()
             if x <= mx < x+w and y <= my < y+h:
@@ -51,11 +53,14 @@ class Timeline:
 
         pygame.draw.rect(surface, DARK_GRAY, rect)
 
-        marker = self.frame / self.video.num_frames
-        marker = marker*w + x
-        left_x = int(marker)
-        left_col = (BLUE * (marker-left_x)).astype(int)
-        right_x = int(marker) + 1
-        right_col = (BLUE * (right_x-marker)).astype(int)
-        pygame.draw.line(surface, left_col, (left_x, y), (left_x, y+h))
-        pygame.draw.line(surface, right_col, (right_x, y), (right_x, y+h))
+        # Draw cached
+        x2 = Timeline.fac_to_pix(x, w, self.video.extracted/self.video.num_frames)
+        pygame.draw.rect(surface, GRAY, (x, y, x2-x, 5))
+
+        # Draw marker
+        marker = Timeline.fac_to_pix(x, w, self.frame/self.video.num_frames)
+        pygame.draw.line(surface, BLUE, (marker, y), (marker, y+h))
+
+    @staticmethod
+    def fac_to_pix(x, w, fac):
+        return np.interp(fac, (0, 1), (x, x+w))
