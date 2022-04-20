@@ -26,6 +26,37 @@ namespace Pianoray {
 
 
 /**
+ * Render glare at one position.
+ *
+ * @param cx, cy  Glare center pixel coordinates.
+ */
+void render_one_glare(Image& img, double cx, double cy,
+    double radius, double intensity)
+{
+    const Color white(255, 255, 255);
+
+    int w = img.width, h = img.height;
+
+    int x_start = ibounds((int)(cx-radius), 0, w-1);
+    int x_end = ibounds((int)(cx+radius+1), 0, w-1);
+    int y_start = ibounds((int)(cy-radius), 0, h-1);
+    int y_end = ibounds((int)(cy+radius+1), 0, h-1);
+
+    for (int x = x_start; x <= x_end; x++) {
+        for (int y = y_start; y <= y_end; y++) {
+            int r = hypot(x-cx, y-cy);
+            double fac = dbounds(1 - r/radius, 0, 1);
+            fac = interp(fac, 0, 1, 0, intensity);
+            fac = dbounds(fac, 0, 1);
+
+            Color curr = img.getc(x, y);
+            img.setc(x, y, mix_cols(curr, white, fac));
+        }
+    }
+}
+
+
+/**
  * Render glare.
  *
  * @param img_data, width, height  Image parameters.
@@ -54,12 +85,8 @@ extern "C" void render_glare(
         double end = note_ends[i];
 
         if (start < frame && frame < end) {
-            double x_start, x_end;
-            key_coords(x_start, x_end, note_keys[i], width, black_width);
-
-            for (int x = x_start; x < x_end; x++)
-                for (int y = half-10; y < half+10; y++)
-                    img.set(x, y, 0, 255);
+            double key_x = key_pos(note_keys[i]) * width;
+            render_one_glare(img, key_x, half, radius, intensity);
         }
     }
 }
