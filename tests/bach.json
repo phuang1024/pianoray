@@ -12,6 +12,7 @@
     },
     "keyboard": {
         "file": "examples/bach/video.mp4",
-        "start": 3.75
+        "start": 3.75,
+        "crop": [[8,434], [1275,298], [1259,452], [22,435]]
     }
 }

@@ -58,3 +58,5 @@ Colors are ``[R, G, B]`` from 0 to 255.
 - ``keyboard``: Settings about rendering the keyboard.
     - ``file``: Video file containing recording of playing the keyboard.
     - ``start``: Timestamp, in seconds, you play the first note in the video.
+    - ``crop``: Corners of the keyboard in the video, starting from top left and
+      going clockwise. Should be ``[[x1, y1], [x2, y2], [x3, y3], [x4, y4]]``.
