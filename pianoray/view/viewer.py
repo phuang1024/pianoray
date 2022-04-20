@@ -40,27 +40,29 @@ def view_video(path: str) -> None:
     display = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
     pygame.display.set_caption("PianoRay Viewer")
 
-    run = True
-    while run:
-        time.sleep(1/30)
-        resized = False
+    try:
+        run = True
+        while run:
+            time.sleep(1/30)
+            resized = False
+    
+            pygame.display.update()
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    run = False
+                elif event.type == pygame.VIDEORESIZE:
+                    resized = True
+    
+            width, height = display.get_size()
+            v_split = int(height * 0.9)
+            h_split = int(width * 0.8)
+    
+            timeline.draw(display, events, (0, v_split, width, height-v_split))
 
-        pygame.display.update()
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.QUIT:
-                run = False
-            elif event.type == pygame.VIDEORESIZE:
-                resized = True
-
-        width, height = display.get_size()
-        v_split = int(height * 0.9)
-        h_split = int(width * 0.8)
-
-        timeline.draw(display, (0, v_split, width, height-v_split))
-
-    video.run = False
-    time.sleep(0.05)  # Wait for thread to stop
-
-    pygame.quit()
-    shutil.rmtree(video.tmpdir)
+    finally:
+        video.run = False
+        time.sleep(0.05)  # Wait for thread to stop
+    
+        pygame.quit()
+        shutil.rmtree(video.tmpdir)

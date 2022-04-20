@@ -35,10 +35,27 @@ class Timeline:
 
         self.frame = 0
 
-    def draw(self, surface: pygame.Surface, rect):
+    def draw(self, surface: pygame.Surface, events, rect):
         """
         Draw timeline on surface.
 
         :param rect: ``(x, y, w, h)`` coordinates to draw.
         """
+        x, y, w, h = rect
+
+        if pygame.mouse.get_pressed()[0]:
+            mx, my = pygame.mouse.get_pos()
+            if x <= mx < x+w and y <= my < y+h:
+                fac = (mx-x) / w
+                self.frame = int(fac * self.video.num_frames)
+
         pygame.draw.rect(surface, DARK_GRAY, rect)
+
+        marker = self.frame / self.video.num_frames
+        marker = marker*w + x
+        left_x = int(marker)
+        left_col = (BLUE * (marker-left_x)).astype(int)
+        right_x = int(marker) + 1
+        right_col = (BLUE * (right_x-marker)).astype(int)
+        pygame.draw.line(surface, left_col, (left_x, y), (left_x, y+h))
+        pygame.draw.line(surface, right_col, (right_x, y), (right_x, y+h))

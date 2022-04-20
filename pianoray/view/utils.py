@@ -17,10 +17,13 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import numpy as np
+
 TMP = "/tmp"
 
-BLACK = (0, 0, 0)
-DARK_GRAY = (50, 50, 50)
-GRAY = (120, 120, 120)
-LIGHT_GRAY = (170, 170, 170)
-WHITE = (255, 255, 255)
+BLACK = np.array((0, 0, 0))
+DARK_GRAY = np.array((50, 50, 50))
+GRAY = np.array((120, 120, 120))
+LIGHT_GRAY = np.array((170, 170, 170))
+WHITE = np.array((255, 255, 255))
+BLUE = np.array((130, 130, 255))
