@@ -9,5 +9,10 @@
     "audio": {
         "path": "examples/short/audio.mp3",
         "start": 2.4
+    },
+    "keyboard": {
+        "file": "examples/bach/video.mp4",
+        "start": 3.88,
+        "crop": [[8,288], [1275,298], [1259,452], [22,435]]
     }
 }

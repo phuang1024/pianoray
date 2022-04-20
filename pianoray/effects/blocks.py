@@ -28,7 +28,7 @@ class Blocks(Effect):
     The blocks that fall down.
     """
 
-    def render(self, img: np.ndarray, frame: int, notes):
+    def render(self, settings, img: np.ndarray, frame: int, notes):
         """
         Render the blocks.
         :param notes: MIDI notes from parse_midi.

@@ -87,9 +87,10 @@ class Video:
             FFMPEG,
             "-y",
             "-r", fps,
+            "-start_number", 0,
             "-i", os.path.join(self.cache, "frames", "%d.jpg"),
             "-vframes", num_frames,
-            "-c:v", vcodec,
+            "-c:v", vcodec, "-an",
             "-crf", crf,
             "-r", fps,
             os.path.join(self.cache, "no_audio.mp4"),
@@ -102,7 +103,8 @@ class Video:
             args = [
                 FFMPEG,
                 "-y",
-                "-ss", self.audio_offset-margin_start, "-t", 100000,
+                "-ss", self.audio_offset - margin_start,
+                "-t", num_frames/fps,
                 "-i", self.audio,
                 os.path.join(self.cache, "offset.mp3"),
             ]

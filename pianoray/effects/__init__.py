@@ -21,3 +21,4 @@ from .midi import parse_midi
 from . import utils
 
 from .blocks import Blocks
+from .keyboard import Keyboard

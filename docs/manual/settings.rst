@@ -10,11 +10,15 @@ Example
 
 Save a JSON file of your settings, and pass to ``pianoray``.
 
+Example:
+
 .. code-block:: json
 
     {
-        "fps": 30,
-        "resolution": [1920, 1080],
+        "video": {
+            "fps": 30,
+            "resolution": [1920, 1080]
+        },
         "midi": {
             "path": "/path/to/file.mid"
         }
@@ -35,8 +39,6 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``resolution``: Video resolution ``[width, height]``.
     - ``vcodec``: Video codec. This will be passed to FFmpeg, so please
       provide a value that FFmpeg recognizes, e.g. ``libx264``.
-    - ``duration``: Duration, in seconds from the time you press the first note
-      to the time you press the last note.
 - ``audio``: Settings about audio.
     - ``path``: Path to audio file.
     - ``start``: Timestamp, in seconds, you play the first note in the audio.
@@ -53,3 +55,8 @@ Colors are ``[R, G, B]`` from 0 to 255.
 - ``midi``: Settings about MIDI.
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.
+- ``keyboard``: Settings about rendering the keyboard.
+    - ``file``: Video file containing recording of playing the keyboard.
+    - ``start``: Timestamp, in seconds, you play the first note in the video.
+    - ``crop``: Corners of the keyboard in the video, starting from top left and
+      going clockwise. Should be ``[[x1, y1], [x2, y2], [x3, y3], [x4, y4]]``.

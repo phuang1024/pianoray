@@ -39,7 +39,8 @@ class Effect:
         self.cache = cache
         self.libs = libs
 
-    def render(self, img: np.ndarray, frame: int, *args, **kwargs) -> None:
+    def render(self, settings: Settings, img: np.ndarray,
+            frame: int, *args, **kwargs) -> None:
         """
         Override this in the subclass.
         """
