@@ -39,7 +39,8 @@ class Glare(Effect):
         ends = np.array([n[3] for n in notes], dtype=Types.double)
 
         settings = self.settings
-        settings_args = [settings.piano.black_width_fac]
+        settings_args = [settings.piano.black_width_fac,
+            settings.glare.radius, settings.glare.intensity]
 
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],

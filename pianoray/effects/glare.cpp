@@ -30,18 +30,21 @@ namespace Pianoray {
  *
  * @param img_data, width, height  Image parameters.
  * @param frame  Frame to render.
+ *
  * @param num_notes  Number of MIDI notes passed in.
  * @param note_keys  Key (note number) for each note.
  * @param note_starts  Start frame of each note.
  * @param note_ends  End frame of each note.
- * @param fps  settings.video.fps
+ *
  * @param black_width  settings.piano.black_width_fac
+ * @param radius  settings.glare.radius
+ * @param intensity  settings.glare.intensity
  */
 extern "C" void render_glare(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    double black_width)
+    double black_width, double radius, double intensity)
 {
     Image img(img_data, width, height, 3);
     int half = height / 2;

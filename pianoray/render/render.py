@@ -39,6 +39,7 @@ def preprocess(settings: Settings):
     """
     coord = settings.video.resolution[0] / 52
     settings.blocks.radius *= coord
+    settings.glare.radius *= coord
 
 
 def render_video(settings: Settings, out: str, cache: str) -> None:

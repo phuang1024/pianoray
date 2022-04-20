@@ -52,7 +52,7 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
         Types.img, Types.int, Types.int,
         Types.int,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
-        Types.double,
+        Types.double, Types.double, Types.double,
     ]
 
     return {
