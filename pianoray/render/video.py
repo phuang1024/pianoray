@@ -102,7 +102,7 @@ class Video:
             args = [
                 FFMPEG,
                 "-y",
-                "-ss", self.audio_offset-margin_start, "-t", 100000,
+                "-ss", self.audio_offset-margin_start,
                 "-i", self.audio,
                 os.path.join(self.cache, "offset.mp3"),
             ]
