@@ -43,6 +43,7 @@ class Timeline:
         :param rect: ``(x, y, w, h)`` coordinates to draw.
         """
         x, y, w, h = rect
+        total_frames = self.video.num_frames
 
         # Handle events
         if pygame.mouse.get_pressed()[0]:
@@ -54,11 +55,11 @@ class Timeline:
         pygame.draw.rect(surface, DARK_GRAY, rect)
 
         # Draw cached
-        x2 = Timeline.fac_to_pix(x, w, self.video.extracted/self.video.num_frames)
+        x2 = Timeline.fac_to_pix(x, w, self.video.extracted/total_frames)
         pygame.draw.rect(surface, GRAY, (x, y, x2-x, 5))
 
         # Draw marker
-        marker = Timeline.fac_to_pix(x, w, self.frame/self.video.num_frames)
+        marker = Timeline.fac_to_pix(x, w, self.frame/total_frames)
         pygame.draw.line(surface, BLUE, (marker, y), (marker, y+h))
 
     @staticmethod
