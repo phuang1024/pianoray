@@ -51,7 +51,7 @@ def view_video(path: str) -> None:
         while run:
             time.sleep(1/15)
             resized = False
- 
+
             pygame.display.update()
             events = pygame.event.get()
             for event in events:
@@ -59,11 +59,11 @@ def view_video(path: str) -> None:
                     run = False
                 elif event.type == pygame.VIDEORESIZE:
                     resized = True
- 
+
             width, height = display.get_size()
             v_split = int(height * 0.9)
             h_split = int(width * 0.8)
- 
+
             display.fill(BLACK)
             timeline.draw(display, events, (0, v_split, width, height-v_split))
             info.draw(display, events, (h_split, 0, width-h_split, v_split))
@@ -74,6 +74,6 @@ def view_video(path: str) -> None:
     finally:
         video.run = False
         time.sleep(0.05)  # Wait for thread to stop
- 
+
         pygame.quit()
         shutil.rmtree(video.tmpdir)
