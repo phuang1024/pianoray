@@ -1,6 +1,6 @@
 #
 #  PianoRay
-#  Piano performance visualizer.
+#  Video rendering pipeline with piano visualization.
 #  Copyright  PianoRay Authors  2022
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -17,10 +17,28 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-TMP = "/tmp"
+import pygame
 
-BLACK = (0, 0, 0)
-DARK_GRAY = (50, 50, 50)
-GRAY = (120, 120, 120)
-LIGHT_GRAY = (170, 170, 170)
-WHITE = (255, 255, 255)
+from .utils import *
+from .video import Video
+
+pygame.init()
+
+
+class Timeline:
+    """
+    Frame browser area.
+    """
+
+    def __init__(self, video: Video):
+        self.video = video
+
+        self.frame = 0
+
+    def draw(self, surface: pygame.Surface, rect):
+        """
+        Draw timeline on surface.
+
+        :param rect: ``(x, y, w, h)`` coordinates to draw.
+        """
+        pygame.draw.rect(surface, DARK_GRAY, rect)

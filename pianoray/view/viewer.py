@@ -23,15 +23,18 @@ import time
 import pygame
 
 from .. import logger
+from .timeline import Timeline
 from .video import Video
 
 pygame.init()
 
 
 def view_video(path: str) -> None:
+    logger.warn("Viewer is not complete yet.")
+
     video = Video(path)
+    timeline = Timeline(video)
     logger.info(f"Extracting frames to {video.tmpdir}")
-    logger.warn("This feature is not complete yet.")
 
     resized = False  # Redraw if resized
     display = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
@@ -40,17 +43,21 @@ def view_video(path: str) -> None:
     run = True
     while run:
         time.sleep(1/30)
+        resized = False
+
         pygame.display.update()
         events = pygame.event.get()
-
         for event in events:
             if event.type == pygame.QUIT:
                 run = False
-
             elif event.type == pygame.VIDEORESIZE:
                 resized = True
 
-        display.fill((0, 0, 0))
+        width, height = display.get_size()
+        v_split = int(height * 0.9)
+        h_split = int(width * 0.8)
+
+        timeline.draw(display, (0, v_split, width, height-v_split))
 
     video.run = False
     time.sleep(0.05)  # Wait for thread to stop
