@@ -57,8 +57,15 @@ def view_video(path: str) -> None:
             for event in events:
                 if event.type == pygame.QUIT:
                     run = False
+
                 elif event.type == pygame.VIDEORESIZE:
                     resized = True
+
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_RIGHT, pygame.K_l):
+                        timeline.next_frame()
+                    elif event.key in (pygame.K_LEFT, pygame.K_h):
+                        timeline.prev_frame()
 
             width, height = display.get_size()
             v_split = int(height * 0.9)
