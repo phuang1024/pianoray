@@ -108,8 +108,9 @@ class Keyboard(Effect):
         width = settings.video.resolution[0]
         half = settings.video.resolution[1] / 2
         src_points = crop.astype(np.float32)
-        dst_points = np.array(((0,half), (width,half),
-            (width,half+dst_height), (0,half+dst_height)), dtype=np.float32)
+        dst_points = np.array(
+            ((0,0), (width,0), (width,dst_height), (0,dst_height)),
+            dtype=np.float32)
 
         self.persp = cv2.getPerspectiveTransform(src_points, dst_points)
         self.dst_shape = (int(dst_width), int(dst_height))
