@@ -71,7 +71,7 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     with open(cache_settings, "w") as fp:
         json.dump(settings._json(), fp)
 
-    video = Video(os.path.join(cache, "output"), settings.audio.path,
+    video = Video(os.path.join(cache, "output"), settings.audio.file,
         settings.audio.start)
     num_frames = render_frames(settings, libs, video, cache, real_start)
     video.compile(out, settings.video.fps, num_frames,

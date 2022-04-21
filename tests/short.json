@@ -7,7 +7,7 @@
         "file": "examples/short/midi.mid"
     },
     "audio": {
-        "path": "examples/short/audio.mp3",
+        "file": "examples/short/audio.mp3",
         "start": 2.4
     },
     "keyboard": {

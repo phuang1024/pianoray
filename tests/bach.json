@@ -7,7 +7,7 @@
         "file": "examples/bach/midi.mid"
     },
     "audio": {
-        "path": "examples/bach/audio.mp3",
+        "file": "examples/bach/audio.mp3",
         "start": 10.02
     },
     "keyboard": {

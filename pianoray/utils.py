@@ -37,7 +37,7 @@ SETTINGS_DEFAULT = {
         "vcodec": "libx265",
     },
     "audio": {
-        "path": None,
+        "file": None,
         "start": 0,
     },
     "composition": {
@@ -61,7 +61,7 @@ SETTINGS_DEFAULT = {
         "start": 0,
     },
     "glare": {
-        "radius": 1.5,
+        "radius": 2.5,
         "intensity": 1,
         "jitter": 0.1,
     }

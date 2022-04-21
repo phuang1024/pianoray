@@ -40,7 +40,7 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``vcodec``: Video codec. This will be passed to FFmpeg, so please
       provide a value that FFmpeg recognizes, e.g. ``libx264``.
 - ``audio``: Settings about audio.
-    - ``path``: Path to audio file.
+    - ``file``: Path to audio file.
     - ``start``: Timestamp, in seconds, you play the first note in the audio.
 - ``composition``: Settings about the structure of the video.
     - ``margin_start``: Seconds of video before the first note.

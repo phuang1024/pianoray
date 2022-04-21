@@ -17,7 +17,7 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-#include <iostream>
+#include <cmath>
 
 #include "pr_image.hpp"
 #include "pr_math.hpp"
@@ -53,6 +53,7 @@ void render_one_glare(Image& img, double cx, double cy,
             double fac = dbounds(1 - r/radius, 0, 1);
             fac = interp(fac, 0, 1, 0, intensity);
             fac *= rand_mult;
+            fac = pow(fac, 2);  // Square falloff
 
             Color curr = img.getc(x, y);
             img.setc(x, y, mix_cols(curr, white, fac));

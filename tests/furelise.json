@@ -7,7 +7,7 @@
         "file": "examples/furelise/midi.mid"
     },
     "audio": {
-        "path": "examples/furelise/audio.mp3",
+        "file": "examples/furelise/audio.mp3",
         "start": 14.73
     }
 }
