@@ -20,7 +20,7 @@
 import os
 import setuptools
 
-VERSION = os.environ.get("PYPI_VERSION", "0.0.4")
+VERSION = os.environ.get("PYPI_VERSION", "0.0.5")
 VERSION = VERSION.split("/")[-1]  # GitHub input
 
 
