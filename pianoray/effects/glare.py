@@ -17,6 +17,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+import os
+
 import numpy as np
 
 from ..cpp import Types
@@ -38,14 +40,20 @@ class Glare(Effect):
         starts = np.array([n[2] for n in notes], dtype=Types.double)
         ends = np.array([n[3] for n in notes], dtype=Types.double)
 
+        in_path = os.path.join(self.cache, "glare", f"{frame-1}.bin")
+        out_path = os.path.join(self.cache, "glare", f"{frame}.bin")
+        if not os.path.isfile(in_path):
+            in_path = ""
+
         settings = self.settings
         settings_args = [settings.piano.black_width_fac,
             settings.glare.radius, settings.glare.intensity,
-            settings.glare.jitter]
+            settings.glare.jitter, settings.glare.streaks]
 
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],
             frame,
+            Types.cpath(in_path), Types.cpath(out_path),
             len(notes), keys, starts, ends,
             *settings_args,
         )

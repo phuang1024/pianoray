@@ -50,6 +50,9 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
         logger.error("Failed to build libraries.")
         raise
 
+    for sub in ("glare",):
+        os.makedirs(os.path.join(cache, sub), exist_ok=True)
+
     cache_settings = os.path.join(cache, "settings.json")
     cache_curr = os.path.join(cache, "currently_rendering.txt")
 

@@ -64,6 +64,7 @@ SETTINGS_DEFAULT = {
         "radius": 2.5,
         "intensity": 1,
         "jitter": 0.1,
+        "streaks": 6,
     }
 }
 
