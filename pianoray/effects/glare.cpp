@@ -53,6 +53,8 @@ void render_one_glare(Image& img, bool* cached, NoteCache* cache, int note,
 {
     // Create cache if not already there.
     if (!cached[note]) {
+        cached[note] = true;
+
         NoteCache& c = cache[note];
         c.note = note;
         c.num_streaks = streaks;
