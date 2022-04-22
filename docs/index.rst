@@ -16,6 +16,7 @@ PianoRay
    :hidden:
    :caption: Manual
 
+   manual/tutorial.rst
    manual/cli.rst
    manual/settings.rst
 
@@ -25,4 +26,5 @@ PianoRay
    :caption: Developers
 
    devs/setup.rst
+   devs/files.rst
    devs/info.rst
