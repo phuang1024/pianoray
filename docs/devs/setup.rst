@@ -3,11 +3,6 @@ Setup
 
 How to setup your development environment.
 
-Fork and Clone
---------------
-
-First, fork the GitHub repository and clone your fork.
-
 Dependencies
 ------------
 
@@ -18,6 +13,10 @@ Additional dependencies for development:
 - Git
 - GNU Make
 
+Fork and Clone
+--------------
+
+First, fork the GitHub repository and clone your fork.
 
 Test Video
 ----------
