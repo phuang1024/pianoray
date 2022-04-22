@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 
 #include "pr_image.hpp"
 #include "pr_math.hpp"
@@ -34,10 +35,55 @@ namespace Pianoray {
  * Stores information for one cached note.
  */
 struct NoteCache {
-    char note;  // Note number.
+    char note;
     char num_streaks;  // Number of streaks.
-    char streaks[30];  // Streak angles, 256 units per revolution.
-                       // 30 is arbitrary limit.
+    char streaks[50];  // Streak angles, 256 units per revolution.
+};
+
+
+/**
+ * Cache for glare.
+ */
+class Cache {
+public:
+    NoteCache notes[88];
+    bool cached[88];    // Whether a note is cached.
+    bool rendered[88];  // Whether a note is rendered in this frame.
+
+    Cache() {
+        memset(cached, 0, 88);
+        memset(rendered, 0, 88);
+    }
+
+    void read(std::ifstream& fin) {
+        memset(cached, 0, 88);
+        memset(rendered, 0, 88);
+
+        int count;
+        fin.read((char*)(&count), sizeof(int));
+
+        for (int i = 0; i < count; i++) {
+            NoteCache c;
+            fin.read((char*)(&c), sizeof(NoteCache));
+
+            int note = c.note;
+            cached[note] = true;
+            notes[note] = c;
+        }
+    }
+
+    void write(std::ofstream& fout) {
+        int count = 0;
+        for (int i = 0; i < 88; i++) {
+            if (cached[i] && rendered[i]) {
+                fout.write((char*)(&notes[i]), sizeof(NoteCache));
+                count++;
+            }
+        }
+
+        fout.seekp(0, std::ios::beg);
+        fout.write((char*)(&count), sizeof(int));
+    }
 };
 
 
@@ -47,21 +93,10 @@ struct NoteCache {
  * @param cached, cache  Cache data.
  * @param cx, cy  Glare center pixel coordinates.
  */
-void render_one_glare(Image& img, bool* cached, NoteCache* cache, int note,
+void render_one_glare(Image& img, Cache& cache, int note,
     double cx, double cy, double radius, double intensity, double jitter,
     int streaks)
 {
-    // Create cache if not already there.
-    if (!cached[note]) {
-        cached[note] = true;
-
-        NoteCache& c = cache[note];
-        c.note = note;
-        c.num_streaks = streaks;
-        for (int i = 0; i < streaks; i++)
-            c.streaks[i] = Random::randint(0, 256);
-    }
-
     const Color white(255, 255, 255);
     const double rand_mult = Random::uniform(1-jitter, 1+jitter);
 
@@ -111,26 +146,16 @@ extern "C" void render_glare(
     char* cache_in_path, char* cache_out_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
     double black_width, double radius, double intensity, double jitter,
-        int streaks)
+        const int streaks)
 {
     Image img(img_data, width, height, 3);
+    Cache cache;
     int half = height / 2;
 
     // Read cache
-    bool cached[88];
-    NoteCache cache[88];
-    memset(cached, 0, 88);
     if (strlen(cache_in_path) > 0) {
         std::ifstream fin(cache_in_path);
-        int count;
-        fin.read((char*)(&count), sizeof(int));
-
-        for (int i = 0; i < count; i++) {
-            NoteCache c;
-            fin.read((char*)(&c), sizeof(NoteCache));
-            cached[(int)(c.note)] = true;
-            cache[(int)(c.note)] = c;
-        }
+        cache.read(fin);
     }
 
     // Render
@@ -141,22 +166,28 @@ extern "C" void render_glare(
         if (start < frame && frame < end) {
             int note = note_keys[i];
             double key_x = key_pos(note) * width;
-            render_one_glare(img, cached, cache, note, key_x, half, radius,
+
+            // Create cache entry if not already there.
+            cache.rendered[note] = true;
+            if (!cache.cached[note]) {
+                cache.cached[note] = true;
+
+                NoteCache& c = cache.notes[note];
+                c.note = note;
+                c.num_streaks = streaks;
+                for (int i = 0; i < streaks; i++)
+                    c.streaks[i] = Random::randint(0, 256);
+            }
+
+            render_one_glare(img, cache, note, key_x, half, radius,
                 intensity, jitter, streaks);
         }
     }
 
     // Write cache
-    int count = 0;
-    for (int i = 0; i < 88; i++)
-        count += cached[i];
-
-    std::ofstream fout(cache_out_path);
-    fout.write((char*)(&count), sizeof(int));
-    for (int i = 0; i < 88; i++) {
-        if (cached[i]) {
-            fout.write((char*)(&cache[i]), sizeof(NoteCache));
-        }
+    if (strlen(cache_out_path) > 0) {
+        std::ofstream fout(cache_out_path);
+        cache.write(fout);
     }
 }
 
