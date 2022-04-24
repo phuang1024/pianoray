@@ -23,7 +23,7 @@
 namespace Random {
 
 
-constexpr int LARGE = 10000000;
+constexpr int LARGE = (int)1e9;
 
 
 /**
@@ -39,6 +39,14 @@ double random() {
  */
 double uniform(double a, double b) {
     return a + (b-a) * random();
+}
+
+/**
+ * Integer in [a, b)
+ */
+int randint(int a, int b) {
+    int delta = (b-a) * random();
+    return a + delta;
 }
 
 

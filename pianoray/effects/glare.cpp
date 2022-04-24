@@ -18,6 +18,9 @@
 //
 
 #include <cmath>
+#include <cstring>
+#include <fstream>
+#include <iostream>
 
 #include "pr_image.hpp"
 #include "pr_math.hpp"
@@ -31,12 +34,15 @@ namespace Pianoray {
 /**
  * Render glare at one position.
  *
+ * @param cached, cache  Cache data.
  * @param cx, cy  Glare center pixel coordinates.
  */
-void render_one_glare(Image& img, double cx, double cy,
-    double radius, double intensity, double jitter)
+void render_one_glare(Image& img, int note, double cx, double cy,
+    double radius, double intensity, double jitter, int streaks,
+    double* streak_angles)
 {
     const Color white(255, 255, 255);
+    const double rand_mult = Random::uniform(1-jitter, 1+jitter);
 
     int w = img.width, h = img.height;
 
@@ -45,13 +51,22 @@ void render_one_glare(Image& img, double cx, double cy,
     int y_start = ibounds((int)(cy-radius), 0, h-1);
     int y_end = ibounds((int)(cy+radius+1), 0, h-1);
 
-    double rand_mult = Random::uniform(1-jitter, 1+jitter);
     for (int x = x_start; x <= x_end; x++) {
         for (int y = y_start; y <= y_end; y++) {
+            int dy = y - cy, dx = x - cx;
+            double angle = atan2(dy, dx);
+            double prox = 100;
+            for (int i = 0; i < streaks; i++) {
+                double dist = fabs(angle - streak_angles[i]);
+                if (dist < prox)
+                    prox = dist;
+            }
 
             int r = hypot(x-cx, y-cy);
-            double fac = dbounds(1 - r/radius, 0, 1);
-            fac = interp(fac, 0, 1, 0, intensity);
+
+            double r_fac = dbounds(1 - r/radius, 0, 1);
+            double a_fac = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.1);
+            double fac = interp(a_fac*r_fac, 0, 1, 0, intensity);
             fac *= rand_mult;
             fac = pow(fac, 2);  // Square falloff
 
@@ -77,27 +92,41 @@ void render_one_glare(Image& img, double cx, double cy,
  * @param radius  settings.glare.radius
  * @param intensity  settings.glare.intensity
  * @param jitter  settings.glare.jitter
+ * @param streaks  settings.glare.streaks
  */
 extern "C" void render_glare(
     UCH* img_data, int width, int height,
     int frame,
+    char* cache_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    double black_width, double radius, double intensity, double jitter)
+    double black_width, double radius, double intensity, double jitter,
+        const int streaks)
 {
     Image img(img_data, width, height, 3);
     int half = height / 2;
 
+    double streak_angles[100];
+    std::ifstream fin(cache_path);
+    for (int i = 0; i < streaks; i++) {
+        unsigned char angle;
+        fin.read((char*)(&angle), sizeof(unsigned char));
+        streak_angles[i] = (double)angle / 128 * PI;
+    }
+
+    // Render
     for (int i = 0; i < num_notes; i++) {
         double start = note_starts[i];
         double end = note_ends[i];
 
         if (start < frame && frame < end) {
-            double key_x = key_pos(note_keys[i]) * width;
-            render_one_glare(img, key_x, half, radius, intensity, jitter);
+            int note = note_keys[i];
+            double key_x = key_pos(note) * width;
+
+            render_one_glare(img, note, key_x, half, radius,
+                intensity, jitter, streaks, streak_angles);
         }
     }
 }
 
 
 }  // namespace Pianoray
-

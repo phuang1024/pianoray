@@ -61,9 +61,10 @@ SETTINGS_DEFAULT = {
         "start": 0,
     },
     "glare": {
-        "radius": 2.5,
-        "intensity": 1,
-        "jitter": 0.1,
+        "radius": 3,
+        "intensity": 0.9,
+        "jitter": 0.08,
+        "streaks": 6,
     }
 }
 

@@ -50,6 +50,16 @@ class Types:
     arr_double = ndpointer(dtype=double, ndim=1, flags=_arr_flags)
 
     img = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
+    path = ndpointer(dtype=char, ndim=1, flags=_arr_flags)
+
+    @staticmethod
+    def cpath(path: str):
+        """
+        Return C path (numpy array of chars, null terminated).
+        """
+        data = [c for c in path.encode()]
+        data.append(0)
+        return np.array(data, dtype=np.int8)
 
 
 def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
