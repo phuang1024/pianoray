@@ -18,9 +18,18 @@
 #
 
 import os
+import re
 import setuptools
 
-VERSION = os.environ.get("PYPI_VERSION", "0.0.5")
+
+with open("pianoray/utils.py", "r") as fp:
+    data = fp.read()
+
+version_pat = re.compile(r"\d\.\d\.\d")
+results = version_pat.findall(data)
+version_default = results[0] if len(results) > 0 else "0.0.1"
+
+VERSION = os.environ.get("PYPI_VERSION", version_default)
 VERSION = VERSION.split("/")[-1]  # GitHub input
 
 

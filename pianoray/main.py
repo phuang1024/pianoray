@@ -31,12 +31,14 @@ from .view import view_video
 
 
 def render(args):
+    """
     if args.settings is None:
         logger.error("Please provide an argument for settings.")
         return 1
     if args.output is None:
         logger.error("Please provide an argument for output.")
         return 1
+        """
 
     if os.path.isfile(args.output) and not args.yes:
         print(f"Output file {args.output} already exists.")
@@ -56,38 +58,40 @@ def render(args):
 
 
 def view(args):
-    if len(args.options) == 0:
-        logger.error("Please provide the video file to view.")
-        return 1
-
-    view_video(args.options[0])
+    view_video(args.file)
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Piano performance visualizer.")
+    subparsers = parser.add_subparsers(title="subcommands", dest="subparser")
     parser.add_argument("-V", "--version", action="version",
         help="Show version info.", version=f"Pianoray v{VERSION}")
-    parser.add_argument("-s", "--settings",
-        help="Path to settings JSON file.")
-    parser.add_argument("-o", "--output",
-        help="Output video file.")
-    parser.add_argument("-c", "--cache",
-        help="Cache path (default .prcache)", default=".prcache")
-    parser.add_argument("-p", "--preview", action="store_true",
-        help="Open output file after rendering")
     parser.add_argument("-y", "--yes",
         help="Don't prompt overwrite.", action="store_true")
-    parser.add_argument("mode", choices={"render", "view"}, nargs="?",
-        help="Mode to run.")
-    parser.add_argument("options", nargs="*",
-        help="Any other positional arguments.")
-    args = parser.parse_args()
 
-    if args.mode is None or args.mode == "render":
-        return render(args)
-    elif args.mode == "view":
-        return view(args)
+    render_parser = subparsers.add_parser("render",
+        help="Render a video.")
+    render_parser.add_argument("-s", "--settings", required=True,
+        help="Path to settings JSON file.")
+    render_parser.add_argument("-o", "--output", required=True,
+        help="Output video file.")
+    render_parser.add_argument("-c", "--cache", default=".prcache",
+        help="Cache path (default .prcache)")
+    render_parser.add_argument("-p", "--preview", action="store_true",
+        help="Open output file after rendering")
+
+    view_parser = subparsers.add_parser("view",
+        help="View a video file in a GUI video.")
+    view_parser.add_argument("file", help="Path to file to view.")
+
+    args = parser.parse_args()
+    if args.subparser == "render":
+        render(args)
+    elif args.subparser == "view":
+        view(args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
