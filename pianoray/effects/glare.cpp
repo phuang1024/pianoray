@@ -51,12 +51,22 @@ void render_one_glare(Image& img, int note, double cx, double cy,
     int y_start = ibounds((int)(cy-radius), 0, h-1);
     int y_end = ibounds((int)(cy+radius+1), 0, h-1);
 
-    // TODO render streaks
     for (int x = x_start; x <= x_end; x++) {
         for (int y = y_start; y <= y_end; y++) {
+            int dy = y - cy, dx = x - cx;
+            double angle = atan2(dy, dx);
+            double prox = 100;
+            for (int i = 0; i < streaks; i++) {
+                double dist = fabs(angle - streak_angles[i]);
+                if (dist < prox)
+                    prox = dist;
+            }
+
             int r = hypot(x-cx, y-cy);
-            double fac = dbounds(1 - r/radius, 0, 1);
-            fac = interp(fac, 0, 1, 0, intensity);
+
+            double r_fac = dbounds(1 - r/radius, 0, 1);
+            double a_fac = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.1);
+            double fac = interp(a_fac*r_fac, 0, 1, 0, intensity);
             fac *= rand_mult;
             fac = pow(fac, 2);  // Square falloff
 
