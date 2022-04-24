@@ -26,6 +26,9 @@
 namespace Pianoray {
 
 
+constexpr double PI = 3.14159;
+
+
 double hypot(double x, double y) {
     return pow(x*x + y*y, 0.5);
 }

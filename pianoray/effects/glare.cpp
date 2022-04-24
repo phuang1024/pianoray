@@ -32,70 +32,14 @@ namespace Pianoray {
 
 
 /**
- * Stores information for one cached note.
- */
-struct NoteCache {
-    char note;
-    char num_streaks;  // Number of streaks.
-    char streaks[50];  // Streak angles, 256 units per revolution.
-};
-
-
-/**
- * Cache for glare.
- */
-class Cache {
-public:
-    NoteCache notes[88];
-    bool cached[88];    // Whether a note is cached.
-    bool rendered[88];  // Whether a note is rendered in this frame.
-
-    Cache() {
-        memset(cached, 0, 88);
-        memset(rendered, 0, 88);
-    }
-
-    void read(std::ifstream& fin) {
-        memset(cached, 0, 88);
-        memset(rendered, 0, 88);
-
-        int count;
-        fin.read((char*)(&count), sizeof(int));
-
-        for (int i = 0; i < count; i++) {
-            NoteCache c;
-            fin.read((char*)(&c), sizeof(NoteCache));
-
-            int note = c.note;
-            cached[note] = true;
-            notes[note] = c;
-        }
-    }
-
-    void write(std::ofstream& fout) {
-        int count = 0;
-        for (int i = 0; i < 88; i++) {
-            if (cached[i] && rendered[i]) {
-                fout.write((char*)(&notes[i]), sizeof(NoteCache));
-                count++;
-            }
-        }
-
-        fout.seekp(0, std::ios::beg);
-        fout.write((char*)(&count), sizeof(int));
-    }
-};
-
-
-/**
  * Render glare at one position.
  *
  * @param cached, cache  Cache data.
  * @param cx, cy  Glare center pixel coordinates.
  */
-void render_one_glare(Image& img, Cache& cache, int note,
-    double cx, double cy, double radius, double intensity, double jitter,
-    int streaks)
+void render_one_glare(Image& img, int note, double cx, double cy,
+    double radius, double intensity, double jitter, int streaks,
+    double* streak_angles)
 {
     const Color white(255, 255, 255);
     const double rand_mult = Random::uniform(1-jitter, 1+jitter);
@@ -138,24 +82,25 @@ void render_one_glare(Image& img, Cache& cache, int note,
  * @param radius  settings.glare.radius
  * @param intensity  settings.glare.intensity
  * @param jitter  settings.glare.jitter
- * @param jitter  settings.glare.streaks
+ * @param streaks  settings.glare.streaks
  */
 extern "C" void render_glare(
     UCH* img_data, int width, int height,
     int frame,
-    char* cache_in_path, char* cache_out_path,
+    char* cache_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
     double black_width, double radius, double intensity, double jitter,
         const int streaks)
 {
     Image img(img_data, width, height, 3);
-    Cache cache;
     int half = height / 2;
 
-    // Read cache
-    if (strlen(cache_in_path) > 0) {
-        std::ifstream fin(cache_in_path);
-        cache.read(fin);
+    double streak_angles[100];
+    std::ifstream fin(cache_path);
+    for (int i = 0; i < streaks; i++) {
+        unsigned char angle;
+        fin.read((char*)(&angle), sizeof(unsigned char));
+        streak_angles[i] = (double)angle / 128 * PI;
     }
 
     // Render
@@ -167,30 +112,11 @@ extern "C" void render_glare(
             int note = note_keys[i];
             double key_x = key_pos(note) * width;
 
-            // Create cache entry if not already there.
-            cache.rendered[note] = true;
-            if (!cache.cached[note]) {
-                cache.cached[note] = true;
-
-                NoteCache& c = cache.notes[note];
-                c.note = note;
-                c.num_streaks = streaks;
-                for (int i = 0; i < streaks; i++)
-                    c.streaks[i] = Random::randint(0, 256);
-            }
-
-            render_one_glare(img, cache, note, key_x, half, radius,
-                intensity, jitter, streaks);
+            render_one_glare(img, note, key_x, half, radius,
+                intensity, jitter, streaks, streak_angles);
         }
-    }
-
-    // Write cache
-    if (strlen(cache_out_path) > 0) {
-        std::ofstream fout(cache_out_path);
-        cache.write(fout);
     }
 }
 
 
 }  // namespace Pianoray
-

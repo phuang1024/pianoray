@@ -18,6 +18,7 @@
 #
 
 import os
+import random
 
 import numpy as np
 
@@ -30,6 +31,19 @@ class Glare(Effect):
     Light glare when notes play.
     """
 
+    def __init__(self, settings, cache, libs) -> None:
+        super().__init__(settings, cache, libs)
+
+        os.makedirs(os.path.join(self.cache, "glare"), exist_ok=True)
+        cache_path = os.path.join(self.cache, "glare", "streaks.bin")
+
+        with open(cache_path, "wb") as fp:
+            streaks = []
+            for _ in range(settings.glare.streaks):
+                angle = random.randint(0, 255)
+                streaks.append(angle)
+            fp.write(bytes(streaks))
+
     def render(self, settings, img: np.ndarray, frame: int, notes):
         """
         Render the glare.
@@ -40,10 +54,7 @@ class Glare(Effect):
         starts = np.array([n[2] for n in notes], dtype=Types.double)
         ends = np.array([n[3] for n in notes], dtype=Types.double)
 
-        in_path = os.path.join(self.cache, "glare", f"{frame-1}.bin")
-        out_path = os.path.join(self.cache, "glare", f"{frame}.bin")
-        if not os.path.isfile(in_path):
-            in_path = ""
+        cache_path = os.path.join(self.cache, "glare", "streaks.bin")
 
         settings = self.settings
         settings_args = [settings.piano.black_width_fac,
@@ -53,7 +64,7 @@ class Glare(Effect):
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],
             frame,
-            Types.cpath(in_path), Types.cpath(out_path),
+            Types.cpath(cache_path),
             len(notes), keys, starts, ends,
             *settings_args,
         )
