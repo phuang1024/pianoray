@@ -20,7 +20,7 @@
 import os
 import shutil
 
-VERSION = "0.0.5"
+VERSION = "0.0.6"
 
 PARENT = os.path.dirname(os.path.abspath(__file__))
 
