@@ -18,14 +18,34 @@
 #
 
 import os
-from typing import Sequence, Tuple
+from typing import Any, Mapping, Sequence
 
 import mido
 
 from ..settings import Settings
 
 
-def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:
+class Note:
+    """
+    One note.
+    start and end times are in frames.
+    attrs is mapping of arbitrary attributes any effect can set.
+    """
+    note: int
+    velocity: int
+    start: float
+    end: float
+    attrs: Mapping[str, Any]
+
+    def __init__(self, note, velocity, start, end):
+        self.note = note
+        self.velocity = velocity
+        self.start = start
+        self.end = end
+        self.attrs = {}
+
+
+def parse_midi(settings: Settings) -> Sequence[Note]:
     """
     Parse midi file.
 
@@ -54,6 +74,6 @@ def parse_midi(settings: Settings) -> Sequence[Tuple[float, float]]:
             if msg.type == "note_on" and vel > 0:
                 starts[note] = t
             else:
-                notes.append((note, vel, starts[note], t))
+                notes.append(Note(note, vel, starts[note], t))
 
     return notes

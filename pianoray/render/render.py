@@ -93,7 +93,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
     # Parse MIDI.
     notes = parse_midi(settings)
-    duration = int(max(x[3] for x in notes))
+    duration = int(max(x.end for x in notes))
 
     # Calculate start and end.
     fps = settings.video.fps
