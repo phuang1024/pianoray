@@ -36,11 +36,16 @@ namespace Pianoray {
  *
  * @param cached, cache  Cache data.
  * @param cx, cy  Glare center pixel coordinates.
+ * @param streak_angles_uch  Angles for this glare's streaks.
  */
 void render_one_glare(Image& img, int note, double cx, double cy,
     double radius, double intensity, double jitter, int streaks,
-    double* streak_angles)
+    UCH* streak_angles_uch)
 {
+    double streak_angles[20];
+    for (int i = 0; i < streaks; i++)
+        streak_angles[i] = (double)streak_angles_uch[i] / 128 * PI;
+
     const Color white(255, 255, 255);
     const double rand_mult = Random::uniform(1-jitter, 1+jitter);
 
@@ -87,6 +92,9 @@ void render_one_glare(Image& img, int note, double cx, double cy,
  * @param note_keys  Key (note number) for each note.
  * @param note_starts  Start frame of each note.
  * @param note_ends  End frame of each note.
+ * @param streak_angles  Angles, corresponding to each note. Each element of
+ *     this array is another array of UCH length 20, containing the streak
+ *     angles.
  *
  * @param black_width  settings.piano.black_width_fac
  * @param radius  settings.glare.radius
@@ -97,21 +105,13 @@ void render_one_glare(Image& img, int note, double cx, double cy,
 extern "C" void render_glare(
     UCH* img_data, int width, int height,
     int frame,
-    char* cache_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
+        UCH (*streak_angles)[20],
     double black_width, double radius, double intensity, double jitter,
-        const int streaks)
+        int streaks)
 {
     Image img(img_data, width, height, 3);
     int half = height / 2;
-
-    double streak_angles[100];
-    std::ifstream fin(cache_path);
-    for (int i = 0; i < streaks; i++) {
-        unsigned char angle;
-        fin.read((char*)(&angle), sizeof(unsigned char));
-        streak_angles[i] = (double)angle / 128 * PI;
-    }
 
     // Render
     for (int i = 0; i < num_notes; i++) {
@@ -123,7 +123,7 @@ extern "C" void render_glare(
             double key_x = key_pos(note) * width;
 
             render_one_glare(img, note, key_x, half, radius,
-                intensity, jitter, streaks, streak_angles);
+                intensity, jitter, streaks, streak_angles[i]);
         }
     }
 }

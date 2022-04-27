@@ -31,18 +31,15 @@ class Glare(Effect):
     Light glare when notes play.
     """
 
-    def __init__(self, settings, cache, libs) -> None:
+    def __init__(self, settings, cache, libs, notes) -> None:
         super().__init__(settings, cache, libs)
 
-        os.makedirs(os.path.join(self.cache, "glare"), exist_ok=True)
-        cache_path = os.path.join(self.cache, "glare", "streaks.bin")
-
-        with open(cache_path, "wb") as fp:
+        for note in notes:
             streaks = []
             for _ in range(settings.glare.streaks):
                 angle = random.randint(0, 255)
                 streaks.append(angle)
-            fp.write(bytes(streaks))
+            note.attrs["glare.streak_angles"] = streaks
 
     def render(self, settings, img: np.ndarray, frame: int, notes):
         """
@@ -54,6 +51,11 @@ class Glare(Effect):
         starts = np.array([n.start for n in notes], dtype=Types.double)
         ends = np.array([n.end for n in notes], dtype=Types.double)
 
+        angles = []
+        for note in notes:
+            angles.extend(note.attrs["glare.streak_angles"])
+        angles = np.array(angles, dtype=np.uint8)
+
         cache_path = os.path.join(self.cache, "glare", "streaks.bin")
 
         settings = self.settings
@@ -64,7 +66,6 @@ class Glare(Effect):
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],
             frame,
-            Types.cpath(cache_path),
-            len(notes), keys, starts, ends,
+            len(notes), keys, starts, ends, angles,
             *settings_args,
         )
