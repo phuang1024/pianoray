@@ -58,6 +58,7 @@ void render_one_glare(Image& img, int note, double cx, double cy,
 
     for (int x = x_start; x <= x_end; x++) {
         for (int y = y_start; y <= y_end; y++) {
+            // Compute factor from streaks.
             int dy = y - cy, dx = x - cx;
             double angle = atan2(dy, dx);
             double prox = 100;
@@ -66,14 +67,18 @@ void render_one_glare(Image& img, int note, double cx, double cy,
                 if (dist < prox)
                     prox = dist;
             }
+            double fac_streak = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.1);
 
+            // Compute factor from radius.
+            // Slightly increases radius if close to streak.
             int r = hypot(x-cx, y-cy);
+            double real_rad = interp(fac_streak, 1, 1.1, radius, radius*1.1);
+            double fac_rad = dbounds(1 - r/real_rad, 0, 1);
+            fac_rad = pow(fac_rad, 2);  // Square falloff
 
-            double r_fac = dbounds(1 - r/radius, 0, 1);
-            double a_fac = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.1);
-            double fac = interp(a_fac*r_fac, 0, 1, 0, intensity);
+            // Color pixel
+            double fac = interp(fac_streak*fac_rad, 0, 1, 0, intensity);
             fac *= rand_mult;
-            fac = pow(fac, 2);  // Square falloff
 
             Color curr = img.getc(x, y);
             img.setc(x, y, mix_cols(curr, white, fac));
