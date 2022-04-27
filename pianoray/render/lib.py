@@ -51,8 +51,8 @@ def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
     glare.render_glare.argtypes = [
         Types.img, Types.int, Types.int,
         Types.int,
-        Types.path,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
+            Types.arr_uchar,
         Types.double, Types.double, Types.double, Types.double, Types.int,
     ]
 

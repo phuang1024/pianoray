@@ -41,6 +41,8 @@ def preprocess(settings: Settings):
     settings.blocks.radius *= coord
     settings.glare.radius *= coord
 
+    assert settings.glare.streaks <= 20
+
 
 def render_video(settings: Settings, out: str, cache: str) -> None:
     preprocess(settings)
@@ -93,7 +95,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
     # Parse MIDI.
     notes = parse_midi(settings)
-    duration = int(max(x[3] for x in notes))
+    duration = int(max(x.end for x in notes))
 
     # Calculate start and end.
     fps = settings.video.fps
@@ -105,7 +107,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     # OOP effects
     blocks = Blocks(settings, cache, libs)
     keyboard = Keyboard(settings, cache, libs)
-    glare = Glare(settings, cache, libs)
+    glare = Glare(settings, cache, libs, notes)
 
     # Render
     num_frames = 0

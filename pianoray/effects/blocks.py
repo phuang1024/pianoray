@@ -33,9 +33,9 @@ class Blocks(Effect):
         Render the blocks.
         :param notes: MIDI notes from parse_midi.
         """
-        keys = np.array([n[0] for n in notes], dtype=Types.int)
-        starts = np.array([n[2] for n in notes], dtype=Types.double)
-        ends = np.array([n[3] for n in notes], dtype=Types.double)
+        keys = np.array([n.note for n in notes], dtype=Types.int)
+        starts = np.array([n.start for n in notes], dtype=Types.double)
+        ends = np.array([n.end for n in notes], dtype=Types.double)
 
         settings = self.settings
         settings_args = [settings.video.fps, settings.blocks.speed,
