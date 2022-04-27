@@ -61,7 +61,7 @@ SETTINGS_DEFAULT = {
         "start": 0,
         "crop": None,
         "dim_mult": 1,
-        "dim_sub": 0,
+        "dim_add": 0,
         "below_length": 7,
     },
     "glare": {
