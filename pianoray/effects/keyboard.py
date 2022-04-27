@@ -104,18 +104,38 @@ class Keyboard(Effect):
 
         self.compute_crop(settings)
 
+    @staticmethod
+    def extend_vec(v1, v2, length):
+        """
+        Let u be the unit vector in the direction from v1 to v2.
+        Let v be u * length.
+        Returns v + v2
+        """
+        diff = v2 - v1
+        u = diff / np.linalg.norm(diff)
+        v = u * length
+        return v + v2
+
     def compute_crop(self, settings):
         crop = np.array(settings.keyboard.crop)
         src_width = np.linalg.norm(crop[1]-crop[0])
-        src_height = np.linalg.norm(crop[3]-crop[0])
         dst_width = settings.video.resolution[0]
-        dst_height = dst_width * src_height / src_width
+        scale = src_width / dst_width
 
-        width = settings.video.resolution[0]
-        half = settings.video.resolution[1] / 2
-        src_points = crop.astype(np.float32)
+        below_len = settings.keyboard.below_length * scale
+        src_points = np.array(
+            (
+                crop[0],
+                crop[1],
+                self.extend_vec(crop[1], crop[2], below_len),
+                self.extend_vec(crop[0], crop[3], below_len),
+            ),
+            dtype=np.float32)
+
+        dst_width = settings.video.resolution[0]
+        dst_height = np.linalg.norm(src_points[3]-src_points[0]) / scale
         dst_points = np.array(
-            ((0,0), (width,0), (width,dst_height), (0,dst_height)),
+            ((0,0), (dst_width,0), (dst_width,dst_height), (0,dst_height)),
             dtype=np.float32)
 
         self.persp = cv2.getPerspectiveTransform(src_points, dst_points)

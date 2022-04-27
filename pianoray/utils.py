@@ -62,6 +62,7 @@ SETTINGS_DEFAULT = {
         "crop": None,
         "dim_mult": 1,
         "dim_sub": 0,
+        "below_length": 7,
     },
     "glare": {
         "radius": 3,
