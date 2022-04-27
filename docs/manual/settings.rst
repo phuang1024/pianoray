@@ -55,6 +55,7 @@ Colors are ``[R, G, B]`` from 0 to 255.
 - ``midi``: Settings about MIDI.
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.
+    - ``min_length``: Minimum note length in seconds.
 - ``keyboard``: Settings about rendering the keyboard.
     - ``file``: Video file containing recording of playing the keyboard.
     - ``start``: Timestamp, in seconds, you play the first note in the video.

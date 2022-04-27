@@ -53,6 +53,7 @@ def parse_midi(settings: Settings) -> Sequence[Note]:
     :return: List of ``(note, velocity, start_frame, end_frame)``.
     """
     path = settings.midi.file
+    min_len = settings.midi.min_length * settings.video.fps
     if path is None or not os.path.isfile(path):
         raise ValueError("Setting midi.file invalid.")
 
@@ -74,6 +75,7 @@ def parse_midi(settings: Settings) -> Sequence[Note]:
             if msg.type == "note_on" and vel > 0:
                 starts[note] = t
             else:
-                notes.append(Note(note, vel, starts[note], t))
+                end = t if (t-starts[note]) > min_len else starts[note] + min_len
+                notes.append(Note(note, vel, starts[note], end))
 
     return notes

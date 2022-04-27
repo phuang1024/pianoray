@@ -55,6 +55,7 @@ SETTINGS_DEFAULT = {
     "midi": {
         "file": None,
         "speed": 1,
+        "min_length": 0.08,
     },
     "keyboard": {
         "file": None,
