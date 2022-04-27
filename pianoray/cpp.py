@@ -19,6 +19,7 @@
 
 import ctypes
 import os
+from pathlib import Path
 from subprocess import Popen
 from typing import Sequence
 
@@ -28,11 +29,11 @@ from numpy.ctypeslib import ndpointer
 from . import logger
 from .utils import GCC
 
-PARENT = os.path.dirname(os.path.abspath(__file__))
+ROOT = Path(__file__).parent
 
-CPP_UTILS = os.path.join(PARENT, "cutils")
-CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
-    for f in os.listdir(CPP_UTILS) if f.endswith(".cpp")]
+CPP_UTILS = ROOT / "cutils"
+CPP_UTILS_FILES = [CPP_UTILS / f
+    for f in CPP_UTILS.iterdir() if f.suffix == ".cpp"]
 
 
 class Types:
