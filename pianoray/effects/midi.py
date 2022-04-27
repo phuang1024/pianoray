@@ -75,7 +75,8 @@ def parse_midi(settings: Settings) -> Sequence[Note]:
             if msg.type == "note_on" and vel > 0:
                 starts[note] = t
             else:
-                end = t if (t-starts[note]) > min_len else starts[note] + min_len
+                end = t if (t-starts[note]) > min_len else \
+                    starts[note] + min_len
                 notes.append(Note(note, vel, starts[note], end))
 
     return notes
