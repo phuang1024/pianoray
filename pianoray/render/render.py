@@ -40,6 +40,7 @@ def preprocess(settings: Settings):
     coord = settings.video.resolution[0] / 52
     settings.blocks.radius *= coord
     settings.glare.radius *= coord
+    settings.keyboard.below_length *= coord
 
     assert settings.glare.streaks <= 20
 

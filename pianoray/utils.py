@@ -59,6 +59,10 @@ SETTINGS_DEFAULT = {
     "keyboard": {
         "file": None,
         "start": 0,
+        "crop": None,
+        "dim_mult": 1,
+        "dim_add": 0,
+        "below_length": 7,
     },
     "glare": {
         "radius": 3,

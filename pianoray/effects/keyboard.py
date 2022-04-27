@@ -102,22 +102,54 @@ class Keyboard(Effect):
         self.video = VideoRead(settings.keyboard.file,
             settings.video.fps, settings.keyboard.start)
 
-        # Compute perspective warp
+        self.compute_crop(settings)
+
+    @staticmethod
+    def extend_vec(v1, v2, length):
+        """
+        Let u be the unit vector in the direction from v1 to v2.
+        Let v be u * length.
+        Returns v + v2
+        """
+        diff = v2 - v1
+        u = diff / np.linalg.norm(diff)
+        v = u * length
+        return v + v2
+
+    def compute_crop(self, settings):
         crop = np.array(settings.keyboard.crop)
         src_width = np.linalg.norm(crop[1]-crop[0])
-        src_height = np.linalg.norm(crop[3]-crop[0])
         dst_width = settings.video.resolution[0]
-        dst_height = dst_width * src_height / src_width
+        scale = src_width / dst_width
 
-        width = settings.video.resolution[0]
-        half = settings.video.resolution[1] / 2
-        src_points = crop.astype(np.float32)
-        dst_points = np.array(
-            ((0,0), (width,0), (width,dst_height), (0,dst_height)),
+        below_len = settings.keyboard.below_length * scale
+        src_points = np.array(
+            (
+                crop[0],
+                crop[1],
+                self.extend_vec(crop[1], crop[2], below_len),
+                self.extend_vec(crop[0], crop[3], below_len),
+            ),
             dtype=np.float32)
 
+        dst_width = settings.video.resolution[0]
+        dst_height = np.linalg.norm(src_points[3]-src_points[0]) / scale
+        dst_kbd_height = np.linalg.norm(crop[3]-crop[0]) / scale
+        dst_width, dst_height, dst_kbd_height = \
+            map(int, (dst_width, dst_height, dst_kbd_height))
+        dst_points = np.array(
+            ((0,0), (dst_width,0), (dst_width,dst_height), (0,dst_height)),
+            dtype=np.float32)
+
+        mask = np.empty((dst_height, dst_width, 3), dtype=np.float32)
+        for y in range(dst_height):
+            fac = 1 if y < dst_kbd_height else \
+                np.interp(y, (dst_kbd_height, dst_height), (1, 0))
+            mask[y, :] = fac
+
         self.persp = cv2.getPerspectiveTransform(src_points, dst_points)
-        self.dst_shape = (int(dst_width), int(dst_height))
+        self.dst_shape = (dst_width, dst_height)
+        self.mask = mask
 
     def render(self, settings, img: np.ndarray, frame: int):
         """
@@ -126,7 +158,14 @@ class Keyboard(Effect):
         dst = self.dst_shape
 
         kbd = self.video.read(frame)
-        kbd = cv2.warpPerspective(kbd, self.persp, dst)
+        kbd = cv2.warpPerspective(kbd, self.persp, dst).astype(np.float64)
+        kbd *= self.mask
+
+        kbd *= settings.keyboard.dim_mult
+        kbd += settings.keyboard.dim_add
+        kbd[kbd<0] = 0
+        kbd[kbd>255] = 255
+        kbd = kbd.astype(np.uint8)
 
         half = int(settings.video.resolution[1] / 2)
         img[half:half+dst[1], 0:dst[0], ...] = kbd

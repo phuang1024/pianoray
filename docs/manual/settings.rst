@@ -60,6 +60,10 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``start``: Timestamp, in seconds, you play the first note in the video.
     - ``crop``: Corners of the keyboard in the video, starting from top left and
       going clockwise. Should be ``[[x1, y1], [x2, y2], [x3, y3], [x4, y4]]``.
+    - ``dim_mult``: Multiplicative dimming. Give a multiplier value.
+    - ``dim_add``: Additive dimming. Subtracted from 0 to 255 channels. If you
+      wish to dim, provide a negative value.
+    - ``below_length``: Length of the below section in coords.
 - ``glare``: Settings about rendering glare.
     - ``radius``: Radius of glare in coords.
     - ``intensity``: Intensity value.
