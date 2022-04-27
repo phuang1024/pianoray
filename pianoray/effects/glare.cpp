@@ -44,7 +44,7 @@ void render_one_glare(Image& img, int note, double cx, double cy,
 {
     double streak_angles[20];
     for (int i = 0; i < streaks; i++)
-        streak_angles[i] = (double)streak_angles_uch[i] / 128 * PI;
+        streak_angles[i] = ((double)streak_angles_uch[i]/128 - 0.5) * PI;
 
     const Color white(255, 255, 255);
     const double rand_mult = Random::uniform(1-jitter, 1+jitter);
@@ -67,7 +67,7 @@ void render_one_glare(Image& img, int note, double cx, double cy,
                 if (dist < prox)
                     prox = dist;
             }
-            double fac_streak = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.1);
+            double fac_streak = dbounds(interp(prox, 0, 0.1, 1.1, 1), 1, 1.04);
 
             // Compute factor from radius.
             // Slightly increases radius if close to streak.
