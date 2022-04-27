@@ -1,13 +1,20 @@
 {
     "video": {
         "resolution": [1280, 720],
-        "fps": 24
+        "fps": 30
     },
     "midi": {
         "file": "examples/furelise/midi.mid"
     },
     "audio": {
         "file": "examples/furelise/audio.mp3",
-        "start": 14.73
+        "start": 20.74
+    },
+    "keyboard": {
+        "file": "examples/furelise/video.mp4",
+        "start": 4.75,
+        "crop": [[252,480], [1793,487], [1789,676], [257,666]],
+        "dim_mult": 0.6,
+        "dim_add": -8
     }
 }
