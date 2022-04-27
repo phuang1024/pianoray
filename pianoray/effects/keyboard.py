@@ -134,12 +134,22 @@ class Keyboard(Effect):
 
         dst_width = settings.video.resolution[0]
         dst_height = np.linalg.norm(src_points[3]-src_points[0]) / scale
+        dst_kbd_height = np.linalg.norm(crop[3]-crop[0]) / scale
+        dst_width, dst_height, dst_kbd_height = \
+            map(int, (dst_width, dst_height, dst_kbd_height))
         dst_points = np.array(
             ((0,0), (dst_width,0), (dst_width,dst_height), (0,dst_height)),
             dtype=np.float32)
 
+        mask = np.empty((dst_height, dst_width, 3), dtype=np.float32)
+        for y in range(dst_height):
+            fac = 1 if y < dst_kbd_height else \
+                np.interp(y, (dst_kbd_height, dst_height), (1, 0))
+            mask[y, :] = fac
+
         self.persp = cv2.getPerspectiveTransform(src_points, dst_points)
-        self.dst_shape = (int(dst_width), int(dst_height))
+        self.dst_shape = (dst_width, dst_height)
+        self.mask = mask
 
     def render(self, settings, img: np.ndarray, frame: int):
         """
@@ -149,6 +159,7 @@ class Keyboard(Effect):
 
         kbd = self.video.read(frame)
         kbd = cv2.warpPerspective(kbd, self.persp, dst).astype(np.float64)
+        kbd *= self.mask
 
         kbd *= settings.keyboard.dim_mult
         kbd += settings.keyboard.dim_add
