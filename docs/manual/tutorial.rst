@@ -1,7 +1,8 @@
 Tutorial
 ========
 
-First, install PianoRay. Follow instructions in General/Installation.
+First, install PianoRay. Follow instructions in
+`General/Installation <../general/install.html>`__.
 
 Example Files
 -------------
