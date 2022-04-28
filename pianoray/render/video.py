@@ -52,7 +52,7 @@ class Video:
         self.audio_offset = audio_offset
         self.frame = 0
 
-        (self.cache/"frames").mkdir(exist_ok=True)
+        (self.cache/"frames").mkdir(parents=True, exist_ok=True)
 
     def write(self, img: np.ndarray) -> int:
         """
