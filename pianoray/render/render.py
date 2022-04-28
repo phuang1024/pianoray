@@ -46,21 +46,15 @@ def preprocess(settings: Settings):
     assert settings.glare.streaks <= 20
 
 
-def render_video(settings: Settings, out: str, cache: Path) -> None:
-    preprocess(settings)
-    try:
-        libs = load_libs(cache)
-    except AssertionError:
-        logger.error("Failed to build libraries.")
-        raise
+def check_previous(args, settings, cache):
+    """
+    Check if continue previous render.
 
-    for sub in ("glare",):
-        (cache/sub).mkdir(exist_ok=True)
-
+    :return: Frame to start rendering from.
+    """
     cache_settings = cache / "settings.json"
     cache_curr = cache / "currently_rendering.txt"
 
-    # Check if continue previous render
     real_start = None
     if cache_settings.is_file() and cache_curr.is_file():
         with open(cache_settings, "r") as fp:
@@ -68,33 +62,64 @@ def render_video(settings: Settings, out: str, cache: Path) -> None:
 
         if prev_sets == settings:
             with open(cache_curr, "r") as fp:
-                real_start = int(fp.read())
-            print("Last render has same settings as this render, "
-                  f"and stopped at frame {real_start}.")
-            if input("Continue last render? [Y/n] ").lower().strip() == "n":
-                real_start = None
+                data = fp.read()
+                real_start = int(data) if data.isdigit() else None
 
+            if real_start is not None:
+                if args.resume is None:
+                    print("Last render has same settings as this render, "
+                          f"and stopped at frame {real_start}.")
+                    if input("Continue last render? [Y/n] ").lower().strip() == "n":
+                        real_start = None
+    
+                elif not args.resume:
+                    real_start = None
+
+    return real_start
+
+
+def render_video(args, settings: Settings, out: str, cache: Path) -> None:
+    """
+    Render system main.
+
+    :param args: Argparse arguments.
+    """
+    # Preprocessing
+    preprocess(settings)
+    try:
+        libs = load_libs(cache)
+    except AssertionError:
+        logger.error("Failed to build libraries.")
+        raise
+
+    # Cache subdirs
+    for sub in ("glare",):
+        (cache/sub).mkdir(exist_ok=True)
+
+    # Save settings to cache.
     os.makedirs(cache, exist_ok=True)
-    with open(cache_settings, "w") as fp:
+    with open(cache / "settings.json", "w") as fp:
         json.dump(settings._json(), fp)
 
+    real_start = check_previous(args, settings, cache)
     video = Video(cache/"output", settings.audio.file,
         settings.audio.start)
     num_frames = render_frames(settings, libs, video, cache, real_start)
     video.compile(out, settings.video.fps, num_frames,
         settings.composition.margin_start, settings.video.vcodec)
 
-    if cache_curr.is_file():
-        cache_curr.unlink()
+    #if cache_curr.is_file():
+    #    cache_curr.unlink()
 
 
 def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
     Render frames.
 
-    :param real_start: If applicable, currently_rendering
+    :param real_start: Frame to start rendering from.
     :return: Number of frames rendered.
     """
+
     # Parse MIDI.
     notes = parse_midi(settings)
     duration = int(max(x.end for x in notes))
@@ -112,14 +137,16 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     glare = Glare(settings, cache, libs, notes)
 
     # Render
-    num_frames = 0
-    for frame in trange(frame_start, frame_end, desc="Rendering"):
+    if real_start is None:
+        real_start = frame_start
+    logger.info(f"Starting render from frame {real_start}")
+
+    num_frames = real_start - frame_start
+    video.frame = num_frames
+    for frame in trange(real_start, frame_end, desc="Rendering"):
         num_frames += 1
         with open(cache/"currently_rendering.txt", "w") as fp:
             fp.write(str(frame))
-
-        if real_start is not None and frame < real_start:
-            continue
 
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
 

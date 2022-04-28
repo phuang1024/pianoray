@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import sys
+from ast import literal_eval
 from pathlib import Path
 
 from . import logger
@@ -32,16 +33,7 @@ from .view import view_video
 
 
 def render(args):
-    """
-    if args.settings is None:
-        logger.error("Please provide an argument for settings.")
-        return 1
-    if args.output is None:
-        logger.error("Please provide an argument for output.")
-        return 1
-        """
-
-    if Path(args.output).exists() and not args.yes:
+    if args.output.exists() and not args.yes:
         print(f"Output file {args.output} already exists.")
         if input("Overwrite file? [y/N] ").lower().strip() != "y":
             return 3
@@ -51,7 +43,7 @@ def render(args):
     default = Settings(SETTINGS_DEFAULT)
     settings._merge(default)
 
-    render_video(settings, args.output, args.cache)
+    render_video(args, settings, args.output, args.cache)
 
     if args.preview:
         logger.info("Opening output with xdg-open")
@@ -81,6 +73,8 @@ def main():
         help="Cache path (default .prcache)", type=Path)
     render_parser.add_argument("-p", "--preview", action="store_true",
         help="Open output file after rendering")
+    render_parser.add_argument("-r", "--resume", type=literal_eval,
+        help="Whether to resume previous render (omit for prompt).")
 
     view_parser = subparsers.add_parser("view",
         help="View a video file in a GUI video.")
