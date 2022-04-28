@@ -143,8 +143,13 @@ class Keyboard(Effect):
 
         mask = np.empty((dst_height, dst_width, 3), dtype=np.float32)
         for y in range(dst_height):
-            fac = 1 if y < dst_kbd_height else \
-                np.interp(y, (dst_kbd_height, dst_height), (1, 0))
+            if y < dst_kbd_height:
+                fac = 1
+            else:
+                fac = np.interp(y, (dst_kbd_height, dst_height), (0, 1))
+                fac **= 2
+                fac = np.interp(fac, (0, 1), (1, 0.4))
+
             mask[y, :] = fac
 
         self.persp = cv2.getPerspectiveTransform(src_points, dst_points)
