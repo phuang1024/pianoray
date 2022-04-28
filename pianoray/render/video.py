@@ -19,6 +19,7 @@
 
 import os
 import shutil
+from pathlib import Path
 from subprocess import Popen, PIPE
 from typing import Sequence
 
@@ -37,7 +38,7 @@ class Video:
     final video.
     """
 
-    def __init__(self, cache: str, audio: str = None,
+    def __init__(self, cache: Path, audio: str = None,
             audio_offset: float = 0) -> None:
         """
         Initializes video.
@@ -51,7 +52,7 @@ class Video:
         self.audio_offset = audio_offset
         self.frame = 0
 
-        os.makedirs(os.path.join(self.cache, "frames"), exist_ok=True)
+        (self.cache/"frames").mkdir(exist_ok=True)
 
     def write(self, img: np.ndarray) -> int:
         """
@@ -62,7 +63,7 @@ class Video:
         :return: This frame number.
         """
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        path = os.path.join(self.cache, "frames", str(self.frame)+".jpg")
+        path = str(self.cache / "frames" / f"{self.frame}.jpg")
         cv2.imwrite(path, img)
 
         self.frame += 1
@@ -88,12 +89,12 @@ class Video:
             "-y",
             "-r", fps,
             "-start_number", 0,
-            "-i", os.path.join(self.cache, "frames", "%d.jpg"),
+            "-i", self.cache / "frames" / "%d.jpg",
             "-vframes", num_frames,
             "-c:v", vcodec, "-an",
             "-crf", crf,
             "-r", fps,
-            os.path.join(self.cache, "no_audio.mp4"),
+            self.cache / "no_audio.mp4",
         ]
         run_ffmpeg(args)
 
@@ -106,7 +107,7 @@ class Video:
                 "-ss", self.audio_offset - margin_start,
                 "-t", num_frames/fps,
                 "-i", self.audio,
-                os.path.join(self.cache, "offset.mp3"),
+                self.cache / "offset.mp3",
             ]
             run_ffmpeg(args)
 
@@ -115,8 +116,8 @@ class Video:
             args = [
                 FFMPEG,
                 "-y",
-                "-i", os.path.join(self.cache, "no_audio.mp4"),
-                "-i", os.path.join(self.cache, "offset.mp3"),
+                "-i", self.cache / "no_audio.mp4",
+                "-i", self.cache / "offset.mp3",
                 "-c", "copy",
                 out,
             ]
@@ -125,7 +126,7 @@ class Video:
 
         else:
             # Copy to output.
-            shutil.copy(os.path.join(self.cache, "no_audio.mp4"), out)
+            shutil.copy(self.cache / "no_audio.mp4", out)
 
         logger.info(f"Video saved to {out}")
 

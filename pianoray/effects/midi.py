@@ -54,8 +54,6 @@ def parse_midi(settings: Settings) -> Sequence[Note]:
     """
     path = settings.midi.file
     min_len = settings.midi.min_length * settings.video.fps
-    if path is None or not os.path.isfile(path):
-        raise ValueError("Setting midi.file invalid.")
 
     midi = mido.MidiFile(path)
     notes = []

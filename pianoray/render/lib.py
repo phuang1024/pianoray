@@ -19,16 +19,17 @@
 
 import ctypes
 import os
+from pathlib import Path
 from typing import Mapping
 
 from ..cpp import build_lib, Types
 
 
-def load_libs(cache: str) -> Mapping[str, ctypes.CDLL]:
+def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     """
     Load C libraries.
     """
-    cache = os.path.join(cache, "c_libs")
+    cache = cache / "c_libs"
     os.makedirs(cache, exist_ok=True)
 
     blocks = build_lib(
