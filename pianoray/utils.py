@@ -19,10 +19,11 @@
 
 import os
 import shutil
+from pathlib import Path
 
 VERSION = "0.0.7"
 
-PARENT = os.path.dirname(os.path.abspath(__file__))
+ROOT = Path(__file__).absolute().parent
 
 FFMPEG = shutil.which("ffmpeg")
 GCC = shutil.which("g++")

@@ -20,6 +20,7 @@
 import ctypes
 import json
 import os
+from pathlib import Path
 from typing import Mapping
 
 import numpy as np
@@ -45,7 +46,7 @@ def preprocess(settings: Settings):
     assert settings.glare.streaks <= 20
 
 
-def render_video(settings: Settings, out: str, cache: str) -> None:
+def render_video(settings: Settings, out: str, cache: Path) -> None:
     preprocess(settings)
     try:
         libs = load_libs(cache)
@@ -54,14 +55,14 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
         raise
 
     for sub in ("glare",):
-        os.makedirs(os.path.join(cache, sub), exist_ok=True)
+        (cache/sub).mkdir(exist_ok=True)
 
-    cache_settings = os.path.join(cache, "settings.json")
-    cache_curr = os.path.join(cache, "currently_rendering.txt")
+    cache_settings = cache / "settings.json"
+    cache_curr = cache / "currently_rendering.txt"
 
     # Check if continue previous render
     real_start = None
-    if os.path.isfile(cache_settings) and os.path.isfile(cache_curr):
+    if cache_settings.is_file() and cache_curr.is_file():
         with open(cache_settings, "r") as fp:
             prev_sets = Settings(json.load(fp))
 
@@ -77,14 +78,14 @@ def render_video(settings: Settings, out: str, cache: str) -> None:
     with open(cache_settings, "w") as fp:
         json.dump(settings._json(), fp)
 
-    video = Video(os.path.join(cache, "output"), settings.audio.file,
+    video = Video(cache/"output", settings.audio.file,
         settings.audio.start)
     num_frames = render_frames(settings, libs, video, cache, real_start)
     video.compile(out, settings.video.fps, num_frames,
         settings.composition.margin_start, settings.video.vcodec)
 
-    if os.path.isfile(cache_curr):
-        os.remove(cache_curr)
+    if cache_curr.is_file():
+        cache_curr.unlink()
 
 
 def render_frames(settings, libs, video, cache, real_start=None) -> int:
@@ -114,7 +115,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     num_frames = 0
     for frame in trange(frame_start, frame_end, desc="Rendering"):
         num_frames += 1
-        with open(os.path.join(cache, "currently_rendering.txt"), "w") as fp:
+        with open(cache/"currently_rendering.txt", "w") as fp:
             fp.write(str(frame))
 
         if real_start is not None and frame < real_start:

@@ -19,6 +19,7 @@
 
 import ctypes
 import os
+from pathlib import Path
 from subprocess import Popen
 from typing import Sequence
 
@@ -28,11 +29,11 @@ from numpy.ctypeslib import ndpointer
 from . import logger
 from .utils import GCC
 
-PARENT = os.path.dirname(os.path.abspath(__file__))
+ROOT = Path(__file__).absolute().parent
 
-CPP_UTILS = os.path.join(PARENT, "cutils")
-CPP_UTILS_FILES = [os.path.join(CPP_UTILS, f)
-    for f in os.listdir(CPP_UTILS) if f.endswith(".cpp")]
+CPP_UTILS = ROOT / "cutils"
+CPP_UTILS_FILES = [CPP_UTILS / f
+    for f in CPP_UTILS.iterdir() if f.suffix == ".cpp"]
 
 
 class Types:
@@ -62,7 +63,7 @@ class Types:
         return np.array(data, dtype=np.int8)
 
 
-def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
+def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
     """
     Initialize the lib.
 
@@ -73,21 +74,19 @@ def build_lib(files: Sequence[str], cache: str, name: str) -> ctypes.CDLL:
     """
     logger.info(f"Building C library {name}")
 
-    cache = os.path.join(cache, name)
+    cache = cache / name
     os.makedirs(cache, exist_ok=True)
 
-    files = [os.path.join(PARENT, f) for f in files]
+    files = [ROOT/f for f in files]
     files.extend(CPP_UTILS_FILES)
 
     obj_files = []
     for f in files:
-        fname = os.path.basename(f)
-        obj_name = os.path.splitext(fname)[0] + ".o"
-        obj_path = os.path.join(cache, obj_name)
+        obj_path = str(f.with_suffix(".o"))
         obj_files.append(obj_path)
-        compile(f, obj_path)
+        compile(str(f), obj_path)
 
-    lib_path = os.path.join(cache, f"lib{name}.so")
+    lib_path = str(cache / f"lib{name}.so")
     link(obj_files, lib_path)
 
     return ctypes.CDLL(lib_path)

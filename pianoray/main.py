@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
 
 from . import logger
 from .settings import Settings
@@ -40,7 +41,7 @@ def render(args):
         return 1
         """
 
-    if os.path.isfile(args.output) and not args.yes:
+    if Path(args.output).exists() and not args.yes:
         print(f"Output file {args.output} already exists.")
         if input("Overwrite file? [y/N] ").lower().strip() != "y":
             return 3
@@ -73,11 +74,11 @@ def main():
     render_parser = subparsers.add_parser("render",
         help="Render a video.")
     render_parser.add_argument("-s", "--settings", required=True,
-        help="Path to settings JSON file.")
+        help="Path to settings JSON file.", type=Path)
     render_parser.add_argument("-o", "--output", required=True,
-        help="Output video file.")
+        help="Output video file.", type=Path)
     render_parser.add_argument("-c", "--cache", default=".prcache",
-        help="Cache path (default .prcache)")
+        help="Cache path (default .prcache)", type=Path)
     render_parser.add_argument("-p", "--preview", action="store_true",
         help="Open output file after rendering")
 
