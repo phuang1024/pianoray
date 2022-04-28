@@ -69,9 +69,10 @@ def check_previous(args, settings, cache):
                 if args.resume is None:
                     print("Last render has same settings as this render, "
                           f"and stopped at frame {real_start}.")
-                    if input("Continue last render? [Y/n] ").lower().strip() == "n":
+                    if input("Continue last render? [Y/n] ").lower().strip() \
+                            == "n":
                         real_start = None
-    
+
                 elif not args.resume:
                     real_start = None
 
