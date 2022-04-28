@@ -34,8 +34,7 @@ from .view import view_video
 
 def render(args):
     if args.output.exists() and not args.yes:
-        print(f"Output file {args.output} already exists.")
-        if input("Overwrite file? [y/N] ").lower().strip() != "y":
+        if input("Overwrite output file {args.output}? [y/N] ").lower().strip() != "y":
             return 3
 
     with open(args.settings, "r") as fp:

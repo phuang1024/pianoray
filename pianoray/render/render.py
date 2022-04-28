@@ -108,9 +108,6 @@ def render_video(args, settings: Settings, out: str, cache: Path) -> None:
     video.compile(out, settings.video.fps, num_frames,
         settings.composition.margin_start, settings.video.vcodec)
 
-    #if cache_curr.is_file():
-    #    cache_curr.unlink()
-
 
 def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
