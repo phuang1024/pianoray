@@ -67,19 +67,25 @@ void draw_rect(
     double x, double y, double w, double h, double r,
     const Color& color, double glow_int, const Color& glow_color)
 {
-    int x_min = (int)(dbounds(x-2, 0, width-1));
-    int x_max = (int)(dbounds(x+w+3, 0, width-1));
-    int y_min = (int)(dbounds(y-2, 0, height-1));
-    int y_max = (int)(dbounds(y+h+3, 0, height-1));
+    int x_min = (int)(dbounds(x-6, 0, width-1));
+    int x_max = (int)(dbounds(x+w+7, 0, width-1));
+    int y_min = (int)(dbounds(y-6, 0, height-1));
+    int y_max = (int)(dbounds(y+h+7, 0, height-1));
 
     for (int px = x_min; px < x_max; px++) {
         for (int py = y_min; py < y_max; py++) {
             double dist = dist_to_block(px, py, x, y, w, h, r);
-            double alpha = interp(dist, 0, 1.5, 1, 0);
-            alpha = dbounds(alpha, 0, 1);
+            const Color curr = img.getc(px, py);
 
-            Color curr = img.getc(px, py);
-            img.setc(px, py, mix_cols(curr, color, alpha));
+            double block_fac = interp(dist, 0, 1, 1, 0);
+            block_fac = dbounds(block_fac, 0, 1);
+
+            double glow_fac = interp(dist, 1, 5, glow_int, 0);
+            glow_fac = dbounds(glow_fac, 0, 1);
+
+            Color with_glow = mix_cols(curr, glow_color, glow_fac);
+            Color with_block = mix_cols(with_glow, color, block_fac);
+            img.setc(px, py, with_block);
         }
     }
 }

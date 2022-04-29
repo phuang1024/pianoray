@@ -52,7 +52,7 @@ SETTINGS_DEFAULT = {
         "speed": 0.5,
         "color": [185, 200, 255],
         "radius": 0.25,
-        "glow_intensity": 0.3,
+        "glow_intensity": 0.4,
         "glow_color": [255, 255, 255],
     },
     "midi": {
