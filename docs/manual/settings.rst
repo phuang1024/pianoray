@@ -54,7 +54,7 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``radius``: Block corner rounding radius in coords.
     - ``glow_intensity``: Intensity of glow around the block.
     - ``glow_color``: Color of glow.
-    - ``glow_radius``: Radius of glow.
+    - ``glow_radius``: Radius of glow in coords.
 - ``midi``: Settings about MIDI.
     - ``file``: Path to MIDI file.
     - ``speed``: Speed multiplier.
