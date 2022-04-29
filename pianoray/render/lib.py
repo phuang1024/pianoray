@@ -42,6 +42,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         Types.int,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
         Types.int, Types.double, Types.double, Types.double, Types.arr_uchar,
+            Types.double, Types.arr_uchar,
     ]
 
     glare = build_lib(

@@ -65,7 +65,7 @@ double dist_to_block(double px, double py, double x, double y,
 void draw_rect(
     Image& img, int width, int height,
     double x, double y, double w, double h, double r,
-    const Color& color)
+    const Color& color, double glow_int, const Color& glow_color)
 {
     int x_min = (int)(dbounds(x-2, 0, width-1));
     int x_max = (int)(dbounds(x+w+3, 0, width-1));
@@ -101,15 +101,18 @@ void draw_rect(
  * @param black_width  settings.piano.black_width_fac
  * @param radius  settings.blocks.radius
  * @param color_data  settings.blocks.color
+ * @param glow_int  settings.blocks.glow_intensity
+ * @param glow_color_data  settings.blocks.glow_color
  */
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double speed, double black_width, double radius, UCH* color_data)
+    int fps, double speed, double black_width, double radius, UCH* color_data,
+        double glow_int, UCH* glow_color_data)
 {
     Image img(img_data, width, height, 3);
-    Color color(color_data);
+    Color color(color_data), glow_color(glow_color_data);
 
     for (int i = 0; i < num_notes; i++) {
         double y_start = event_coord(note_starts[i], frame, height, fps, speed);
@@ -126,7 +129,8 @@ extern "C" void render_blocks(
         double y = y_end;
         double w = x_end - x_start;
         double h = y_start - y_end;
-        draw_rect(img, width, height, x, y, w, h, radius, color);
+        draw_rect(img, width, height, x, y, w, h, radius, color,
+            glow_int, glow_color);
     }
 }
 
