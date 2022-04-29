@@ -1,22 +1,23 @@
 Tutorial
 ========
 
-First, install PianoRay. Follow instructions in General/Installation.
+First, install PianoRay. Follow instructions in
+`General/Installation <../general/install.html>`__.
 
 Example Files
 -------------
 
-Download example performance files.
+Download example performance files. This script copies the Fur Elise example
+recording to ``~/pianoray_tutorial``.
 
 .. code-block:: bash
 
+   cd /tmp
    git clone https://github.com/phuang1024/pianoray
-   cd pianoray/examples/bach
+   cd pianoray/examples/furelise
 
    mkdir ~/pianoray_tutorial
-   cp video.mp4 ~/pianoray_tutorial
-   cp midi.mid ~/pianoray_tutorial
-   cp audio.mp3 ~/pianoray_tutorial
+   cp video.mp4 midi.mid audio.mp3 ~/pianoray_tutorial
 
 The video file contains the recording of the piano. The MIDI file contains
 data about which notes are played. The audio file has the audio.
@@ -34,31 +35,36 @@ Save this data to ``~/pianoray_tutorial/settings.json``:
    {
        "video": {
            "resolution": [1280, 720],
-           "fps": 24
+           "fps": 30
        },
        "midi": {
-           "file": "midi.mid",
+           "file": "midi.mid"
        },
        "audio": {
            "file": "audio.mp3",
-           "start": 10.02,
+           "start": 20.74
        },
        "keyboard": {
            "file": "video.mp4",
-           "start": 3.88,
-           "crop": [[8,288], [1275,298], [1259,452], [22,435]]
+           "start": 4.75,
+           "crop": [[252,480], [1793,487], [1789,676], [257,666]],
+           "dim_mult": 0.6,
+           "dim_add": -8
        }
    }
 
-Most of these settings are self explanatory. The ``start`` settings are
-timestamps, in seconds, of when you press the first note in the respective
-media. This is necessary to apply the correct offsets. The ``crop`` setting
-defines the coordinates of the keyboard in the video.
+Most of these settings are self explanatory.
+
+The ``start`` settings are timestamps, in seconds, of when you press the first
+note in the respective media. This is necessary to apply the correct offsets.
+
+The ``crop`` setting defines the coordinates of the keyboard in the video.
+These values are for the Fur Elise recording.
 
 Render
 ------
 
-Run these commands in a shell:
+To start the render, run these commands in a shell:
 
 .. code-block:: bash
 

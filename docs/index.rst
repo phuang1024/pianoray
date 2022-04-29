@@ -27,4 +27,5 @@ PianoRay
 
    devs/setup.rst
    devs/files.rst
+   devs/cache.rst
    devs/info.rst
