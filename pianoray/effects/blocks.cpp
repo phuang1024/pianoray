@@ -65,12 +65,14 @@ double dist_to_block(double px, double py, double x, double y,
 void draw_rect(
     Image& img, int width, int height,
     double x, double y, double w, double h, double r,
-    const Color& color, double glow_int, const Color& glow_color)
+    const Color& color, double glow_int, double glow_radius,
+    const Color& glow_color)
 {
-    int x_min = (int)(dbounds(x-6, 0, width-1));
-    int x_max = (int)(dbounds(x+w+7, 0, width-1));
-    int y_min = (int)(dbounds(y-6, 0, height-1));
-    int y_max = (int)(dbounds(y+h+7, 0, height-1));
+    double gr = glow_radius;
+    int x_min = (int)(dbounds(x-gr-1, 0, width-1));
+    int x_max = (int)(dbounds(x+w+gr+2, 0, width-1));
+    int y_min = (int)(dbounds(y-gr-1, 0, height-1));
+    int y_max = (int)(dbounds(y+h+gr+2, 0, height-1));
 
     for (int px = x_min; px < x_max; px++) {
         for (int py = y_min; py < y_max; py++) {
@@ -80,7 +82,7 @@ void draw_rect(
             double block_fac = interp(dist, 0, 1, 1, 0);
             block_fac = dbounds(block_fac, 0, 1);
 
-            double glow_fac = interp(dist, 1, 5, glow_int, 0);
+            double glow_fac = interp(dist, 1, gr, glow_int, 0);
             glow_fac = dbounds(glow_fac, 0, 1);
 
             Color with_glow = mix_cols(curr, glow_color, glow_fac);
@@ -115,7 +117,7 @@ extern "C" void render_blocks(
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
     int fps, double speed, double black_width, double radius, UCH* color_data,
-        double glow_int, UCH* glow_color_data)
+        double glow_int, double glow_radius, UCH* glow_color_data)
 {
     Image img(img_data, width, height, 3);
     Color color(color_data), glow_color(glow_color_data);
@@ -136,7 +138,7 @@ extern "C" void render_blocks(
         double w = x_end - x_start;
         double h = y_start - y_end;
         draw_rect(img, width, height, x, y, w, h, radius, color,
-            glow_int, glow_color);
+            glow_int, glow_radius, glow_color);
     }
 }
 
