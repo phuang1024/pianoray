@@ -100,10 +100,10 @@ def render_video(args, settings: Settings, out: str, cache: Path) -> None:
 
     # Save settings to cache.
     os.makedirs(cache, exist_ok=True)
+    real_start = check_previous(args, settings, cache)
     with open(cache / "settings.json", "w") as fp:
         json.dump(settings._json(), fp)
 
-    real_start = check_previous(args, settings, cache)
     video = Video(cache/"output", settings.audio.file,
         settings.audio.start)
     num_frames = render_frames(settings, libs, video, cache, real_start)

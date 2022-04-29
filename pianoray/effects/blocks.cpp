@@ -82,8 +82,10 @@ void draw_rect(
             double block_fac = interp(dist, 0, 1, 1, 0);
             block_fac = dbounds(block_fac, 0, 1);
 
-            double glow_fac = interp(dist, 1, gr, glow_int, 0);
+            double glow_fac = interp(dist, 1, gr, 1, 0);
             glow_fac = dbounds(glow_fac, 0, 1);
+            //glow_fac = pow(dbounds(glow_fac, 0, 1), 2);
+            glow_fac *= glow_int;
 
             Color with_glow = mix_cols(curr, glow_color, glow_fac);
             Color with_block = mix_cols(with_glow, color, block_fac);
