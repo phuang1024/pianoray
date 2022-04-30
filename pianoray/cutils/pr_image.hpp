@@ -81,7 +81,7 @@ public:
     /**
      * Index of data for corresponding coords.
      */
-    int index(int x, int y, int ch) {
+    int index(int x, int y, int ch) const {
         return (
             y * width * channels +
             x * channels +
@@ -92,14 +92,14 @@ public:
     /**
      * Get value at coord.
      */
-    UCH get(int x, int y, int ch) {
+    UCH get(int x, int y, int ch) const {
         return data[index(x, y, ch)];
     }
 
     /**
      * Get value as a color.
      */
-    Color getc(int x, int y) {
+    Color getc(int x, int y) const {
         int i = index(x, y, 0);
         return Color(data[i], data[i+1], data[i+2]);
     }
@@ -131,11 +131,11 @@ public:
     double* data;
     int width, height;
 
-    ~Image() {
+    ~ImageGray() {
         delete[] data;
     }
 
-    Image(int width, int height) {
+    ImageGray(int width, int height) {
         this->width = width;
         this->height = height;
 
@@ -147,14 +147,14 @@ public:
     /**
      * Index of data for corresponding coords.
      */
-    int index(int x, int y, int ch) {
+    int index(int x, int y) const {
         return y*width + x;
     }
 
     /**
      * Get value at coord.
      */
-    UCH get(int x, int y) {
+    double get(int x, int y) const {
         return data[index(x, y)];
     }
 
