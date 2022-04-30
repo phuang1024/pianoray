@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import Mapping
 
+import cv2
 import numpy as np
 from tqdm import trange
 
@@ -11,6 +12,7 @@ from .. import logger
 from ..effects import parse_midi
 from ..effects import Blocks, Keyboard, Glare
 from ..settings import Settings
+from ..utils import bounds
 from .lib import load_libs
 from .video import Video
 
@@ -22,6 +24,7 @@ def preprocess(settings: Settings):
     coord = settings.video.resolution[0] / 52
     settings.blocks.radius *= coord
     settings.blocks.glow_radius *= coord
+    settings.composition.fade_blur *= coord
     settings.glare.radius *= coord
     settings.keyboard.below_length *= coord
 
@@ -110,6 +113,9 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     m_end = settings.composition.margin_end
     frame_start = -fps * m_start
     frame_end = duration + fps*m_end
+    fade_in = frame_start + settings.composition.fade_in * fps
+    fade_out = frame_end - settings.composition.fade_out * fps
+    fade_blur = settings.composition.fade_blur
 
     # OOP effects
     blocks = Blocks(settings, cache, libs)
@@ -124,15 +130,31 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     num_frames = real_start - frame_start
     video.frame = num_frames
     for frame in trange(real_start, frame_end, desc="Rendering"):
+        # Save state
         num_frames += 1
         with open(cache/"currently_rendering.txt", "w") as fp:
             fp.write(str(frame))
 
+        # Create image
         img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
 
+        # Apply effects
         blocks.render(settings, img, frame, notes)
         keyboard.render(settings, img, frame)
         glare.render(settings, img, frame, notes)
+
+        # Fade
+        fade_fac = 1
+        if frame <= fade_in:
+            fade_fac *= np.interp(frame, (frame_start, fade_in), (0, 1))
+        if frame >= fade_out:
+            fade_fac *= np.interp(frame, (fade_out, frame_end), (1, 0))
+        fade_fac = bounds(fade_fac, 0, 1)
+        if fade_fac < 1:
+            blur = int(fade_blur * (1-fade_fac))
+            img = (img * fade_fac).astype(np.uint8)
+            if blur > 0:
+                img = cv2.blur(img, (blur, blur))
 
         video.write(img)
 

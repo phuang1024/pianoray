@@ -23,8 +23,11 @@ SETTINGS_DEFAULT = {
         "start": 0,
     },
     "composition": {
-        "margin_start": 2,
-        "margin_end": 2,
+        "margin_start": 3,
+        "margin_end": 3,
+        "fade_in": 1,
+        "fade_out": 1,
+        "fade_blur": 1,
     },
     "piano": {
         "black_width_fac": 0.6,
