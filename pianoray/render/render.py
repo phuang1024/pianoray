@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import Mapping
 
+import cv2
 import numpy as np
 from tqdm import trange
 
@@ -23,6 +24,7 @@ def preprocess(settings: Settings):
     coord = settings.video.resolution[0] / 52
     settings.blocks.radius *= coord
     settings.blocks.glow_radius *= coord
+    settings.composition.fade_blur *= coord
     settings.glare.radius *= coord
     settings.keyboard.below_length *= coord
 
@@ -113,6 +115,7 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     frame_end = duration + fps*m_end
     fade_in = frame_start + settings.composition.fade_in * fps
     fade_out = frame_end - settings.composition.fade_out * fps
+    fade_blur = settings.composition.fade_blur
 
     # OOP effects
     blocks = Blocks(settings, cache, libs)
@@ -148,7 +151,10 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
             fade_fac *= np.interp(frame, (fade_out, frame_end), (1, 0))
         fade_fac = bounds(fade_fac, 0, 1)
         if fade_fac < 1:
+            blur = int(fade_blur * (1-fade_fac))
             img = (img * fade_fac).astype(np.uint8)
+            if blur > 0:
+                img = cv2.blur(img, (blur, blur))
 
         video.write(img)
 
