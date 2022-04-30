@@ -155,3 +155,7 @@ class Keyboard(Effect):
 
         half = int(settings.video.resolution[1] / 2)
         img[half:half+dst[1], 0:dst[0], ...] = kbd
+
+        # Octave lines TODO
+        #if settings.keyboard.octave_lines:
+            #for key in range(3, 88, 12):

@@ -135,19 +135,28 @@ extern "C" void render_blocks(
     for (int i = 0; i < num_notes; i++) {
         double y_start = event_coord(note_starts[i], frame, height, fps, speed);
         double y_end = event_coord(note_ends[i], frame, height, fps, speed);
-        if (y_start < 0 || y_end > height/2)
-            continue;
 
         y_start = dbounds(y_start, -radius, height/2 + radius);
         y_end = dbounds(y_end, -radius, height/2 + radius);
+        double y_up, y_down;  // Y bounds up and down.
+        if (y_start < y_end) {
+            y_up = y_start;
+            y_down = y_end;
+        } else {
+            y_down = y_start;
+            y_up = y_end;
+        }
+        if (y_down < 0 || y_up > height/2)
+            continue;
+
         double x_start, x_end;
         key_coords(x_start, x_end, note_keys[i], width, black_width);
 
         Rect rect;
         rect.x = x_start;
-        rect.y = y_end;
+        rect.y = y_up;
         rect.w = x_end - x_start;
-        rect.h = y_start - y_end;
+        rect.h = y_down - y_up;
 
         set_fac(block_fac, glow_fac, rect, radius, glow_radius, glow_int);
     }

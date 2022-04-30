@@ -10,6 +10,9 @@
         "file": "examples/furelise/audio.mp3",
         "start": 20.74
     },
+    "blocks": {
+        "speed": 0.5
+    },
     "keyboard": {
         "file": "examples/furelise/video.mp4",
         "start": 4.75,

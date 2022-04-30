@@ -52,6 +52,7 @@ SETTINGS_DEFAULT = {
         "dim_mult": 1,
         "dim_add": 0,
         "below_length": 7,
+        "octave_lines": True,
     },
     "glare": {
         "radius": 3,

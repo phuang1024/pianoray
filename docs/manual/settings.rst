@@ -71,6 +71,7 @@ Colors are ``[R, G, B]`` from 0 to 255.
     - ``dim_add``: Additive dimming. Subtracted from 0 to 255 channels. If you
       wish to dim, provide a negative value.
     - ``below_length``: Length of the below section in coords.
+    - ``octave_lines``: Whether to render octave lines.
 - ``glare``: Settings about rendering glare.
     - ``radius``: Radius of glare in coords.
     - ``intensity``: Intensity value.
