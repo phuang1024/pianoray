@@ -17,6 +17,8 @@
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+#include <iostream>
+
 #include "pr_image.hpp"
 #include "pr_math.hpp"
 #include "pr_piano.hpp"
@@ -25,15 +27,21 @@
 namespace Pianoray {
 
 
+struct Rect {
+    double x, y, w, h;
+};
+
+
 /**
- * Distance to a block.
+ * Absolute distance to a block.
  *
  * @param px, py  Point coordinates.
- * @param x, y, w, h, r  Block dimensions.
+ * @param r  Block rounding radius.
  */
-double dist_to_block(double px, double py, double x, double y,
-    double w, double h, double r)
+double dist_to_block(double px, double py, const Rect& rect, double r)
 {
+    const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+
     // Mirror across block center to simply calcs.
     double half_x = x + w/2;
     double half_y = y + h/2;
@@ -57,29 +65,57 @@ double dist_to_block(double px, double py, double x, double y,
 
 
 /**
- * Draw rectangle.
+ * Set block_fac and glow_fac values.
  *
  * @param width, height  Image dimensions.
- * @param x, y, w, h, r  Rectangle dimensions.
  */
-void draw_rect(
-    Image& img, int width, int height,
-    double x, double y, double w, double h, double r,
-    const Color& color)
+void set_fac(
+    ImageGray& block_fac, ImageGray& glow_fac,
+    const Rect& rect, double radius, double glow_radius, double glow_int)
 {
-    int x_min = (int)(dbounds(x-2, 0, width-1));
-    int x_max = (int)(dbounds(x+w+3, 0, width-1));
-    int y_min = (int)(dbounds(y-2, 0, height-1));
-    int y_max = (int)(dbounds(y+h+3, 0, height-1));
+    const double gr = glow_radius;
+    const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+    const int width = block_fac.width, height = block_fac.height;
 
-    for (int px = x_min; px < x_max; px++) {
-        for (int py = y_min; py < y_max; py++) {
-            double dist = dist_to_block(px, py, x, y, w, h, r);
-            double alpha = interp(dist, 0, 1.5, 1, 0);
-            alpha = dbounds(alpha, 0, 1);
+    int x_min = (int)(dbounds(x-gr-1, 0, width-1));
+    int x_max = (int)(dbounds(x+w+gr+2, 0, width-1));
+    int y_min = (int)(dbounds(y-gr-1, 0, height-1));
+    int y_max = (int)(dbounds(y+h+gr+2, 0, height-1));
 
-            Color curr = img.getc(px, py);
-            img.setc(px, py, mix_cols(curr, color, alpha));
+    for (int x = x_min; x < x_max; x++) {
+        for (int y = y_min; y < y_max; y++) {
+            double dist = dist_to_block(x, y, rect, radius);
+
+            double bfac = interp(dist, 0, 1, 1, 0);
+            bfac = dbounds(bfac, 0, 1);
+
+            double gfac = interp(dist, 1, gr, 1, 0);
+            gfac = dbounds(gfac, 0, 1);
+            gfac *= glow_int;
+
+            block_fac.set(x, y, std::max(bfac, block_fac.get(x, y)));
+            glow_fac.set(x, y, std::max(gfac, glow_fac.get(x, y)));
+        }
+    }
+}
+
+
+/**
+ * Draw the blocks based on block and glow factors.
+ */
+void draw_blocks(
+    Image& img, const ImageGray& block_fac, const ImageGray& glow_fac,
+    const Color& color, const Color& glow_color)
+{
+    for (int x = 0; x < img.width; x++) {
+        for (int y = 0; y < img.height; y++) {
+            double bfac = block_fac.get(x, y);
+            double gfac = glow_fac.get(x, y);
+
+            Color curr = img.getc(x, y);
+            curr = mix_cols(curr, glow_color, gfac);
+            curr = mix_cols(curr, color, bfac);
+            img.setc(x, y, curr);
         }
     }
 }
@@ -101,15 +137,19 @@ void draw_rect(
  * @param black_width  settings.piano.black_width_fac
  * @param radius  settings.blocks.radius
  * @param color_data  settings.blocks.color
+ * @param glow_int  settings.blocks.glow_intensity
+ * @param glow_color_data  settings.blocks.glow_color
  */
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
     int frame,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double speed, double black_width, double radius, UCH* color_data)
+    int fps, double speed, double black_width, double radius, UCH* color_data,
+        double glow_int, double glow_radius, UCH* glow_color_data)
 {
     Image img(img_data, width, height, 3);
-    Color color(color_data);
+    ImageGray block_fac(width, height), glow_fac(width, height);
+    Color color(color_data), glow_color(glow_color_data);
 
     for (int i = 0; i < num_notes; i++) {
         double y_start = event_coord(note_starts[i], frame, height, fps, speed);
@@ -122,12 +162,16 @@ extern "C" void render_blocks(
         double x_start, x_end;
         key_coords(x_start, x_end, note_keys[i], width, black_width);
 
-        double x = x_start;
-        double y = y_end;
-        double w = x_end - x_start;
-        double h = y_start - y_end;
-        draw_rect(img, width, height, x, y, w, h, radius, color);
+        Rect rect;
+        rect.x = x_start;
+        rect.y = y_end;
+        rect.w = x_end - x_start;
+        rect.h = y_start - y_end;
+
+        set_fac(block_fac, glow_fac, rect, radius, glow_radius, glow_int);
     }
+
+    draw_blocks(img, block_fac, glow_fac, color, glow_color);
 }
 
 

@@ -40,7 +40,10 @@ class Blocks(Effect):
         settings = self.settings
         settings_args = [settings.video.fps, settings.blocks.speed,
             settings.piano.black_width_fac, settings.blocks.radius,
-            np.array(settings.blocks.color, dtype=np.uint8)]
+            np.array(settings.blocks.color, dtype=np.uint8),
+            settings.blocks.glow_intensity, settings.blocks.glow_radius,
+            np.array(settings.blocks.glow_color, dtype=np.uint8),
+        ]
 
         self.libs["blocks"].render_blocks(
             img, img.shape[1], img.shape[0],

@@ -81,7 +81,7 @@ public:
     /**
      * Index of data for corresponding coords.
      */
-    int index(int x, int y, int ch) {
+    int index(int x, int y, int ch) const {
         return (
             y * width * channels +
             x * channels +
@@ -92,14 +92,14 @@ public:
     /**
      * Get value at coord.
      */
-    UCH get(int x, int y, int ch) {
+    UCH get(int x, int y, int ch) const {
         return data[index(x, y, ch)];
     }
 
     /**
      * Get value as a color.
      */
-    Color getc(int x, int y) {
+    Color getc(int x, int y) const {
         int i = index(x, y, 0);
         return Color(data[i], data[i+1], data[i+2]);
     }
@@ -119,6 +119,50 @@ public:
         data[i] = c.r;
         data[i+1] = c.g;
         data[i+2] = c.b;
+    }
+};
+
+
+/**
+ * Grayscale image of doubles.
+ */
+class ImageGray {
+public:
+    double* data;
+    int width, height;
+
+    ~ImageGray() {
+        delete[] data;
+    }
+
+    ImageGray(int width, int height) {
+        this->width = width;
+        this->height = height;
+
+        data = new double[width*height];
+        for (int i = 0; i < width*height; i++)
+            data[i] = 0;
+    }
+
+    /**
+     * Index of data for corresponding coords.
+     */
+    int index(int x, int y) const {
+        return y*width + x;
+    }
+
+    /**
+     * Get value at coord.
+     */
+    double get(int x, int y) const {
+        return data[index(x, y)];
+    }
+
+    /**
+     * Set value at coord.
+     */
+    void set(int x, int y, double v) {
+        data[index(x, y)] = v;
     }
 };
 
