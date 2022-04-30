@@ -5,10 +5,9 @@ Dependencies
 ------------
 
 - Python3.8 or higher.
-- FFmpeg
-- C++ compiler (``g++``)
-- Python packages: Install from ``requirements.txt``:
-  ``pip install -r requirements.txt``.
+- FFmpeg.
+- C++ compiler (``g++``).
+- Python packages listed in ``requirements.txt``
 
 Latest
 ------
@@ -27,5 +26,3 @@ May be unstable or have bugs.
 .. code-block:: sh
 
    pip install git+https://github.com/phuang1024/pianoray
-
-See ``Developers/Setup`` for building instructions.

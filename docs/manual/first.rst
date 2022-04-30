@@ -1,5 +1,5 @@
-Tutorial
-========
+First Video
+===========
 
 First, install PianoRay. Follow instructions in
 `General/Installation <../general/install.html>`__.

@@ -16,7 +16,7 @@ PianoRay
    :hidden:
    :caption: Manual
 
-   manual/tutorial.rst
+   manual/first.rst
    manual/cli.rst
    manual/settings.rst
 
