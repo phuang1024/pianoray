@@ -1,6 +1,7 @@
 PianoRay
 ========
 
+.. image:: furelise.jpg
 
 .. toctree::
    :maxdepth: 2

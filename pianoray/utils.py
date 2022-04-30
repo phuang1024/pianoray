@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 
-VERSION = "0.0.8"
+VERSION = "0.1.0"
 
 ROOT = Path(__file__).absolute().parent
 
