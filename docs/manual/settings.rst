@@ -45,6 +45,8 @@ Colors are ``[R, G, B]`` from 0 to 255.
 - ``composition``: Settings about the structure of the video.
     - ``margin_start``: Seconds of video before the first note.
     - ``margin_end``: Seconds of video after the last note ends.
+    - ``fade_in``: Seconds of fade in.
+    - ``fade_out``: Seconds of fade out.
 - ``piano``: Settings about the piano.
     - ``black_width_fac``: Black key width as factor of white key width.
 - ``blocks``: Settings about blocks.
