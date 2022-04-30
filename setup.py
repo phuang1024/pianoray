@@ -59,7 +59,7 @@ setuptools.setup(
     include_package_data=True,
     entry_points={
         "console_scripts": [
-            "pianoray = pianoray.main:main",
+            "pianoray = pianoray.__main__:main",
         ]
     },
 )

@@ -36,11 +36,13 @@ def view(args):
 
 
 def main():
+    version_str = f"Pianoray v{VERSION}"
+
     parser = argparse.ArgumentParser(
         description="Piano performance visualizer.")
     subparsers = parser.add_subparsers(title="subcommands", dest="subparser")
     parser.add_argument("-V", "--version", action="version",
-        help="Show version info.", version=f"Pianoray v{VERSION}")
+        help="Show version info.", version=version_str)
     parser.add_argument("-y", "--yes",
         help="Don't prompt overwrite.", action="store_true")
 
@@ -62,6 +64,8 @@ def main():
     view_parser.add_argument("file", help="Path to file to view.")
 
     args = parser.parse_args()
+    logger.info(version_str)
+
     if args.subparser == "render":
         render(args)
     elif args.subparser == "view":
