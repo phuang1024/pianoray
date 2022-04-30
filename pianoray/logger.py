@@ -19,7 +19,7 @@ def info(msg: str) -> None:
     Info log to stderr.
     Color: blue
     """
-    log("INFO", msg, "blue")
+    log("INFO", msg, "cyan")
 
 def warn(msg: str) -> None:
     """
