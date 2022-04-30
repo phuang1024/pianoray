@@ -2,14 +2,18 @@ import os
 import shutil
 from pathlib import Path
 
+from . import logger
+
 VERSION = "0.1.1"
 
 ROOT = Path(__file__).absolute().parent
 
 FFMPEG = shutil.which("ffmpeg")
 GCC = shutil.which("g++")
-assert FFMPEG is not None
-assert GCC is not None
+if FFMPEG is None:
+    logger.warn("No FFmpeg.")
+if GCC is None:
+    logger.warn("No g++.")
 
 
 SETTINGS_DEFAULT = {
