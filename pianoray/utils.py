@@ -34,10 +34,10 @@ SETTINGS_DEFAULT = {
     },
     "blocks": {
         "speed": 0.5,
-        "color": [155, 160, 240],
+        "color": [150, 160, 240],
         "radius": 0.25,
-        "glow_intensity": 0.4,
-        "glow_color": [255, 255, 255],
+        "glow_intensity": 0.3,
+        "glow_color": [230, 230, 255],
         "glow_radius": 0.4,
     },
     "midi": {
