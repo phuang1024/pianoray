@@ -124,6 +124,50 @@ public:
 
 
 /**
+ * Grayscale image of doubles.
+ */
+class ImageGray {
+public:
+    double* data;
+    int width, height;
+
+    ~Image() {
+        delete[] data;
+    }
+
+    Image(int width, int height) {
+        this->width = width;
+        this->height = height;
+
+        data = new double[width*height];
+        for (int i = 0; i < width*height; i++)
+            data[i] = 0;
+    }
+
+    /**
+     * Index of data for corresponding coords.
+     */
+    int index(int x, int y, int ch) {
+        return y*width + x;
+    }
+
+    /**
+     * Get value at coord.
+     */
+    UCH get(int x, int y) {
+        return data[index(x, y)];
+    }
+
+    /**
+     * Set value at coord.
+     */
+    void set(int x, int y, double v) {
+        data[index(x, y)] = v;
+    }
+};
+
+
+/**
  * Mix colors.
  * @param fac  Factor of mix from 0 to 1. 0 means all c1. 1 means all c2.
  */
