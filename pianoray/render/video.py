@@ -117,7 +117,7 @@ def run_ffmpeg(args: Sequence[str]):
     proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
     proc.wait()
 
-    if (code := proc.returncode) != 0:
-        msg = f"FFmpeg exited with code {code}. " + \
+    if proc.returncode != 0:
+        msg = f"FFmpeg exited with code {proc.returncode}. " + \
             "Command: " + " ".join(args)
         raise ValueError(msg)
