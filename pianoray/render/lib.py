@@ -39,7 +39,17 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         Types.double, Types.double, Types.double, Types.double, Types.int,
     ]
 
+    keyboard = build_lib(
+        ["effects/keyboard.cpp"],
+        cache,
+        "keyboard",
+    )
+    keyboard.render_octave_lines.argtypes = [
+        Types.img, Types.int, Types.int,
+    ]
+
     return {
         "blocks": blocks,
         "glare": glare,
+        "keyboard": keyboard,
     }
