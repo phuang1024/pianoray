@@ -5,8 +5,7 @@ from .effect import Effect
 
 
 class VideoRead:
-    """
-    Read frames of a video.
+    """ Read frames of a video.
     The class internally accommodates for FPS.
     """
     # Video fps is in_fps, client fps is out_fps
@@ -156,6 +155,7 @@ class Keyboard(Effect):
         half = int(settings.video.resolution[1] / 2)
         img[half:half+dst[1], 0:dst[0], ...] = kbd
 
-        # Octave lines TODO
-        #if settings.keyboard.octave_lines:
-            #for key in range(3, 88, 12):
+        # Octave lines
+        if settings.keyboard.octave_lines:
+            self.libs["keyboard"].render_octave_lines(
+                img, img.shape[1], img.shape[0])
