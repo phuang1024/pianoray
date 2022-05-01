@@ -11,6 +11,7 @@ PianoRay
    general/about.rst
    general/install.rst
    general/support.rst
+   general/license.rst
 
 .. toctree::
    :maxdepth: 2

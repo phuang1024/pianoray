@@ -69,10 +69,11 @@ To start the render, run these commands in a shell:
 .. code-block:: bash
 
    cd ~/pianoray_tutorial
-   pianoray -s settings.json -o out.mp4 -p
+   pianoray render -s settings.json -o out.mp4 -p
 
 This starts rendering, using the provided settings file and saving to the
 output file. The ``-p`` flag tells PianoRay to open the output file after
 rendering.
 
-Rendering may take a few minutes.
+Rendering may take a few minutes. If the renderer crashes, run the same command
+again. If it repeatedly does not work, open an issue on GitHub.
