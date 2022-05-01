@@ -31,3 +31,4 @@ PianoRay
    devs/files.rst
    devs/cache.rst
    devs/info.rst
+   devs/internal.rst
