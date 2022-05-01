@@ -1,3 +1,7 @@
+"""
+Rendering pipeline.
+"""
+
 import ctypes
 import json
 import os
