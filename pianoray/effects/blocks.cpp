@@ -89,7 +89,7 @@ void draw_blocks(
     const Color& color, const Color& glow_color)
 {
     for (int x = 0; x < img.width; x++) {
-        for (int y = 0; y < img.height; y++) {
+        for (int y = 0; y < img.height/2; y++) {
             double bfac = block_fac.get(x, y);
             double gfac = glow_fac.get(x, y);
 
