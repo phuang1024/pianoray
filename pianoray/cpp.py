@@ -63,7 +63,7 @@ def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
 
     obj_files = []
     for f in files:
-        obj_path = str(f.with_suffix(".o"))
+        obj_path = str(cache / f.with_suffix(".o").name)
         obj_files.append(obj_path)
         compile(str(f), obj_path)
 
