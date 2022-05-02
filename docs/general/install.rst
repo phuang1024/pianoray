@@ -4,7 +4,7 @@ Installation
 Dependencies
 ------------
 
-- Python3.8 or higher.
+- Python version 3.8 or higher.
 - FFmpeg.
 - C++ compiler (``g++``).
 - Python packages listed in ``requirements.txt``
