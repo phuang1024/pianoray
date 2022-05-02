@@ -1,10 +1,14 @@
+"""
+Global utilities.
+"""
+
 import os
 import shutil
 from pathlib import Path
 
 from . import logger
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 ROOT = Path(__file__).absolute().parent
 

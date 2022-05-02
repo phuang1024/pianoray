@@ -1,3 +1,7 @@
+"""
+Settings class.
+"""
+
 from typing import Any, Mapping
 
 

@@ -1,3 +1,7 @@
+"""
+Main entry point.
+"""
+
 import argparse
 import json
 import os
@@ -14,6 +18,10 @@ from .view import view_video
 
 
 def render(args):
+    """
+    Call this when the user requests render, e.g.
+    pianoray render ...
+    """
     if args.output.exists() and not args.yes:
         if input(f"Overwrite output file {args.output}? [y/N] ") \
                 .lower().strip() != "y":
@@ -32,10 +40,17 @@ def render(args):
 
 
 def view(args):
+    """
+    Called when the user requests view e.g.
+    pianoray view ...
+    """
     view_video(args.file)
 
 
 def main():
+    """
+    Main entry point.
+    """
     version_str = f"Pianoray v{VERSION}"
 
     parser = argparse.ArgumentParser(
