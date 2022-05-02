@@ -1,3 +1,7 @@
+"""
+C++ library compilation and handling.
+"""
+
 import ctypes
 import os
 from pathlib import Path
@@ -18,6 +22,11 @@ CPP_UTILS_FILES = [CPP_UTILS / f
 
 
 class Types:
+    """
+    C++ types. Assign a sequence of types to func.argtypes:
+
+    lib.render_thing.argtypes = [img, int, int, float, double, ...]
+    """
     _arr_flags = "aligned, c_contiguous"
 
     char = ctypes.c_int8
@@ -46,7 +55,7 @@ class Types:
 
 def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
     """
-    Initialize the lib.
+    Build and load a library.
 
     :param files: C files relative to THIS file.
     :param cache: Cache directory.
@@ -73,12 +82,18 @@ def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
     return ctypes.CDLL(lib_path)
 
 def compile(cpp, obj):
+    """
+    Compile a C++ file and output to obj file.
+    """
     args = [GCC, "-Wall", "-O3", "-c", "-fPIC", cpp, "-o", obj, "-I", CPP_UTILS]
     p = Popen(args)
     p.wait()
     assert p.returncode == 0
 
 def link(obj_files, lib_path):
+    """
+    Link object files.
+    """
     args = [GCC, "-shared", "-o", lib_path, *obj_files]
     p = Popen(args)
     p.wait()

@@ -1,3 +1,8 @@
+"""
+Handles loading libraries.
+Calls functions from ../cpp.py
+"""
+
 import ctypes
 import os
 from pathlib import Path
@@ -8,7 +13,7 @@ from ..cpp import build_lib, Types
 
 def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     """
-    Load C libraries.
+    Load C libraries. Also sets the argtypes and restypes.
     """
     cache = cache / "c_libs"
     os.makedirs(cache, exist_ok=True)

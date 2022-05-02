@@ -1,3 +1,7 @@
+"""
+Blocks effect.
+"""
+
 import numpy as np
 
 from ..cpp import Types

@@ -1,3 +1,7 @@
+"""
+Logging utils.
+"""
+
 import sys
 import termcolor
 from datetime import datetime

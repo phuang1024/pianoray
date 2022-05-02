@@ -1,3 +1,7 @@
+"""
+Effects module.
+"""
+
 from .midi import parse_midi
 
 from .blocks import Blocks
