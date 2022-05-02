@@ -1,6 +1,14 @@
 from typing import Any
 
 
+class Interp:
+    """
+    Namespace for interpolation types.
+    """
+    CONSTANT = "CONSTANT"
+    LINEAR = "LINEAR"
+
+
 class Keyframe:
     """
     Animate a property.
