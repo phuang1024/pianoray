@@ -42,6 +42,7 @@ class Property:
     def animate(self, keyframe: Keyframe) -> None:
         assert self.animatable
         assert keyframe.interp in self.supported_interps
+        keyframe.value = self.type(keyframe.value)
         assert self.verify(keyframe.value)
         self._keyframes.append(keyframe)
 

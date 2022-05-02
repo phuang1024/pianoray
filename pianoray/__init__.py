@@ -10,7 +10,6 @@ from . import effects
 from . import render
 from . import utils
 
-from .api.pgroup import PropertyGroup
-from .api.props import *
+from .api import *
 
 __version__ = utils.VERSION
