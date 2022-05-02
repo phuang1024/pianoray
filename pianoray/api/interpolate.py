@@ -19,5 +19,8 @@ def interpolate(k1: Keyframe, k2: Keyframe, frame: int) -> Any:
     if interp == Interp.CONSTANT:
         return v1
 
-    elif interp == Interp.LINEAR:
-        return np.interp(frame, (f1, f2), (v1, v2))
+    elif interp in (Interp.LINEAR,):
+        if interp == Interp.LINEAR:
+            fac = np.interp(frame, (f1, f2), (0, 1))
+
+        return np.interp(fac, (0, 1), (v1, v2))

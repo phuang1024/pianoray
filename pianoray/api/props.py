@@ -1,4 +1,4 @@
-from typing import Any, Iterable, List
+from typing import Any, Iterable, List, Type
 
 from .keyframe import Keyframe, Interp
 from .interpolate import interpolate
@@ -8,12 +8,12 @@ class Property:
     """
     Property base class.
     """
-    name: str
-    desc: str
-
-    animatable: bool
+    type: Type
     supported_interps: Iterable[str]
 
+    name: str
+    desc: str
+    animatable: bool
     default: Any
 
     _keyframes: List[Keyframe]
@@ -45,7 +45,10 @@ class Property:
         """
         return True
 
-    def value(self, frame) -> Any:
+    def _get_value(self, frame: int) -> Any:
+        """
+        Returns the value, but not necessarily the correct type.
+        """
         keys = sorted(self._keyframes)
 
         if len(keys) == 0:
@@ -70,11 +73,18 @@ class Property:
                 k2 = keys[i]
                 return interpolate(k1, k2, frame)
 
+    def value(self, frame: int) -> Any:
+        """
+        Returns self.type(self._get_value(frame))
+        """
+        return self.type(self._get_value(frame))
+
 
 class BoolProp(Property):
     """
     Boolean.
     """
+    type = bool
     supported_interps = {Interp.CONSTANT}
 
 
@@ -82,6 +92,7 @@ class IntProp(Property):
     """
     Integer.
     """
+    type = int
     supported_interps = {Interp.CONSTANT, Interp.LINEAR}
 
     min: int
@@ -89,9 +100,73 @@ class IntProp(Property):
 
     def __init__(self, name: str, desc: str, default: int,
             animatable: bool, min: int = None, max: int = None) -> None:
-        super().__init__(name, desc, default, animatable)
+        """
+        Min and max inclusive.
+        """
         self.min = min
         self.max = max
+        super().__init__(name, desc, default, animatable)
+
+    def verify(self, value: int) -> bool:
+        if self.min is not None and value < self.min:
+            return False
+        if self.max is not None and value > self.min:
+            return False
+        return True
+
+
+class FloatProp(Property):
+    """
+    Float.
+    """
+    type = float
+    supported_interps = {Interp.CONSTANT, Interp.LINEAR}
+
+    min: int
+    max: int
+
+    def __init__(self, name: str, desc: str, default: int,
+            animatable: bool, min: int = None, max: int = None) -> None:
+        """
+        Min and max inclusive.
+        """
+        self.min = min
+        self.max = max
+        super().__init__(name, desc, default, animatable)
+
+    def verify(self, value: int) -> bool:
+        if self.min is not None and value < self.min:
+            return False
+        if self.max is not None and value > self.min:
+            return False
+        return True
+
+
+class StrProp(Property):
+    """
+    String.
+    """
+    type = str
+    supported_interps = {Interp.CONSTANT}
+
+    min: int
+    max: int
+
+    def __init__(self, name: str, desc: str, default: int,
+            animatable: bool, min_len: int = None, max_len: int = None) -> None:
+        """
+        Min and max inclusive.
+        """
+        self.min_len = min_len
+        self.max_len = max_len
+        super().__init__(name, desc, default, animatable)
+
+    def verify(self, value: int) -> bool:
+        if self.min_len is not None and value < self.min_len:
+            return False
+        if self.max_len is not None and value > self.min_len:
+            return False
+        return True
 
 
 if __name__ == "__main__":
