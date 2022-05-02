@@ -3,6 +3,13 @@ from typing import Any, Iterable, List, Type
 from .keyframe import Keyframe, Interp
 from .interpolate import interpolate
 
+__all__ = (
+    "Property",
+    "BoolProp",
+    "IntProp",
+    "FloatProp",
+)
+
 
 class Property:
     """
@@ -99,7 +106,8 @@ class IntProp(Property):
     max: int
 
     def __init__(self, name: str, desc: str, default: int,
-            animatable: bool, min: int = None, max: int = None) -> None:
+            animatable: bool, min: Optional[int] = None,
+            max: Optional[int] = None) -> None:
         """
         Min and max inclusive.
         """
@@ -126,7 +134,8 @@ class FloatProp(Property):
     max: int
 
     def __init__(self, name: str, desc: str, default: int,
-            animatable: bool, min: int = None, max: int = None) -> None:
+            animatable: bool, min: Optional[int] = None,
+            max: Optional[int] = None) -> None:
         """
         Min and max inclusive.
         """

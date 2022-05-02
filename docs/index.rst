@@ -21,6 +21,7 @@ PianoRay
    manual/first.rst
    manual/record.rst
    manual/cli.rst
+   manual/api.rst
    manual/settings.rst
 
 .. toctree::
