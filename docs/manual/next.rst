@@ -61,3 +61,26 @@ If you need to rotate it, see
 `this page <https://stackoverflow.com/a/9570992/16570071>`__ for rotating with FFmpeg.
 
 Offsets
+-------
+
+Find the offsets for respective media. PianoRay uses these offsets. It may be
+beneficial to write down these offsets somewhere so you don't forget them later.
+
+Audio
+^^^^^
+
+Open the audio in an audio player and find the timestamp, in seconds, when the
+audio starts. I use `Audacity <https://audacityteam.org>`__.
+
+Video
+^^^^^
+
+Find the moment you play the first note in the video. I use
+`Blender <https://blender.org>`__'s video editor.
+
+Video Crop
+^^^^^^^^^^
+
+Find the pixel coordinates of the four corners of the keyboard in the video, starting
+from the top left and going clockwise. If you use Blender's video editor, keep in mind
+that Blender's image viewer has the Y coordinates reversed.
