@@ -19,7 +19,7 @@ PianoRay
    :caption: Manual
 
    manual/first.rst
-   manual/next.rst
+   manual/record.rst
    manual/cli.rst
    manual/settings.rst
 

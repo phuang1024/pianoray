@@ -1,5 +1,5 @@
-Next Steps
-==========
+Recording
+=========
 
 Instructions for recording and making your own video.
 
@@ -84,3 +84,8 @@ Video Crop
 Find the pixel coordinates of the four corners of the keyboard in the video, starting
 from the top left and going clockwise. If you use Blender's video editor, keep in mind
 that Blender's image viewer has the Y coordinates reversed.
+
+Rendering
+---------
+
+Follow instructions in `this page <first.html>`__ for rendering instructions.
