@@ -19,6 +19,7 @@ PianoRay
    :caption: Manual
 
    manual/first.rst
+   manual/next.rst
    manual/cli.rst
    manual/settings.rst
 
@@ -31,4 +32,3 @@ PianoRay
    devs/files.rst
    devs/cache.rst
    devs/info.rst
-   devs/internal.rst
