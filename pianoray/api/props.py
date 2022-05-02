@@ -1,4 +1,4 @@
-from typing import Any, Iterable, List, Type
+from typing import Any, Iterable, List, Optional, Type
 
 from .keyframe import Keyframe, Interp
 from .interpolate import interpolate
@@ -8,6 +8,7 @@ __all__ = (
     "BoolProp",
     "IntProp",
     "FloatProp",
+    "StrProp",
 )
 
 
@@ -48,6 +49,8 @@ class Property:
         """
         Check whether the value can be assigned to this prop, e.g.
         min and max.
+
+        Default implementation returns True.
         Override in subclass, if applicable.
         """
         return True
@@ -55,6 +58,7 @@ class Property:
     def _get_value(self, frame: int) -> Any:
         """
         Returns the value, but not necessarily the correct type.
+        Call ``self.value(frame)`` instead to convert to the prop's type.
         """
         keys = sorted(self._keyframes)
 
@@ -82,7 +86,9 @@ class Property:
 
     def value(self, frame: int) -> Any:
         """
-        Returns self.type(self._get_value(frame))
+        Returns value at frame. Uses keyframe interpolations.
+
+        Equivalent to ``self.type(self._get_value(frame))``
         """
         return self.type(self._get_value(frame))
 
@@ -98,6 +104,7 @@ class BoolProp(Property):
 class IntProp(Property):
     """
     Integer.
+    Min and max inclusive.
     """
     type = int
     supported_interps = {Interp.CONSTANT, Interp.LINEAR}
@@ -108,9 +115,6 @@ class IntProp(Property):
     def __init__(self, name: str, desc: str, default: int,
             animatable: bool, min: Optional[int] = None,
             max: Optional[int] = None) -> None:
-        """
-        Min and max inclusive.
-        """
         self.min = min
         self.max = max
         super().__init__(name, desc, default, animatable)
@@ -126,6 +130,7 @@ class IntProp(Property):
 class FloatProp(Property):
     """
     Float.
+    Min and max inclusive.
     """
     type = float
     supported_interps = {Interp.CONSTANT, Interp.LINEAR}
@@ -136,9 +141,6 @@ class FloatProp(Property):
     def __init__(self, name: str, desc: str, default: int,
             animatable: bool, min: Optional[int] = None,
             max: Optional[int] = None) -> None:
-        """
-        Min and max inclusive.
-        """
         self.min = min
         self.max = max
         super().__init__(name, desc, default, animatable)
@@ -154,6 +156,7 @@ class FloatProp(Property):
 class StrProp(Property):
     """
     String.
+    Min and max inclusive.
     """
     type = str
     supported_interps = {Interp.CONSTANT}
@@ -163,9 +166,6 @@ class StrProp(Property):
 
     def __init__(self, name: str, desc: str, default: int,
             animatable: bool, min_len: int = None, max_len: int = None) -> None:
-        """
-        Min and max inclusive.
-        """
         self.min_len = min_len
         self.max_len = max_len
         super().__init__(name, desc, default, animatable)
