@@ -31,3 +31,33 @@ MIDI
 
 Connect the MIDI keyboard to the computer. Use MIDI recording software to record
 the MIDI. I use `MidiEditor <https://midieditor.org/>`__, which has worked great.
+
+Processing
+----------
+
+Audio
+^^^^^
+
+Create an audio file from the MIDI.
+
+1. Download a soundfont.
+   `SoundFonts4U <https://sites.google.com/site/soundfonts4u>`__ has great piano
+   soundfonts.
+2. Install software that can render a MIDI file. I use
+   `FluidSynth <https://github.com/FluidSynth/fluidsynth>`__, and the rest of
+   these instructions assume you have FluidSynth.
+3. Run this command, which uses FluidSynth to render and FFmpeg to write the audio
+   file: ``fluidsynth -a alsa -T raw -g GAIN -F - SOUNDFONT.sf2 MIDI.mid |
+   ffmpeg -y -f s32le -i - -filter:a "volume=2" AUDIO.mp3``. Replace the uppercase
+   words with the respective values. A value of ``0.5`` for GAIN works usually.
+
+Video
+^^^^^
+
+Make sure the video is right side up. That is, your hands come from the bottom of
+the screen and play the keyboard.
+
+If you need to rotate it, see
+`this page <https://stackoverflow.com/a/9570992/16570071>`__ for rotating with FFmpeg.
+
+Offsets
