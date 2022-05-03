@@ -34,13 +34,20 @@ class Property:
             animatable: bool) -> None:
         self.name = name
         self.desc = desc
-        self.default = default
+        self.default = self.type(default)
         self.animatable = animatable
 
         self._keyframes = []
-        self._value = default
+        self._value = self.default
 
         assert self.verify(default)
+
+    def set_value(self, value: Any):
+        """
+        Checks validity and sets self._value
+        """
+        assert self.verify(value)
+        self._value = value
 
     def animate(self, keyframe: Keyframe) -> None:
         assert self.animatable
@@ -232,7 +239,7 @@ class ArrayProp(Property):
 
     shape: Optional[Tuple[int]]
 
-    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+    def __init__(self, name: str, desc: str, default: np.ndarray, animatable: bool,
             shape: Optional[Tuple[int]] = None) -> None:
         self.shape = shape
         super().__init__(name, desc, default, animatable)

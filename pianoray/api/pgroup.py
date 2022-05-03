@@ -13,8 +13,6 @@ class PropertyGroup:
     .. code-block:: py
 
         class MyProps(PropertyGroup):
-            name = "food"
-
             temperature: FloatProp(
                 name="Temperature",
                 desc="Temperature to cook the food at.",
@@ -46,7 +44,7 @@ class PropertyGroup:
         is equivalent to
         ``pgroup.prop_name._value = 1``
         """
-        self._props[name]._value = value
+        self._props[name].set_value(value)
 
     def _value(self, frame: int) -> Mapping[str, Any]:
         """
