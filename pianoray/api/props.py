@@ -1,4 +1,7 @@
+import os
 from typing import Any, Iterable, List, Optional, Type
+
+import numpy as np
 
 from .keyframe import Keyframe, Interp
 from .interpolate import interpolate
@@ -113,14 +116,16 @@ class IntProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int,
-            animatable: bool, min: Optional[int] = None,
-            max: Optional[int] = None) -> None:
+    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+            min: Optional[int] = None, max: Optional[int] = None) -> None:
         self.min = min
         self.max = max
         super().__init__(name, desc, default, animatable)
 
     def verify(self, value: int) -> bool:
+        """
+        Checks min and max.
+        """
         if self.min is not None and value < self.min:
             return False
         if self.max is not None and value > self.min:
@@ -139,14 +144,16 @@ class FloatProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int,
-            animatable: bool, min: Optional[int] = None,
-            max: Optional[int] = None) -> None:
+    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+            min: Optional[int] = None, max: Optional[int] = None) -> None:
         self.min = min
         self.max = max
         super().__init__(name, desc, default, animatable)
 
     def verify(self, value: int) -> bool:
+        """
+        Checks min and max.
+        """
         if self.min is not None and value < self.min:
             return False
         if self.max is not None and value > self.min:
@@ -165,16 +172,76 @@ class StrProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int,
-            animatable: bool, min_len: int = None, max_len: int = None) -> None:
+    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+            min_len: Optional[int] = None, max_len: Optional[int] = None) -> None:
         self.min_len = min_len
         self.max_len = max_len
         super().__init__(name, desc, default, animatable)
 
-    def verify(self, value: int) -> bool:
+    def verify(self, value: str) -> bool:
+        """
+        Checks length min and max.
+        """
         if self.min_len is not None and value < self.min_len:
             return False
         if self.max_len is not None and value > self.min_len:
+            return False
+        return True
+
+
+class PathProp(Str):
+    """
+    Path property.
+    Can verify if a path exists.
+    """
+
+    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+            min_len: Optional[int] = None, max_len: Optional[int] = None,
+            isfile: bool = False, isdir: bool = False):
+        """
+        Initialize the property.
+
+        :param isfile: Path must be a file.
+        :param isdir: Path must be a directory.
+        """
+        self.min_len = min_len
+        self.max_len = max_len
+        super().__init__(name, desc, default, animatable)
+
+    def verify(self, value: str) -> bool:
+        """
+        Checks path isfile and isdir, if respective attributes are True.
+        """
+        if not super().verify(value):
+            return False
+
+        if self.isfile and not os.path.isfile(value):
+            return False
+        if self.isdir and not os.path.isdir(value):
+            return False
+
+        return True
+
+
+class ArrayProp(Property):
+    """
+    Numpy array property.
+    """
+    type = np.array
+    supported_interps = {Interp.CONSTANT, Interp.LINEAR}
+
+    shape: Optional[Tuple[int]]
+
+    def __init__(self, name: str, desc: str, default: int, animatable: bool,
+            shape: Optional[Tuple[int]] = None) -> None:
+        self.shape = shape
+        super().__init__(name, desc, default, animatable)
+
+    def verify(self, value: np.ndarray) -> bool:
+        """
+        Checks shape.
+        """
+        if self.shape is not None and value.shape != self.shape:
             return False
         return True
 
