@@ -55,8 +55,22 @@ class AudioProps(PropertyGroup):
     )
 
 
+class CompositionProps(PropertyGroup):
+    """
+    Composition, i.e. structure of the video.
+    """
+
+    margin_start: FloatProp(
+        name="Start Margin",
+        desc="Pause, in seconds, before first note starts.",
+        default=3,
+        animatable=False,
+        min=0,
+    )
+
+
 class DefaultScene(Scene):
     _pgroups = {
-        "video": VideoProps(),
-        "audio": AudioProps(),
+        "video": VideoProps,
+        "audio": AudioProps,
     }
