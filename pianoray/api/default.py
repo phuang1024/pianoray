@@ -46,12 +46,14 @@ class AudioProps(PropertyGroup):
         name="Audio File",
         desc="Path to audio file.",
         default="",
+        animatable=False,
     )
 
     start: FloatProp(
         name="Start Time",
         desc="Timestamp, in seconds, you press the first note.",
         default=0,
+        animatable=False,
     )
 
 
@@ -68,9 +70,34 @@ class CompositionProps(PropertyGroup):
         min=0,
     )
 
+    margin_end: FloatProp(
+        name="End Margin",
+        desc="Pause, in seconds, after the last note ends.",
+        default=3,
+        animatable=False,
+        min=0,
+    )
+
+    fade_in: FloatProp(
+        name="Fade In",
+        desc="Seconds of fade in.",
+        default=1,
+        animatable=False,
+        min=0
+    )
+
+    fade_out: FloatProp(
+        name="Fade Out",
+        desc="Seconds of fade out.",
+        default=1,
+        animatable=False,
+        min=0
+    )
+
 
 class DefaultScene(Scene):
     _pgroups = {
         "video": VideoProps,
         "audio": AudioProps,
+        "composition": CompositionProps,
     }

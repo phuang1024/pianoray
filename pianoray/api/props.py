@@ -1,5 +1,5 @@
 import os
-from typing import Any, Iterable, List, Optional, Type
+from typing import Any, Iterable, List, Optional, Tuple, Type
 
 import numpy as np
 
@@ -12,6 +12,8 @@ __all__ = (
     "IntProp",
     "FloatProp",
     "StrProp",
+    "PathProp",
+    "ArrayProp",
 )
 
 
@@ -31,7 +33,7 @@ class Property:
     _value: Any
 
     def __init__(self, name: str, desc: str, default: Any,
-            animatable: bool) -> None:
+            animatable: bool = True) -> None:
         self.name = name
         self.desc = desc
         self.default = self.type(default)
@@ -40,7 +42,7 @@ class Property:
         self._keyframes = []
         self._value = self.default
 
-        assert self.verify(default)
+        assert self.verify(self.default)
 
     def set_value(self, value: Any):
         """
@@ -123,11 +125,11 @@ class IntProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int, animatable: bool,
-            min: Optional[int] = None, max: Optional[int] = None) -> None:
+    def __init__(self, min: Optional[int] = None, max: Optional[int] = None,
+            **kwargs) -> None:
         self.min = min
         self.max = max
-        super().__init__(name, desc, default, animatable)
+        super().__init__(**kwargs)
 
     def verify(self, value: int) -> bool:
         """
@@ -151,11 +153,11 @@ class FloatProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int, animatable: bool,
-            min: Optional[int] = None, max: Optional[int] = None) -> None:
+    def __init__(self, min: Optional[int] = None, max: Optional[int] = None,
+            **kwargs) -> None:
         self.min = min
         self.max = max
-        super().__init__(name, desc, default, animatable)
+        super().__init__(**kwargs)
 
     def verify(self, value: int) -> bool:
         """
@@ -179,11 +181,11 @@ class StrProp(Property):
     min: int
     max: int
 
-    def __init__(self, name: str, desc: str, default: int, animatable: bool,
-            min_len: Optional[int] = None, max_len: Optional[int] = None) -> None:
+    def __init__(self, min_len: Optional[int] = None, max_len: Optional[int] = None,
+            **kwargs) -> None:
         self.min_len = min_len
         self.max_len = max_len
-        super().__init__(name, desc, default, animatable)
+        super().__init__(**kwargs)
 
     def verify(self, value: str) -> bool:
         """
@@ -196,15 +198,13 @@ class StrProp(Property):
         return True
 
 
-class PathProp(Str):
+class PathProp(StrProp):
     """
     Path property.
     Can verify if a path exists.
     """
 
-    def __init__(self, name: str, desc: str, default: int, animatable: bool,
-            min_len: Optional[int] = None, max_len: Optional[int] = None,
-            isfile: bool = False, isdir: bool = False):
+    def __init__(self, isfile: bool = False, isdir: bool = False, **kwargs):
         """
         Initialize the property.
 
@@ -213,7 +213,7 @@ class PathProp(Str):
         """
         self.min_len = min_len
         self.max_len = max_len
-        super().__init__(name, desc, default, animatable)
+        super().__init__(**kwargs)
 
     def verify(self, value: str) -> bool:
         """
@@ -239,10 +239,9 @@ class ArrayProp(Property):
 
     shape: Optional[Tuple[int]]
 
-    def __init__(self, name: str, desc: str, default: np.ndarray, animatable: bool,
-            shape: Optional[Tuple[int]] = None) -> None:
+    def __init__(self, shape: Optional[Tuple[int]] = None, **kwargs) -> None:
         self.shape = shape
-        super().__init__(name, desc, default, animatable)
+        super().__init__(**kwargs)
 
     def verify(self, value: np.ndarray) -> bool:
         """
