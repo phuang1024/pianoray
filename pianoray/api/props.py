@@ -118,15 +118,17 @@ class IntProp(Property):
     """
     Integer.
     Min and max inclusive.
+    Coords: Whether this quantity is in coords.
     """
     type = int
     supported_interps = {Interp.CONSTANT, Interp.LINEAR}
 
     min: int
     max: int
+    coords: bool
 
     def __init__(self, min: Optional[int] = None, max: Optional[int] = None,
-            **kwargs) -> None:
+            coords: bool = False, **kwargs) -> None:
         self.min = min
         self.max = max
         super().__init__(**kwargs)
@@ -146,15 +148,17 @@ class FloatProp(Property):
     """
     Float.
     Min and max inclusive.
+    Coords: Whether this quantity is in coords.
     """
     type = float
     supported_interps = {Interp.CONSTANT, Interp.LINEAR}
 
     min: int
     max: int
+    coords: bool
 
     def __init__(self, min: Optional[int] = None, max: Optional[int] = None,
-            **kwargs) -> None:
+            coords: bool = False, **kwargs) -> None:
         self.min = min
         self.max = max
         super().__init__(**kwargs)
@@ -250,6 +254,16 @@ class ArrayProp(Property):
         if self.shape is not None and value.shape != self.shape:
             return False
         return True
+
+
+class RGBProp(ArrayProp):
+    """
+    RGB color property, 0 to 255.
+    """
+    shape = (3,)
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
 
 if __name__ == "__main__":

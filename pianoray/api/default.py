@@ -83,7 +83,7 @@ class CompositionProps(PropertyGroup):
         desc="Seconds of fade in.",
         default=1,
         animatable=False,
-        min=0
+        min=0,
     )
 
     fade_out: FloatProp(
@@ -91,7 +91,75 @@ class CompositionProps(PropertyGroup):
         desc="Seconds of fade out.",
         default=1,
         animatable=False,
-        min=0
+        min=0,
+    )
+
+    fade_blur: FloatProp(
+        name="Fade Blur",
+        desc="Blur radius of fade in coords.",
+        default=1,
+        animatable=False,
+        coords=True,
+    )
+
+
+class PianoProps(Scene):
+    """
+    Piano parameters.
+    """
+
+    black_width_fac: FloatProp(
+        name="Black Key Width Factor",
+        desc="Black key width as factor of white key width.",
+        default=0.6,
+        animatable=False,
+        min=0,
+    )
+
+
+class BlocksProps(Scene):
+    """
+    The blocks that fall down.
+    """
+
+    speed: FloatProp(
+        name="Speed",
+        desc="If ``X`` is the distance between the top of the screen and the"
+             "top of the keyboard, the blocks travel ``speed * X`` per second."
+        default=0.5,
+    )
+
+    color: RGBProp(
+        name="Color",
+        desc="Color of the blocks.",
+        default=(150, 160, 240),
+    )
+
+    radius: FloatProp(
+        name="Corner Radius",
+        desc="Corner rounding radius in coords.",
+        default=0.25,
+        min=0,
+    )
+
+    glow_intensity: FloatProp(
+        name="Glow Intensity",
+        desc="Intensity of glow around blocks.",
+        default=0.3,
+        min=0,
+    )
+
+    glow_color: RGBProp(
+        name="Glow Color",
+        desc="Color of the glow.",
+        default=(230, 230, 255),
+    )
+
+    glow_radius: FloatProp(
+        name="Glow Radius",
+        desc="Radius of glow around blocks in coords.",
+        default=0.4,
+        coords=True,
     )
 
 
