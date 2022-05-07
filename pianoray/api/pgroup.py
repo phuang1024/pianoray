@@ -55,6 +55,9 @@ class PropertyGroup:
         """
         self._props[name].set_value(value)
 
+    def __getattr__(self, name: str) -> Property:
+        return self._props[name]
+
     def _values(self, frame: int, use_mods: bool = True,
             default: Optional[Accessor] = None) -> Mapping[str, Any]:
         """
