@@ -11,5 +11,6 @@ __pycache__
 /*.egg-info
 
 /docs/_build
+/docs/manual/props.rst
 
 !/examples/**

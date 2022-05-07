@@ -28,3 +28,12 @@ Properties
 
 .. autoclass:: pianoray.StrProp
    :members:
+
+.. autoclass:: pianoray.PathProp
+   :members:
+
+.. autoclass:: pianoray.ArrayProp
+   :members: verify
+
+.. autoclass:: pianoray.RGBProp
+   :members:

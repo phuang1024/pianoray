@@ -22,7 +22,7 @@ PianoRay
    manual/record.rst
    manual/cli.rst
    manual/api.rst
-   manual/settings.rst
+   manual/props.rst
 
 .. toctree::
    :maxdepth: 2

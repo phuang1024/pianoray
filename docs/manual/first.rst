@@ -25,41 +25,31 @@ data about which notes are played. The audio file has the audio.
 Create Settings
 ---------------
 
-PianoRay reads settings from a JSON file. This file contains nested mappings
-with ``key: value`` pairs.
+In order to convey settings to PianoRay, we use the Python API. The API usage
+is described in detail in TODO.
 
-Save this data to ``~/pianoray_tutorial/settings.json``:
+Save this data to ``~/pianoray_tutorial/furelise.py``:
 
-.. code-block:: bash
+.. code-block:: py
 
-   {
-       "video": {
-           "resolution": [1280, 720],
-           "fps": 30
-       },
-       "midi": {
-           "file": "midi.mid"
-       },
-       "audio": {
-           "file": "audio.mp3",
-           "start": 20.74
-       },
-       "keyboard": {
-           "file": "video.mp4",
-           "start": 4.75,
-           "crop": [[252,480], [1793,487], [1789,676], [257,666]],
-           "dim_mult": 0.6,
-           "dim_add": -8
-       }
-   }
+   from pianoray import *
 
-Most of these settings are self explanatory.
+   class FurElise(DefaultScene):
+       def setup(self):
+           self.video.resolution = (960, 540)
+           self.video.fps = 30
 
-The ``start`` settings are timestamps, in seconds, of when you press the first
-note in the respective media. This is necessary to apply the correct offsets.
+           self.midi.file = "examples/furelise/midi.mid"
 
-The ``crop`` setting defines the coordinates of the keyboard in the video.
-These values are for the Fur Elise recording.
+           self.audio.file = "examples/furelise/audio.mp3"
+           self.audio.start = 20.74
+
+           self.keyboard.file = "examples/furelise/video.mp4"
+           self.keyboard.start = 4.75
+           self.keyboard.crop = ((252,480), (1793,487), (1789,676), (257,666))
+
+This creates a new scene called ``FurElise`` with some settings.
+PianoRay will read the scene to obtain settings.
 
 Render
 ------
@@ -69,11 +59,10 @@ To start the render, run these commands in a shell:
 .. code-block:: bash
 
    cd ~/pianoray_tutorial
-   pianoray render -s settings.json -o out.mp4 -p
+   pianoray render furelise.py FurElise -p
 
-This starts rendering, using the provided settings file and saving to the
-output file. The ``-p`` flag tells PianoRay to open the output file after
-rendering.
+This starts rendering, using the provided Python script and class name.
+The ``-p`` flag tells PianoRay to open the output file after rendering.
 
 Rendering may take a few minutes. If the renderer crashes, run the same command
-again. If it repeatedly does not work, open an issue on GitHub.
+again. If it repeatedly does not work, open an issue on GitHub for help.
