@@ -1,5 +1,6 @@
-from typing import Any, Mapping
+from typing import Any, Mapping, Optional
 
+from .accessor import Accessor
 from .props import Property
 
 
@@ -54,14 +55,15 @@ class PropertyGroup:
         """
         self._props[name].set_value(value)
 
-    def _values(self, frame: int) -> Mapping[str, Any]:
+    def _values(self, frame: int, use_mods: bool = True,
+            default: Optional[Accessor] = None) -> Mapping[str, Any]:
         """
         Get values of all properties at frame.
         Returns ``{"prop_name": value}``.
         """
         ret = {}
         for k, prop in self._props.items():
-            v = prop.value(frame)
+            v = prop.value(frame, use_mods, default)
             ret[k] = v
 
         return ret

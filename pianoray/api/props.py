@@ -1,10 +1,12 @@
 import os
-from typing import Any, Iterable, List, Optional, Tuple, Type
+from typing import Any, Iterable, List, Optional, Sequence, Tuple, Type
 
 import numpy as np
 
+from .accessor import Accessor
 from .keyframe import Keyframe, Interp
 from .interpolate import interpolate
+from .modifiers import Modifier
 
 __all__ = (
     "Property",
@@ -34,7 +36,7 @@ class Property:
     _value: Any
 
     def __init__(self, name: str = "", desc: str = "", animatable: bool = True,
-            default: Optional[Any] = None) -> None:
+            mods: Sequence[Modifier] = (), default: Optional[Any] = None) -> None:
         """
         Initialize property with common arguments for all subclasses.
 
@@ -47,8 +49,9 @@ class Property:
         """
         self.name = name
         self.desc = desc
-        self.default = default if default is None else self.type(default)
         self.animatable = animatable
+        self.mods = mods
+        self.default = default if default is None else self.type(default)
 
         self._keyframes = []
         self._value = None
@@ -84,7 +87,10 @@ class Property:
     def _get_value(self, frame: int) -> Any:
         """
         Returns the value, but not necessarily the correct type.
-        Call ``self.value(frame)`` instead to convert to the prop's type.
+
+        IMPORTANT:
+        Call ``self.value(frame)`` instead to convert to the prop's type and
+        apply modifiers.
         """
         keys = sorted(self._keyframes)
 
@@ -114,13 +120,17 @@ class Property:
                 k2 = keys[i]
                 return interpolate(k1, k2, frame)
 
-    def value(self, frame: int) -> Any:
+    def value(self, frame: int, use_mods: bool = True,
+            default: Optional[Accessor] = None) -> Any:
         """
         Returns value at frame. Uses keyframe interpolations.
-
-        Equivalent to ``self.type(self._get_value(frame))``
+        Converts to type. Applies modifiers.
         """
-        return self.type(self._get_value(frame))
+        v = self.type(self._get_value(frame))
+        if use_mods:
+            for m in self.mods:
+                v = m(default, v)
+        return v
 
 
 class BoolProp(Property):

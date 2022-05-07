@@ -41,13 +41,15 @@ class Scene:
             return object.__getattribute__(self, "default")
         return object.__getattribute__(self, "_pgroups")[name]
 
-    def values(self, frame: int) -> Accessor:
+    def values(self, frame: int, use_mods: bool = True) -> Accessor:
         """
         Returns Accesor object of all pgroup values at frame.
         """
+        default = self.default if use_mods else None
+
         ret = {}
         for k, pgroup in self._pgroups.items():
-            v = pgroup._values(frame)
+            v = pgroup._values(frame, use_mods, default)
             ret[k] = v
 
         return Accessor(ret)
@@ -55,9 +57,10 @@ class Scene:
     @property
     def default(self) -> Accessor:
         """
-        Equivalent to ``self.values(0)``. Usually used to get non animatable props.
+        Equivalent to ``self.values(0, False)``.
+        Usually used to get non animatable props.
         """
-        return self.values(0)
+        return self.values(0, False)
 
     def setup(self) -> None:
         """

@@ -37,7 +37,6 @@ class Glare(Effect):
             angles.extend(note.attrs["glare.streak_angles"])
         angles = np.array(angles, dtype=np.uint8)
 
-        settings = self.settings
         settings_args = [settings.piano.black_width_fac,
             settings.glare.radius, settings.glare.intensity,
             settings.glare.jitter, settings.glare.streaks]

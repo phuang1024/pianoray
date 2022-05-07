@@ -3,6 +3,7 @@ Default scene, contains settings for PianoRay.
 i.e. default "implementation" of Scene.
 """
 
+from .modifiers import Coords
 from .pgroup import PropertyGroup
 from .props import *
 from .scene import Scene
@@ -99,6 +100,7 @@ class CompositionProps(PropertyGroup):
         name="Fade Blur",
         desc="Blur radius of fade in coords.",
         animatable=False,
+        mods=[Coords()],
         default=1,
         coords=True,
     )
@@ -139,6 +141,7 @@ class BlocksProps(PropertyGroup):
     radius: FloatProp(
         name="Corner Radius",
         desc="Corner rounding radius in coords.",
+        mods=[Coords()],
         default=0.25,
         min=0,
     )
@@ -159,6 +162,7 @@ class BlocksProps(PropertyGroup):
     glow_radius: FloatProp(
         name="Glow Radius",
         desc="Radius of glow around blocks in coords.",
+        mods=[Coords()],
         default=0.4,
         coords=True,
     )
@@ -229,6 +233,7 @@ class KeyboardProps(PropertyGroup):
     below_length: FloatProp(
         name="Length of Below Section",
         desc="Length in coords of section below keyboard.",
+        mods=[Coords()],
         default=7,
         min=0,
     )
@@ -244,6 +249,7 @@ class GlareProps(PropertyGroup):
     radius: FloatProp(
         name="Radius",
         desc="Radius of glare in coords.",
+        mods=[Coords()],
         default=3,
         min=0,
     )
