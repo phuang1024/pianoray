@@ -111,9 +111,10 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     fade_blur = props.composition.fade_blur
 
     # OOP effects
-    blocks = Blocks(scene.default, cache, libs)
-    keyboard = Keyboard(scene.default, cache, libs)
-    glare = Glare(scene.default, cache, libs, notes)
+    props = scene.values(0)
+    blocks = Blocks(props, cache, libs)
+    keyboard = Keyboard(props, cache, libs)
+    glare = Glare(props, cache, libs, notes)
 
     # Render
     if real_start is None:
