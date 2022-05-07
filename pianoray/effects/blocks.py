@@ -22,7 +22,6 @@ class Blocks(Effect):
         starts = np.array([n.start for n in notes], dtype=Types.double)
         ends = np.array([n.end for n in notes], dtype=Types.double)
 
-        settings = self.settings
         settings_args = [settings.video.fps, settings.blocks.speed,
             settings.piano.black_width_fac, settings.blocks.radius,
             np.array(settings.blocks.color, dtype=np.uint8),

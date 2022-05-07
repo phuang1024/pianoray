@@ -21,20 +21,6 @@ from .lib import load_libs
 from .video import Video
 
 
-def preprocess(settings: Settings):
-    """
-    Does stuff to settings, e.g. change coords to pixels.
-    """
-    coord = settings.video.resolution[0] / 52
-    settings.blocks.radius *= coord
-    settings.blocks.glow_radius *= coord
-    settings.composition.fade_blur *= coord
-    settings.glare.radius *= coord
-    settings.keyboard.below_length *= coord
-
-    assert settings.glare.streaks <= 20
-
-
 def check_previous(args, settings, cache):
     """
     Check if continue previous render.
@@ -68,14 +54,13 @@ def check_previous(args, settings, cache):
     return real_start
 
 
-def render_video(args, settings: Settings, out: str, cache: Path) -> None:
+def render_video(args, scene, out: str, cache: Path) -> None:
     """
     Render system main.
 
     :param args: Argparse arguments.
     """
-    # Preprocessing
-    preprocess(settings)
+    # Libraries
     try:
         libs = load_libs(cache)
     except AssertionError:
@@ -87,19 +72,22 @@ def render_video(args, settings: Settings, out: str, cache: Path) -> None:
         (cache/sub).mkdir(exist_ok=True)
 
     # Save settings to cache.
+    """
     os.makedirs(cache, exist_ok=True)
     real_start = check_previous(args, settings, cache)
     with open(cache / "settings.json", "w") as fp:
         json.dump(settings._json(), fp)
+    """
+    real_start = None  # Remove later
 
-    video = Video(cache/"output", settings.audio.file,
-        settings.audio.start)
-    num_frames = render_frames(settings, libs, video, cache, real_start)
-    video.compile(out, settings.video.fps, num_frames,
-        settings.composition.margin_start, settings.video.vcodec)
+    props = scene.default
+    video = Video(cache/"output", props.audio.file, props.audio.start)
+    num_frames = render_frames(scene, libs, video, cache, real_start)
+    video.compile(out, props.video.fps, num_frames,
+        props.composition.margin_start, props.video.vcodec)
 
 
-def render_frames(settings, libs, video, cache, real_start=None) -> int:
+def render_frames(scene, libs, video, cache, real_start=None) -> int:
     """
     Render frames.
 
@@ -108,27 +96,30 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
     """
 
     # Parse MIDI.
-    notes = parse_midi(settings)
+    notes = parse_midi(scene.default)
     duration = int(max(x.end for x in notes))
 
     # Calculate start and end.
-    fps = settings.video.fps
-    m_start = settings.composition.margin_start
-    m_end = settings.composition.margin_end
+    props = scene.default
+    fps = props.video.fps
+    m_start = props.composition.margin_start
+    m_end = props.composition.margin_end
     frame_start = -fps * m_start
     frame_end = duration + fps*m_end
-    fade_in = frame_start + settings.composition.fade_in * fps
-    fade_out = frame_end - settings.composition.fade_out * fps
-    fade_blur = settings.composition.fade_blur
+    fade_in = frame_start + props.composition.fade_in * fps
+    fade_out = frame_end - props.composition.fade_out * fps
+    fade_blur = props.composition.fade_blur
 
     # OOP effects
-    blocks = Blocks(settings, cache, libs)
-    keyboard = Keyboard(settings, cache, libs)
-    glare = Glare(settings, cache, libs, notes)
+    blocks = Blocks(scene.default, cache, libs)
+    keyboard = Keyboard(scene.default, cache, libs)
+    glare = Glare(scene.default, cache, libs, notes)
 
     # Render
     if real_start is None:
         real_start = frame_start
+    frame_start, frame_end, real_start = map(int,
+        (frame_start, frame_end, real_start))
     logger.info(f"Starting render from frame {real_start}")
 
     num_frames = real_start - frame_start
@@ -140,12 +131,14 @@ def render_frames(settings, libs, video, cache, real_start=None) -> int:
             fp.write(str(frame))
 
         # Create image
-        img = np.zeros((*settings.video.resolution[::-1], 3), dtype=np.uint8)
+        img = np.zeros((*scene.default.video.resolution[::-1], 3),
+            dtype=np.uint8)
 
         # Apply effects
-        keyboard.render(settings, img, frame)
-        blocks.render(settings, img, frame, notes)
-        glare.render(settings, img, frame, notes)
+        props = scene.values(frame)
+        keyboard.render(props, img, frame)
+        blocks.render(props, img, frame, notes)
+        glare.render(props, img, frame, notes)
 
         # Fade
         fade_fac = 1
