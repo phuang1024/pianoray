@@ -1,6 +1,6 @@
 """
 Default scene, contains settings for PianoRay.
-i.e. "implementation" of Scene.
+i.e. default "implementation" of Scene.
 """
 
 from .pgroup import PropertyGroup
@@ -42,11 +42,12 @@ class AudioProps(PropertyGroup):
     Audio.
     """
 
-    file: StrProp(
+    file: PathProp(
         name="Audio File",
         desc="Path to audio file.",
-        default="",
+        default=None,
         animatable=False,
+        isfile=True,
     )
 
     start: FloatProp(
@@ -163,9 +164,120 @@ class BlocksProps(Scene):
     )
 
 
+class MidiProps(PropertyGroup):
+    file: PathProp(
+        name="MIDI File",
+        desc="Path to MIDI file.",
+        default=None,
+        animatable=False,
+        isfile=True,
+    )
+
+    speed: FloatProp(
+        name="Speed Multiplier",
+        desc="MIDI notes speed multiplier.",
+        default=1,
+        animatable=False,
+    )
+
+    min_length: FloatProp(
+        name="Minimum Duration",
+        desc="Min duration of a note in seconds.",
+        default=0.08,
+        animatable=False,
+        min=0,
+    )
+
+
+class KeyboardProps(PropertyGroup):
+    file: PathProp(
+        name="Video File",
+        desc="Path to video recording of keyboard.",
+        default=None,
+        animatable=False,
+        isfile=True,
+    )
+
+    start: FloatProp(
+        name="Start",
+        desc="Timestamp, in seconds, when you press the first note in the video.",
+        default=0,
+        animatable=False,
+    )
+
+    crop: ArrayProp(
+        name="Crop",
+        desc="Crop points of the keyboard. See docs for more info.",
+        default=None,
+        animatable=False,
+        shape=(4, 2),
+    )
+
+    dim_mult: FloatProp(
+        name="Multiplicative Dimming",
+        desc="Multiplier to pixel brightness.",
+        default=1,
+        min=0,
+    )
+
+    dim_add: FloatProp(
+        name="Additive Dimming",
+        desc="Value added to pixel brightness (0 to 255).",
+        default=0,
+    )
+
+    below_length: FloatProp(
+        name="Length of Below Section",
+        desc="Length in coords of section below keyboard.",
+        default=7,
+        min=0,
+    )
+
+    octave_lines: BoolProp(
+        name="Octave Lines",
+        desc="Whether to render octave lines.",
+        default=True,
+    )
+
+
+class GlareProps(PropertyGroup):
+    radius: FloatProp(
+        name="Radius",
+        desc="Radius of glare in coords.",
+        default=3,
+        min=0,
+    )
+
+    intensity: FloatProp(
+        name="Intensity",
+        desc="Intensity of glare.",
+        default=0.9,
+        min=0,
+    )
+
+    jitter: FloatProp(
+        name="Jitter",
+        desc="Range of random multiplier.",
+        default=0.08,
+        min=0,
+    )
+
+    streaks: IntProp(
+        name="Streaks",
+        desc="Number of streaks."
+        default=6,
+        min=0,
+    )
+
+
 class DefaultScene(Scene):
     _pgroups = {
         "video": VideoProps,
         "audio": AudioProps,
         "composition": CompositionProps,
+        "piano": PianoProps,
+        "blocks": BlocksProps,
+        "midi": MidiProps,
+        "keyboard": KeyboardProps,
+        "glare": GlareProps,
     }

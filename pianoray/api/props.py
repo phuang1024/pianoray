@@ -14,6 +14,7 @@ __all__ = (
     "StrProp",
     "PathProp",
     "ArrayProp",
+    "RGBProp",
 )
 
 
@@ -42,7 +43,8 @@ class Property:
         self._keyframes = []
         self._value = self.default
 
-        assert self.verify(self.default)
+        if self.default is not None:
+            assert self.verify(self.default)
 
     def set_value(self, value: Any):
         """
