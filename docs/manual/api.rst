@@ -37,3 +37,9 @@ Properties
 
 .. autoclass:: pianoray.RGBProp
    :members:
+
+Scene
+-----
+
+.. autoclass:: pianoray.Scene
+   :members:
