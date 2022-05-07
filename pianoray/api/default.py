@@ -126,7 +126,7 @@ class BlocksProps(Scene):
     speed: FloatProp(
         name="Speed",
         desc="If ``X`` is the distance between the top of the screen and the"
-             "top of the keyboard, the blocks travel ``speed * X`` per second."
+             "top of the keyboard, the blocks travel ``speed * X`` per second.",
         default=0.5,
     )
 
@@ -264,7 +264,7 @@ class GlareProps(PropertyGroup):
 
     streaks: IntProp(
         name="Streaks",
-        desc="Number of streaks."
+        desc="Number of streaks.",
         default=6,
         min=0,
     )

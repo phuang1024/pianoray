@@ -1,4 +1,4 @@
-from typing import Mapping, Type
+from typing import Any, Mapping, Type
 
 from .pgroup import PropertyGroup
 

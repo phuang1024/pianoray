@@ -47,7 +47,7 @@ class Property:
         """
         self.name = name
         self.desc = desc
-        self.default = self.type(default)
+        self.default = default if default is None else self.type(default)
         self.animatable = animatable
 
         self._keyframes = []
@@ -231,8 +231,8 @@ class PathProp(StrProp):
         :param isfile: Path must be a file.
         :param isdir: Path must be a directory.
         """
-        self.min_len = min_len
-        self.max_len = max_len
+        self.isfile = isfile
+        self.isdir = isdir
         super().__init__(**kwargs)
 
     def verify(self, value: str) -> bool:

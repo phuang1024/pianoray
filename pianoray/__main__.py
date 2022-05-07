@@ -10,6 +10,7 @@ from ast import literal_eval
 from pathlib import Path
 
 from . import logger
+from .api import import_scene
 from .settings import Settings
 from .utils import SETTINGS_DEFAULT, VERSION
 
@@ -27,12 +28,9 @@ def render(args):
                 .lower().strip() != "y":
             return 3
 
-    with open(args.settings, "r") as fp:
-        settings = Settings(json.load(fp))
-    default = Settings(SETTINGS_DEFAULT)
-    settings._merge(default)
-
-    render_video(args, settings, args.output, args.cache)
+    scene = import_scene(args.file, args.clsname)
+    print(scene)
+    render_video(args, scene, args.output, args.cache)
 
     if args.preview:
         logger.info("Opening output with xdg-open")
@@ -63,8 +61,10 @@ def main():
 
     render_parser = subparsers.add_parser("render",
         help="Render a video.")
-    render_parser.add_argument("-s", "--settings", required=True,
-        help="Path to settings JSON file.", type=Path)
+    render_parser.add_argument("file",
+        help="Path to Python file containing scene.")
+    render_parser.add_argument("clsname",
+        help="Name of the scene class object.")
     render_parser.add_argument("-o", "--output", required=True,
         help="Output video file.", type=Path)
     render_parser.add_argument("-c", "--cache", default=".prcache",
