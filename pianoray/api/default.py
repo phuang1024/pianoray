@@ -204,7 +204,7 @@ class KeyboardProps(PropertyGroup):
 
     start: FloatProp(
         name="Start",
-        desc="Timestamp, in seconds, when you press the first note in the video.",
+        desc="Timestamp, in seconds, when the first note starts in the video.",
         animatable=False,
         default=0,
     )

@@ -5,8 +5,9 @@ from .accessor import Accessor
 
 class Modifier:
     """
-    Base modifier class. A modifier instance can be called, and modifies a value.
-    Examples include multiplying by 0.5 to dim colors (a Dim modifier).
+    Base modifier class. A modifier instance can be called,
+    and modifies a value. Examples include multiplying by 0.5
+    to dim colors (a Dim modifier).
 
     Base class modifier does nothing.
     """

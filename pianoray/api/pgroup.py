@@ -31,7 +31,7 @@ class PropertyGroup:
     .. code-block:: py
 
         pgroup.temperature                # Returns the property object.
-        pgroup.temperature.animate(...)   # Animate. See Property docs for more info.
+        pgroup.temperature.animate(...)   # Animate. See Property docs.
         pgroup.temperature = -273         # Calls pgroup.temperature.set_value()
     """
 

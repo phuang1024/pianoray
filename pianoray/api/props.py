@@ -36,7 +36,7 @@ class Property:
     _value: Any
 
     def __init__(self, name: str = "", desc: str = "", animatable: bool = True,
-            mods: Sequence[Modifier] = (), default: Optional[Any] = None) -> None:
+            mods: Sequence[Modifier] = (), default: Optional[Any] = None):
         """
         Initialize property with common arguments for all subclasses.
 
@@ -208,8 +208,8 @@ class StrProp(Property):
     min: int
     max: int
 
-    def __init__(self, min_len: Optional[int] = None, max_len: Optional[int] = None,
-            **kwargs) -> None:
+    def __init__(self, min_len: Optional[int] = None,
+            max_len: Optional[int] = None, **kwargs) -> None:
         self.min_len = min_len
         self.max_len = max_len
         super().__init__(**kwargs)

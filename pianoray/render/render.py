@@ -118,7 +118,8 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     # Render
     if real_start is None:
         real_start = frame_start
-    frame_start, frame_end, real_start = map(int, (frame_start, frame_end, real_start))
+    frame_start, frame_end, real_start = map(int,
+        (frame_start, frame_end, real_start))
     logger.info(f"Starting render from frame {real_start}")
 
     num_frames = real_start - frame_start
@@ -130,7 +131,8 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
             fp.write(str(frame))
 
         # Create image
-        img = np.zeros((*scene.default.video.resolution[::-1], 3), dtype=np.uint8)
+        img = np.zeros((*scene.default.video.resolution[::-1], 3),
+            dtype=np.uint8)
 
         # Apply effects
         props = scene.values(frame)
