@@ -18,6 +18,16 @@ class Scene:
             _pgroups = {
                 "food": FoodProps,
             }
+
+    Create a subclass of a scene, and override the setup method to do animation.
+    Scene.setup is called at initialize time.
+
+    .. code-block:: py
+
+        # We are extending "MyScene", described above.
+        class MyOtherScene(MyScene):
+            def setup(self):
+                self.food.temperature = 100
     """
     _pgroups: Mapping[str, Type[PropertyGroup]]
     _pgroups_real: Mapping[str, PropertyGroup]
@@ -29,8 +39,21 @@ class Scene:
         for k, v in _pgroups.items():
             _pgroups_real[k] = v()
 
+        self.setup()
+
     def __getattr__(self, name: str) -> PropertyGroup:
-        return self._pgroups[name]
+        return self._pgroups_real[name]
+
+    def _values(self, frame: int) -> Mapping[str, Mapping[str, Any]]:
+        """
+        Returns dict of values of all pgroups at frame.
+        """
+        ret = {}
+        for k, pgroup in self._pgroups_real.items():
+            v = pgroup._values(frame)
+            ret[k] = v
+
+        return ret
 
     def setup(self) -> None:
         """

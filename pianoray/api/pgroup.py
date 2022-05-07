@@ -24,6 +24,14 @@ class PropertyGroup:
                 desc="The food to cook.",
                 default="Java",
             )
+
+    You can set and get properties.
+
+    .. code-block:: py
+
+        pgroup.temperature                # Returns the property object.
+        pgroup.temperature.animate(...)   # Animate. See Property docs for more info.
+        pgroup.temperature = -273         # Calls pgroup.temperature.set_value()
     """
 
     _props: Mapping[str, Property]
@@ -42,11 +50,11 @@ class PropertyGroup:
         """
         ``pgroup.prop_name = 1``
         is equivalent to
-        ``pgroup.prop_name._value = 1``
+        ``pgroup.prop_name.set_value(1)``
         """
         self._props[name].set_value(value)
 
-    def _value(self, frame: int) -> Mapping[str, Any]:
+    def _values(self, frame: int) -> Mapping[str, Any]:
         """
         Get values of all properties at frame.
         Returns ``{"prop_name": value}``.
