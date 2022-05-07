@@ -66,7 +66,7 @@ jobs:
           make install
       - name: Test video
         run: |
-          pianoray -y render -s ./tests/short.json -o out.mp4
+          pianoray -y render -o out.mp4 ./tests/short.py Short
 
   clean:
     needs: [docs, test]
