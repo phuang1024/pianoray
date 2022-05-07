@@ -59,7 +59,8 @@ def doc_pgroup(fp, name, idname, annotations):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output", help="Output RST file.", required=True)
+    parser.add_argument("-o", "--output", help="Output RST file.",
+        required=True)
     args = parser.parse_args()
 
     sys.path.insert(0, os.path.dirname(ROOT))
