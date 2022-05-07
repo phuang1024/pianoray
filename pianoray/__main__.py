@@ -28,8 +28,7 @@ def render(args):
                 .lower().strip() != "y":
             return 3
 
-    scene = import_scene(args.file, args.clsname)
-    print(scene)
+    scene = import_scene(args.file, args.clsname)()
     render_video(args, scene, args.output, args.cache)
 
     if args.preview:

@@ -60,6 +60,7 @@ class Property:
         """
         Checks validity and sets self._value
         """
+        value = self.type(value)
         assert self.verify(value)
         self._value = value
 
@@ -89,9 +90,9 @@ class Property:
 
         if len(keys) == 0:
             if self._value is None:
-                if self._default is None:
+                if self.default is None:
                     raise ValueError("Both value and default are None.")
-                return self._default
+                return self.default
             return self._value
 
         elif len(keys) == 1:
@@ -155,7 +156,7 @@ class IntProp(Property):
         """
         if self.min is not None and value < self.min:
             return False
-        if self.max is not None and value > self.min:
+        if self.max is not None and value > self.max:
             return False
         return True
 
@@ -173,21 +174,17 @@ class FloatProp(Property):
     max: int
     coords: bool
 
-    def __init__(self, min: Optional[int] = None, max: Optional[int] = None,
+    def __init__(self, min: Optional[float] = None, max: Optional[float] = None,
             coords: bool = False, **kwargs) -> None:
         self.min = min
         self.max = max
         super().__init__(**kwargs)
 
-    def verify(self, value: int) -> bool:
+    def verify(self, value: float) -> bool:
         """
         Checks min and max.
         """
-        if self.min is not None and value < self.min:
-            return False
-        if self.max is not None and value > self.min:
-            return False
-        return True
+        return IntProp.verify(self, value)
 
 
 class StrProp(Property):

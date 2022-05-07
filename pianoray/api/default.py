@@ -104,7 +104,7 @@ class CompositionProps(PropertyGroup):
     )
 
 
-class PianoProps(Scene):
+class PianoProps(PropertyGroup):
     """
     Piano parameters.
     """
@@ -118,7 +118,7 @@ class PianoProps(Scene):
     )
 
 
-class BlocksProps(Scene):
+class BlocksProps(PropertyGroup):
     """
     The blocks that fall down.
     """
@@ -267,17 +267,18 @@ class GlareProps(PropertyGroup):
         desc="Number of streaks.",
         default=6,
         min=0,
+        max=20,  # C implementation limitation.
     )
 
 
 class DefaultScene(Scene):
     _pgroups = {
-        "video": VideoProps,
-        "audio": AudioProps,
-        "composition": CompositionProps,
-        "piano": PianoProps,
-        "blocks": BlocksProps,
-        "midi": MidiProps,
-        "keyboard": KeyboardProps,
-        "glare": GlareProps,
+        "video": VideoProps(),
+        "audio": AudioProps(),
+        "composition": CompositionProps(),
+        "piano": PianoProps(),
+        "blocks": BlocksProps(),
+        "midi": MidiProps(),
+        "keyboard": KeyboardProps(),
+        "glare": GlareProps(),
     }
