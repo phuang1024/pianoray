@@ -44,6 +44,13 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# Autogenerate prop docs.
+root = os.path.dirname(os.path.realpath(__file__))
+script = os.path.join(os.path.dirname(root), "scripts", "docgen.py")
+out = os.path.join(root, "manual", "props.rst")
+cmd = f"env python {script} -o {out}"
+os.system(cmd)
+
 
 # -- Options for HTML output -------------------------------------------------
 
