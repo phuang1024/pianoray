@@ -33,15 +33,25 @@ class Property:
     _keyframes: List[Keyframe]
     _value: Any
 
-    def __init__(self, name: str, desc: str, default: Any,
-            animatable: bool = True) -> None:
+    def __init__(self, name: str = "", desc: str = "", animatable: bool = True,
+            default: Optional[Any] = None) -> None:
+        """
+        Initialize property with common arguments for all subclasses.
+
+        :param name: Human readable name of the property. Can be different from
+            the variable name in Python.
+        :param desc: Human readable description.
+        :param animatable: Whether this property can be animated.
+        :param default: Default value. If set to ``None``, the user must provide
+            a value or else an error will be raised.
+        """
         self.name = name
         self.desc = desc
         self.default = self.type(default)
         self.animatable = animatable
 
         self._keyframes = []
-        self._value = self.default
+        self._value = None
 
         if self.default is not None:
             assert self.verify(self.default)
@@ -78,6 +88,10 @@ class Property:
         keys = sorted(self._keyframes)
 
         if len(keys) == 0:
+            if self._value is None:
+                if self._default is None:
+                    raise ValueError("Both value and default are None.")
+                return self._default
             return self._value
 
         elif len(keys) == 1:
@@ -253,7 +267,7 @@ class ArrayProp(Property):
         """
         Checks shape.
         """
-        if self.shape is not None and value.shape != self.shape:
+        if self.shape is not None and value.shape != tuple(self.shape):
             return False
         return True
 

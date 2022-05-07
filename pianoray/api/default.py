@@ -16,24 +16,24 @@ class VideoProps(PropertyGroup):
     resolution: ArrayProp(
         name="Resolution",
         desc="Output video resolution.",
-        default=(1920, 1080),
         animatable=False,
+        default=(1920, 1080),
         shape=(2,),
     )
 
     fps: IntProp(
         name="FPS",
         desc="Frames per second of output video.",
-        default=30,
         animatable=False,
+        default=30,
         min=1,
     )
 
     vcodec: StrProp(
         name="Video Codec",
         desc="Codec for video, passed to FFmpeg.",
-        default="libx265",
         animatable=False,
+        default="libx265",
     )
 
 
@@ -45,16 +45,16 @@ class AudioProps(PropertyGroup):
     file: PathProp(
         name="Audio File",
         desc="Path to audio file.",
-        default=None,
         animatable=False,
+        default=None,
         isfile=True,
     )
 
     start: FloatProp(
         name="Start Time",
         desc="Timestamp, in seconds, you press the first note.",
-        default=0,
         animatable=False,
+        default=0,
     )
 
 
@@ -66,40 +66,40 @@ class CompositionProps(PropertyGroup):
     margin_start: FloatProp(
         name="Start Margin",
         desc="Pause, in seconds, before first note starts.",
-        default=3,
         animatable=False,
+        default=3,
         min=0,
     )
 
     margin_end: FloatProp(
         name="End Margin",
         desc="Pause, in seconds, after the last note ends.",
-        default=3,
         animatable=False,
+        default=3,
         min=0,
     )
 
     fade_in: FloatProp(
         name="Fade In",
         desc="Seconds of fade in.",
-        default=1,
         animatable=False,
+        default=1,
         min=0,
     )
 
     fade_out: FloatProp(
         name="Fade Out",
         desc="Seconds of fade out.",
-        default=1,
         animatable=False,
+        default=1,
         min=0,
     )
 
     fade_blur: FloatProp(
         name="Fade Blur",
         desc="Blur radius of fade in coords.",
-        default=1,
         animatable=False,
+        default=1,
         coords=True,
     )
 
@@ -112,8 +112,8 @@ class PianoProps(Scene):
     black_width_fac: FloatProp(
         name="Black Key Width Factor",
         desc="Black key width as factor of white key width.",
-        default=0.6,
         animatable=False,
+        default=0.6,
         min=0,
     )
 
@@ -168,23 +168,23 @@ class MidiProps(PropertyGroup):
     file: PathProp(
         name="MIDI File",
         desc="Path to MIDI file.",
-        default=None,
         animatable=False,
+        default=None,
         isfile=True,
     )
 
     speed: FloatProp(
         name="Speed Multiplier",
         desc="MIDI notes speed multiplier.",
-        default=1,
         animatable=False,
+        default=1,
     )
 
     min_length: FloatProp(
         name="Minimum Duration",
         desc="Min duration of a note in seconds.",
-        default=0.08,
         animatable=False,
+        default=0.08,
         min=0,
     )
 
@@ -193,23 +193,23 @@ class KeyboardProps(PropertyGroup):
     file: PathProp(
         name="Video File",
         desc="Path to video recording of keyboard.",
-        default=None,
         animatable=False,
+        default=None,
         isfile=True,
     )
 
     start: FloatProp(
         name="Start",
         desc="Timestamp, in seconds, when you press the first note in the video.",
-        default=0,
         animatable=False,
+        default=0,
     )
 
     crop: ArrayProp(
         name="Crop",
         desc="Crop points of the keyboard. See docs for more info.",
-        default=None,
         animatable=False,
+        default=None,
         shape=(4, 2),
     )
 
