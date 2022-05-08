@@ -11,7 +11,6 @@ from pathlib import Path
 
 from . import logger
 from .api import import_scene
-from .settings import Settings
 from .utils import VERSION
 
 from .render import render_video
