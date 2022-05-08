@@ -49,17 +49,11 @@ class Video:
         self.frame += 1
         return self.frame - 1
 
-    def compile(self, out: str, props, num_frames: int) -> None:
+    def compile(self, out: str, props) -> None:
         """
         Use ffmpeg to compile frames and audio to video.
 
         :param out: Output video path.
-        :param fps: Frames per second.
-        :param num_frames: Total number of frames to compile.
-        :param margin_start: settings.composition.margin_start
-        :param vcodec: Video codec. Use libx264 if libx265 fails.
-        :param crf: Constant rate factor. Higher values produce smaller
-            file sizes but lower quality.
         """
         # Frames to video
         logger.info("Compiling frames to video.")
@@ -69,7 +63,7 @@ class Video:
             "-r", props.video.fps,
             "-start_number", 0,
             "-i", self.cache / "frames" / "%d.jpg",
-            "-vframes", num_frames,
+            "-vframes", self.frame,
             "-c:v", props.video.vcodec, "-an",
             "-crf", 24,
             "-r", props.video.fps,
@@ -84,7 +78,7 @@ class Video:
                 FFMPEG,
                 "-y",
                 "-ss", props.audio.start - props.composition.margin_start,
-                "-t", num_frames / props.video.fps,
+                "-t", self.frame / props.video.fps,
                 "-i", props.audio.file,
                 self.cache / "offset.mp3",
             ]

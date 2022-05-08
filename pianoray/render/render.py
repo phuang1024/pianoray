@@ -81,8 +81,8 @@ def render_video(args, scene, out: str, cache: Path) -> None:
 
     props = scene.default
     video = Video(cache / "output")
-    num_frames = render_frames(scene, libs, video, cache, real_start)
-    video.compile(out, props, num_frames)
+    render_frames(scene, libs, video, cache, real_start)
+    video.compile(out, props)
 
 
 def get_frame_bounds(props, duration):
@@ -170,5 +170,3 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
         add_fade(scene.default, img, frame_start, frame_end, frame)
 
         video.write(img)
-
-    return num_frames
