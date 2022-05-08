@@ -14,6 +14,16 @@ def lerp(fac, from_range, to_range) -> Any:
     return to_range[0] + progress * (to_range[1]-to_range[0])
 
 
+def quad_fac(fac):
+    """
+    if fac < 0.5: y = 2x^2
+    else: y = -2(x-1)^2 + 1
+    """
+    if fac < 0.5:
+        return 2 * fac**2
+    else:
+        return -2 * (fac-1)**2 + 1
+
 def interpolate(k1: Keyframe, k2: Keyframe, frame: int) -> Any:
     """
     Interpolate between two keyframes.
@@ -28,8 +38,9 @@ def interpolate(k1: Keyframe, k2: Keyframe, frame: int) -> Any:
     if interp == Interp.CONSTANT:
         return v1
 
-    elif interp in (Interp.LINEAR,):
-        if interp == Interp.LINEAR:
-            fac = np.interp(frame, (f1, f2), (0, 1))
+    elif interp in (Interp.LINEAR, Interp.QUADRATIC):
+        fac = np.interp(frame, (f1, f2), (0, 1))  # Lerp
+        if interp == Interp.QUADRATIC:
+            fac = quad_fac(fac)
 
         return lerp(fac, (0, 1), (v1, v2))

@@ -148,7 +148,7 @@ class IntProp(Property):
     Coords: Whether this quantity is in coords.
     """
     type = int
-    supported_interps = {Interp.CONSTANT, Interp.LINEAR}
+    supported_interps = {Interp.CONSTANT, Interp.LINEAR, Interp.QUADRATIC}
 
     min: int
     max: int
@@ -178,7 +178,7 @@ class FloatProp(Property):
     Coords: Whether this quantity is in coords.
     """
     type = float
-    supported_interps = {Interp.CONSTANT, Interp.LINEAR}
+    supported_interps = {Interp.CONSTANT, Interp.LINEAR, Interp.QUADRATIC}
 
     min: int
     max: int
@@ -262,7 +262,7 @@ class ArrayProp(Property):
     Numpy array property.
     """
     type = np.array
-    supported_interps = {Interp.CONSTANT, Interp.LINEAR}
+    supported_interps = {Interp.CONSTANT, Interp.LINEAR, Interp.QUADRATIC}
 
     shape: Optional[Tuple[int]]
 
