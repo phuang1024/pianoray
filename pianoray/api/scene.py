@@ -45,7 +45,7 @@ class Scene:
         """
         Returns Accesor object of all pgroup values at frame.
         """
-        default = self.default if use_mods else None
+        default = self.values(0, False) if use_mods else None
 
         ret = {}
         for k, pgroup in self._pgroups.items():
@@ -57,10 +57,10 @@ class Scene:
     @property
     def default(self) -> Accessor:
         """
-        Equivalent to ``self.values(0, False)``.
+        Equivalent to ``self.values(0)``.
         Usually used to get non animatable props.
         """
-        return self.values(0, False)
+        return self.values(0)
 
     def setup(self) -> None:
         """

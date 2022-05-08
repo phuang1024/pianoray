@@ -23,18 +23,13 @@ class Video:
     final video.
     """
 
-    def __init__(self, cache: Path, audio: str = None,
-            audio_offset: float = 0) -> None:
+    def __init__(self, cache: Path) -> None:
         """
         Initializes video.
 
         :param cache: Cache directory. Frames stored there.
-        :param audio: Path to audio file.
-        :param audio_offset: Seconds. Positive values play audio later.
         """
         self.cache = cache
-        self.audio = audio
-        self.audio_offset = audio_offset
         self.frame = 0
 
         (self.cache/"frames").mkdir(parents=True, exist_ok=True)
@@ -54,8 +49,7 @@ class Video:
         self.frame += 1
         return self.frame - 1
 
-    def compile(self, out: str, fps: int, num_frames: int,
-            margin_start: float, vcodec="libx265", crf=24) -> None:
+    def compile(self, out: str, props, num_frames: int) -> None:
         """
         Use ffmpeg to compile frames and audio to video.
 
@@ -72,26 +66,26 @@ class Video:
         args = [
             FFMPEG,
             "-y",
-            "-r", fps,
+            "-r", props.video.fps,
             "-start_number", 0,
             "-i", self.cache / "frames" / "%d.jpg",
             "-vframes", num_frames,
-            "-c:v", vcodec, "-an",
-            "-crf", crf,
-            "-r", fps,
+            "-c:v", props.video.vcodec, "-an",
+            "-crf", 24,
+            "-r", props.video.fps,
             self.cache / "no_audio.mp4",
         ]
         run_ffmpeg(args)
 
-        if self.audio is not None:
+        if props.audio.file is not None:
             # Cut audio
             logger.info("Processing audio.")
             args = [
                 FFMPEG,
                 "-y",
-                "-ss", self.audio_offset - margin_start,
-                "-t", num_frames/fps,
-                "-i", self.audio,
+                "-ss", props.audio.start - props.composition.margin_start,
+                "-t", num_frames / props.video.fps,
+                "-i", props.audio.file,
                 self.cache / "offset.mp3",
             ]
             run_ffmpeg(args)
