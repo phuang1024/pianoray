@@ -6,7 +6,7 @@ How to setup your development environment.
 Dependencies
 ------------
 
-See dependencies in the ``General/Installation`` page.
+See dependencies in :doc:`../general/install`.
 
 Additional dependencies for development:
 

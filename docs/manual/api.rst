@@ -1,9 +1,10 @@
 API
 ===
 
-The API is exposed as a Python module, ``pianoray``. This page contains
-documentation for each object. See TODO for information on how to use the
-API.
+The API is exposed as a Python module, ``pianoray``.
+
+This page contains documentation for each object. See :doc:`animation`
+for information on how to use the API to animate.
 
 Property Group
 --------------

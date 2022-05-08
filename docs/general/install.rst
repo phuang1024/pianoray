@@ -8,6 +8,7 @@ Dependencies
 - FFmpeg.
 - C++ compiler (``g++``).
 - Python packages listed in ``requirements.txt``
+- Basic Python knowledge.
 
 Latest
 ------

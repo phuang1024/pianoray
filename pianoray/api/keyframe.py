@@ -7,6 +7,7 @@ class Interp:
     """
     CONSTANT = "CONSTANT"
     LINEAR = "LINEAR"
+    QUADRATIC = "QUADRATIC"
 
 
 class Keyframe:

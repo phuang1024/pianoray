@@ -32,7 +32,6 @@ PATHS = (
     ("./docs",    True,  ("*.rst",)),
     ("./pianoray",     True,  ("*.py", "*.cpp", "*.hpp", "Makefile")),
     ("./scripts",   True,  ("*.py",)),
-    ("./tests",   True,  ("*.py",)),
     ("./.github", True,  ("*.md", "*.yml")),
 )
 
