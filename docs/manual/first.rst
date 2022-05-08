@@ -59,7 +59,7 @@ To start the render, run these commands in a shell:
 .. code-block:: bash
 
    cd ~/pianoray_tutorial
-   pianoray render furelise.py FurElise -p
+   pianoray render furelise.py FurElise -o out.mp4 -p
 
 This starts rendering, using the provided Python script and class name.
 The ``-p`` flag tells PianoRay to open the output file after rendering.
