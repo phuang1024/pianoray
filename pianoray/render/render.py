@@ -115,9 +115,9 @@ def add_fade(props, img, frame_start, frame_end, frame):
 
     if fade_fac < 1:
         blur = int(fade_blur * (1-fade_fac))
-        img = (img * fade_fac).astype(np.uint8)
+        img[...] = (img * fade_fac).astype(np.uint8)
         if blur > 0:
-            img = cv2.blur(img, (blur, blur))
+            img[...] = cv2.blur(img, (blur, blur))
 
 
 def render_frames(scene, libs, video, cache, real_start=None) -> int:
