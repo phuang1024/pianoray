@@ -15,7 +15,6 @@ from tqdm import trange
 from .. import logger
 from ..effects import parse_midi
 from ..effects import Blocks, Keyboard, Glare
-from ..settings import Settings
 from ..utils import bounds
 from .lib import load_libs
 from .video import Video
@@ -33,7 +32,7 @@ def check_previous(args, settings, cache):
     real_start = None
     if cache_settings.is_file() and cache_curr.is_file():
         with open(cache_settings, "r") as fp:
-            prev_sets = Settings(json.load(fp))
+            prev_sets = Settings(json.load(fp))  # TODO change
 
         if prev_sets == settings:
             with open(cache_curr, "r") as fp:

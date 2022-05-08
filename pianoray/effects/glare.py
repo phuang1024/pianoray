@@ -12,17 +12,17 @@ class Glare(Effect):
     Light glare when notes play.
     """
 
-    def __init__(self, settings, cache, libs, notes) -> None:
-        super().__init__(settings, cache, libs)
+    def __init__(self, props, cache, libs, notes) -> None:
+        super().__init__(props, cache, libs)
 
         for note in notes:
             streaks = []
-            for _ in range(settings.glare.streaks):
+            for _ in range(props.glare.streaks):
                 angle = random.randint(0, 255)
                 streaks.append(angle)
             note.attrs["glare.streak_angles"] = streaks
 
-    def render(self, settings, img: np.ndarray, frame: int, notes):
+    def render(self, props, img: np.ndarray, frame: int, notes):
         """
         Render the glare.
 
@@ -37,13 +37,13 @@ class Glare(Effect):
             angles.extend(note.attrs["glare.streak_angles"])
         angles = np.array(angles, dtype=np.uint8)
 
-        settings_args = [settings.piano.black_width_fac,
-            settings.glare.radius, settings.glare.intensity,
-            settings.glare.jitter, settings.glare.streaks]
+        props_args = [props.piano.black_width_fac,
+            props.glare.radius, props.glare.intensity,
+            props.glare.jitter, props.glare.streaks]
 
         self.libs["glare"].render_glare(
             img, img.shape[1], img.shape[0],
             frame,
             len(notes), keys, starts, ends, angles,
-            *settings_args,
+            *props_args,
         )

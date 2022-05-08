@@ -3,8 +3,6 @@ from typing import Any, Mapping, Sequence
 
 import mido
 
-from ..settings import Settings
-
 
 class Note:
     """
@@ -26,15 +24,14 @@ class Note:
         self.attrs = {}
 
 
-def parse_midi(settings: Settings) -> Sequence[Note]:
+def parse_midi(props) -> Sequence[Note]:
     """
     Parse midi file.
 
-    :param settings: Settings.
     :return: List of ``(note, velocity, start_frame, end_frame)``.
     """
-    path = settings.midi.file
-    min_len = settings.midi.min_length * settings.video.fps
+    path = props.midi.file
+    min_len = props.midi.min_length * props.video.fps
 
     midi = mido.MidiFile(path)
     notes = []
@@ -44,7 +41,7 @@ def parse_midi(settings: Settings) -> Sequence[Note]:
     starts = [0] * 255
     for msg in midi:
         if started:  # Only increment after first note
-            t += msg.time * settings.video.fps / settings.midi.speed
+            t += msg.time * props.video.fps / props.midi.speed
 
         if msg.type.startswith("note_"):
             started = True

@@ -3,25 +3,22 @@ from typing import Mapping
 
 import numpy as np
 
-from ..settings import Settings
+from ..api.accessor import Accessor
 
 
 class Effect:
     """
     Base class for all effects.
     """
-
-    settings: Settings
     cache: str
     libs: Mapping[str, ctypes.CDLL]
 
-    def __init__(self, settings: Settings, cache: str, libs) -> None:
-        self.settings = settings
+    def __init__(self, props: Accessor, cache: str, libs) -> None:
         self.cache = cache
         self.libs = libs
 
-    def render(self, settings: Settings, img: np.ndarray,
-            frame: int, *args, **kwargs) -> None:
+    def render(self, props: Accessor, img: np.ndarray, frame: int,
+            *args, **kwargs) -> None:
         """
         Override this in the subclass.
         """

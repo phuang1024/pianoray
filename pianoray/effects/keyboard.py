@@ -18,7 +18,7 @@ class VideoRead:
 
         :param path: Path of video.
         :param fps: The FPS the client is rendering at.
-            i.e. settings.video.fps
+            i.e. props.video.fps
         :param offset: Timestamp, in seconds, of the frame that will
             be considered frame 0.
         """
@@ -75,14 +75,14 @@ class Keyboard(Effect):
     Piano keyboard rendering.
     """
 
-    def __init__(self, settings, cache, libs) -> None:
-        assert settings.keyboard.file is not None
+    def __init__(self, props, cache, libs) -> None:
+        assert props.keyboard.file is not None
 
-        super().__init__(settings, cache, libs)
-        self.video = VideoRead(settings.keyboard.file,
-            settings.video.fps, settings.keyboard.start)
+        super().__init__(props, cache, libs)
+        self.video = VideoRead(props.keyboard.file,
+            props.video.fps, props.keyboard.start)
 
-        self.compute_crop(settings)
+        self.compute_crop(props)
 
     @staticmethod
     def extend_vec(v1, v2, length):
@@ -96,13 +96,13 @@ class Keyboard(Effect):
         v = u * length
         return v + v2
 
-    def compute_crop(self, settings):
-        crop = np.array(settings.keyboard.crop)
+    def compute_crop(self, props):
+        crop = np.array(props.keyboard.crop)
         src_width = np.linalg.norm(crop[1]-crop[0])
-        dst_width = settings.video.resolution[0]
+        dst_width = props.video.resolution[0]
         scale = src_width / dst_width
 
-        below_len = settings.keyboard.below_length * scale
+        below_len = props.keyboard.below_length * scale
         src_points = np.array(
             (
                 crop[0],
@@ -112,7 +112,7 @@ class Keyboard(Effect):
             ),
             dtype=np.float32)
 
-        dst_width = settings.video.resolution[0]
+        dst_width = props.video.resolution[0]
         dst_height = np.linalg.norm(src_points[3]-src_points[0]) / scale
         dst_kbd_height = np.linalg.norm(crop[3]-crop[0]) / scale
         dst_width, dst_height, dst_kbd_height = \
@@ -136,7 +136,7 @@ class Keyboard(Effect):
         self.dst_shape = (dst_width, dst_height)
         self.mask = mask
 
-    def render(self, settings, img: np.ndarray, frame: int):
+    def render(self, props, img: np.ndarray, frame: int):
         """
         Render the keyboard.
         """
@@ -146,16 +146,16 @@ class Keyboard(Effect):
         kbd = cv2.warpPerspective(kbd, self.persp, dst).astype(np.float64)
         kbd *= self.mask
 
-        kbd *= settings.keyboard.dim_mult
-        kbd += settings.keyboard.dim_add
+        kbd *= props.keyboard.dim_mult
+        kbd += props.keyboard.dim_add
         kbd[kbd<0] = 0
         kbd[kbd>255] = 255
         kbd = kbd.astype(np.uint8)
 
-        half = int(settings.video.resolution[1] / 2)
+        half = int(props.video.resolution[1] / 2)
         img[half:half+dst[1], 0:dst[0], ...] = kbd
 
         # Octave lines
-        if settings.keyboard.octave_lines:
+        if props.keyboard.octave_lines:
             self.libs["keyboard"].render_octave_lines(
                 img, img.shape[1], img.shape[0])
