@@ -40,10 +40,13 @@ def doc_prop(fp, pgroup_idname, idname, prop):
                 continue
 
             if attr == "mods":
-                v = [type(x).__name__ for x in v]
-            elif attr == "isdir" and not v:
-                continue
-            elif attr == "isfile" and not v:
+                v = ", ".join(type(x).__name__ for x in v)
+
+            if (
+                attr == "isdir" and not v or
+                attr == "isfile" and not v or
+                attr == "mods" and len(v) == 0
+                ):
                 continue
 
             if attr not in ("name", "desc"):

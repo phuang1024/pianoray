@@ -26,7 +26,7 @@ Test Video
    cd /path/to/pianoray
    make wheel
    make install
-   pianoray render -s tests/furelise.json -o out.mp4 -p
+   pianoray render tests/furelise.py FurElise -o out.mp4 -p
 
 This should render the video and open it in your video player. Rendering
 may take a few minutes.
