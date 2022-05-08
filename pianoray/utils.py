@@ -8,7 +8,7 @@ from pathlib import Path
 
 from . import logger
 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 
 ROOT = Path(__file__).absolute().parent
 
