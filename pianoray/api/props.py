@@ -30,13 +30,16 @@ class Property:
     name: str
     desc: str
     animatable: bool
+    required: bool
+    mods: Sequence[Modifier]
     default: Any
 
     _keyframes: List[Keyframe]
     _value: Any
 
     def __init__(self, name: str = "", desc: str = "", animatable: bool = True,
-            mods: Sequence[Modifier] = (), default: Optional[Any] = None):
+            required: bool = True, mods: Sequence[Modifier] = (),
+            default: Optional[Any] = None):
         """
         Initialize property with common arguments for all subclasses.
 
@@ -44,12 +47,14 @@ class Property:
             the variable name in Python.
         :param desc: Human readable description.
         :param animatable: Whether this property can be animated.
-        :param default: Default value. If set to ``None``, the user must provide
-            a value or else an error will be raised.
+        :param required: If False, value can be None.
+        :param mods: Sequence of modifiers to apply in order.
+        :param default: Default value.
         """
         self.name = name
         self.desc = desc
         self.animatable = animatable
+        self.required = required
         self.mods = mods
         self.default = default if default is None else self.type(default)
 
@@ -97,7 +102,10 @@ class Property:
         if len(keys) == 0:
             if self._value is None:
                 if self.default is None:
-                    raise ValueError("Both value and default are None.")
+                    if self.required:
+                        raise ValueError("Both value and default are None.")
+                    else:
+                        return None
                 return self.default
             return self._value
 

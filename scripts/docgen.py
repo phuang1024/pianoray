@@ -14,6 +14,7 @@ PROP_ATTRS = [
     ("desc", "Description"),
     ("animatable", "Animatable"),
     ("mods", "Modifiers"),
+    ("required", "Required"),
     ("default", "Default"),
     ("min", "Minimum"),
     ("max", "Maximum"),
