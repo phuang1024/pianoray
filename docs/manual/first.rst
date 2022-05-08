@@ -26,7 +26,7 @@ Create Settings
 ---------------
 
 In order to convey settings to PianoRay, we use the Python API. The API usage
-is described in detail in TODO.
+is described in detail in :doc:`animation`.
 
 Save this data to ``~/pianoray_tutorial/furelise.py``:
 

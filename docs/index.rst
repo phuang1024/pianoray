@@ -20,6 +20,7 @@ PianoRay
 
    manual/first.rst
    manual/second.rst
+   manual/animation.rst
    manual/record.rst
    manual/cli.rst
    manual/api.rst
