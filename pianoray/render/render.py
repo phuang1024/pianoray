@@ -137,7 +137,7 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     # OOP effects
     props = scene.default
     blocks = Blocks(props, cache, libs)
-    keyboard = Keyboard(props, cache, libs)
+    keyboard = Keyboard(props, cache, libs, notes)
     glare = Glare(props, cache, libs, notes)
 
     # Adjust start to match previous render

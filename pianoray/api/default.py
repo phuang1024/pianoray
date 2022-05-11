@@ -207,7 +207,14 @@ class KeyboardProps(PropertyGroup):
         name="Start",
         desc="Timestamp, in seconds, when the first note starts in the video.",
         animatable=False,
-        default=0,
+        default=None,
+    )
+
+    end: FloatProp(
+        name="End",
+        desc="Timestamp, in seconds, when the last note starts in the video.",
+        animatable=False,
+        default=None,
     )
 
     crop: ArrayProp(
