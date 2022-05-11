@@ -19,6 +19,7 @@ class FurElise(DefaultScene):
 
         self.keyboard.file = "examples/furelise/video.mp4"
         self.keyboard.start = 4.75
+        self.keyboard.end = 37.64
         self.keyboard.crop = ((252,480), (1793,487), (1789,676), (257,666))
         self.keyboard.dim_mult = 0.6
         self.keyboard.dim_add = -8

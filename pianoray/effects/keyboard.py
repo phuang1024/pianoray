@@ -1,70 +1,60 @@
+from typing import Tuple
+
 import cv2
 import numpy as np
 
+from ..utils import interp
 from .effect import Effect
 
 
 class VideoRead:
-    """ Read frames of a video.
-    The class internally accommodates for FPS.
     """
-    # Video fps is in_fps, client fps is out_fps
-    in_fps: int
-    out_fps: int
+    Read frames of a video.
+    Maps video frames to client frames.
+    """
 
-    def __init__(self, path: str, fps: int, offset: int = 0):
+    def __init__(self, path: str, fps: int, mapping: Tuple[int, int, int, int]):
         """
         Initialize.
 
         :param path: Path of video.
-        :param fps: The FPS the client is rendering at.
-            i.e. props.video.fps
-        :param offset: Timestamp, in seconds, of the frame that will
-            be considered frame 0.
+        :param fps: Client fps.
+        :param mapping: Tuple of
+            ``(client_start, client_end, src_start, src_end)`` frames.
         """
         self._video = cv2.VideoCapture(path)
+        self.mapping = mapping
 
-        self.in_fps = self._video.get(cv2.CAP_PROP_FPS)
-        self.out_fps = fps
-
-        # _frame stores frame number with first note = 0
-        # _real_frame stores frame number with first frame of video=0
-        self._frame = int(-1 * offset * self.in_fps)
+        # _real_frame stores frame number with first frame of video = 0
         self._real_frame = 0
-        self._last = None
+        self._last = None  # Last read img
+
+        self._read_next()
 
     def _get_frame(self, frame: int) -> int:
         """
-        Return frame of input video corresponding to
-        client's frame.
+        Return frame of input video corresponding to client's frame.
         """
-        f = frame * self.in_fps / self.out_fps
+        f = interp(frame, self.mapping[:2], self.mapping[2:])
         return round(f)
 
-    def _read_next(self, inc: bool = True):
+    def _read_next(self):
         """
         Read next frame, store in self._last, and
         increment self._frame.
-
-        :param inc: Whether to increment.
         """
         ret, img = self._video.read()
         self._real_frame += 1
-        if inc:
-            self._frame += 1
         if ret:
             self._last = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     def read(self, frame: int) -> np.ndarray:
         """
         Read frame. Pass the frame the client needs.
-        Currently can only read monotonically.
+        Can only read monotonically.
         """
         f = self._get_frame(frame)
-        if f < self._frame:
-            raise ValueError("VideoRead can only read monotonically.")
-
-        while self._frame < f:
+        while self._real_frame < f:
             self._read_next()
 
         return self._last
@@ -75,12 +65,16 @@ class Keyboard(Effect):
     Piano keyboard rendering.
     """
 
-    def __init__(self, props, cache, libs) -> None:
-        assert props.keyboard.file is not None
-
+    def __init__(self, props, cache, libs, notes) -> None:
+        """
+        :param notes: Parsed MIDI notes.
+        """
         super().__init__(props, cache, libs)
-        self.video = VideoRead(props.keyboard.file,
-            props.video.fps, props.keyboard.start)
+
+        fps = props.video.fps
+        duration = notes[-1].start - notes[0].start
+        self.video = VideoRead(props.keyboard.file, fps,
+            (0, duration, props.keyboard.start*fps, props.keyboard.end*fps))
 
         self.compute_crop(props)
 

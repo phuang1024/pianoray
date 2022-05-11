@@ -13,4 +13,5 @@ class Short(DefaultScene):
 
         self.keyboard.file = "examples/furelise/video.mp4"
         self.keyboard.start = 4.75
+        self.keyboard.end = 6
         self.keyboard.crop = ((252,480), (1793,487), (1789,676), (257,666))
