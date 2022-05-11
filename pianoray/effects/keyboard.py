@@ -18,8 +18,8 @@ class VideoRead:
         Initialize.
 
         :param path: Path of video.
-        :param mapping: Tuple of ``(client_start, client_end, src_start, src_end)``
-            frames.
+        :param mapping: Tuple of
+            ``(client_start, client_end, src_start, src_end)`` frames.
         """
         self._video = cv2.VideoCapture(path)
         self.mapping = mapping
