@@ -14,7 +14,7 @@ from tqdm import trange
 
 from .. import logger
 from ..effects import parse_midi
-from ..effects import Blocks, Keyboard, Glare
+from ..effects import Blocks, Keyboard, Glare, Particles
 from ..utils import bounds
 from .lib import load_libs
 from .video import Video
@@ -139,6 +139,7 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     blocks = Blocks(props, cache, libs)
     keyboard = Keyboard(props, cache, libs, notes)
     glare = Glare(props, cache, libs, notes)
+    ptcls = Particles(props, cache, libs)
 
     # Adjust start to match previous render
     if real_start is None:
@@ -164,6 +165,7 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
         props = scene.values(frame)
         keyboard.render(props, img, frame)
         blocks.render(props, img, frame, notes)
+        ptcls.render(props, img, frame, notes)
         glare.render(props, img, frame, notes)
 
         # Fade
