@@ -13,27 +13,27 @@ class VideoRead:
     Maps video frames to client frames.
     """
 
-    def __init__(self, path: str, mapping: Tuple[int, int, int, int]):
+    def __init__(self, path: str, fps: int, mapping: Tuple[int, int, int, int]):
         """
         Initialize.
 
         :param path: Path of video.
+        :param fps: Client fps.
         :param mapping: Tuple of
             ``(client_start, client_end, src_start, src_end)`` frames.
         """
         self._video = cv2.VideoCapture(path)
         self.mapping = mapping
 
-        # _frame stores frame number with first note = 0
         # _real_frame stores frame number with first frame of video = 0
-        self._frame = int(-1 * mapping[0] * self._video.get(cv2.CAP_PROP_FPS))
         self._real_frame = 0
         self._last = None  # Last read img
 
+        self._read_next()
+
     def _get_frame(self, frame: int) -> int:
         """
-        Return frame of input video corresponding to
-        client's frame.
+        Return frame of input video corresponding to client's frame.
         """
         f = interp(frame, self.mapping[:2], self.mapping[2:])
         return round(f)
@@ -45,7 +45,6 @@ class VideoRead:
         """
         ret, img = self._video.read()
         self._real_frame += 1
-        self._frame += 1
         if ret:
             self._last = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -55,10 +54,7 @@ class VideoRead:
         Can only read monotonically.
         """
         f = self._get_frame(frame)
-        if f < self._frame:
-            raise ValueError("VideoRead can only read monotonically.")
-
-        while self._frame < f:
+        while self._real_frame < f:
             self._read_next()
 
         return self._last
@@ -77,7 +73,7 @@ class Keyboard(Effect):
 
         fps = props.video.fps
         duration = notes[-1].start - notes[0].start
-        self.video = VideoRead(props.keyboard.file,
+        self.video = VideoRead(props.keyboard.file, fps,
             (0, duration, props.keyboard.start*fps, props.keyboard.end*fps))
 
         self.compute_crop(props)
