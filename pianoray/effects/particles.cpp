@@ -6,6 +6,7 @@
 #include "pr_image.hpp"
 #include "pr_math.hpp"
 #include "pr_piano.hpp"
+#include "pr_random.hpp"
 
 
 namespace Pianoray {
@@ -21,49 +22,31 @@ struct Particle {
 /**
  * Read cache of particles.
  */
-struct CacheRead {
-    int length;
-    std::vector<Particle> ptcls;
+void read_cache(std::vector<Particle>& ptcls, char* path) {
+    if (strlen(path) > 0) {
+        std::ifstream fin(path);
+        int length;
+        fin.read((char*)(&length), sizeof(int));
 
-    CacheRead(char* path) {
-        if (strlen(path) == 0) {
-            length = 0;
-        }
-        else {
-            std::ifstream fin(path);
-            fin.read((char*)(&length), sizeof(int));
-            for (int i = 0; i < length; i++) {
-                Particle p;
-                fin.read((char*)(&p), sizeof(Particle));
-                ptcls.push_back(p);
-            }
+        for (int i = 0; i < length; i++) {
+            Particle p;
+            fin.read((char*)(&p), sizeof(Particle));
+            ptcls.push_back(p);
         }
     }
-};
+}
 
 /**
  * Write particles.
  */
-struct CacheWrite {
-    int length;
-    std::ofstream fout;
+void write_cache(std::vector<Particle>& ptcls, char* path) {
+    int length = ptcls.size();
 
-    ~CacheWrite() {
-        fout.seekp(0, fout.beg);
-        fout.write((char*)(&length), sizeof(int));
-    }
+    std::ofstream fout = std::ofstream(path);
+    fout.write((char*)(&length), sizeof(int));
 
-    CacheWrite(char* path) {
-        fout = std::ofstream(path);
-        fout.seekp(sizeof(int), fout.beg);
-
-        length = 0;
-    }
-
-    void write(const Particle& ptcl) {
-        fout.write((char*)(&ptcl), sizeof(Particle));
-        length++;
-    }
+    for (int i = 0; i < length; i++)
+        fout.write((char*)(&ptcls[i]), sizeof(Particle));
 };
 
 
@@ -87,18 +70,34 @@ extern "C" void render_ptcls(
 {
     const double ppf = pps / fps;
 
-    CacheRead cache_in(cache_in_path);
     Image img(img_data, width, height, 3);
 
-    CacheWrite cache_out(cache_out_path);
-    for (int i = 0; i < cache_in.length; i++)
-        cache_out.write(cache_in.ptcls[i]);
+    std::vector<Particle> ptcls;
+    read_cache(ptcls, cache_in_path);
 
-    std::cerr << frame << ' ' << cache_in.length << ' ' << cache_out.length << std::endl;
-    if (frame == 0) {
-        Particle ptcl;
-        cache_out.write(ptcl);
+    // Generate new ptcls
+    for (int i = 0; i < num_notes; i++) {
+        double start = note_starts[i];
+        double end = note_ends[i];
+
+        if (start < frame && frame < end) {
+            int note = note_keys[i];
+            double key_x = key_pos(note) * width;
+
+            int num_ptcls = ppf * Random::uniform(0.5, 2);
+            for (int j = 0; j < num_ptcls; j++) {
+                Particle p;
+                p.x = key_x;
+                p.y = height / 2;
+                p.vx = Random::uniform(-1, 1);
+                p.vy = Random::uniform(-1, 0);
+                ptcls.push_back(p);
+            }
+        }
     }
+
+    std::cerr << frame << ' ' << ptcls.size() << std::endl;
+    write_cache(ptcls, cache_out_path);
 }
 
 

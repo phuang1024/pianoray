@@ -40,4 +40,5 @@ class Particles(Effect):
             frame,
             Types.cpath(cache_in), Types.cpath(cache_out),
             len(notes), keys, starts, ends,
+            *props_args,
         )
