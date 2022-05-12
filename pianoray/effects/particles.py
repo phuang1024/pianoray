@@ -29,7 +29,6 @@ class Particles(Effect):
         cache_in = self.cache / "ptcls" / strnum(frame-1)
         cache_out = self.cache / "ptcls" / strnum(frame)
         if not cache_in.is_file():
-            print("no file", cache_in)
             cache_in = ""
 
         props_args = [props.video.fps, props.ptcls.pps,

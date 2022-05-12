@@ -15,7 +15,19 @@ namespace Pianoray {
 struct Particle {
     double x, y;
     double vx, vy;  // velocity in px/frame
-    double life;  // duration in frames
+    double birth;  // birth timestamp in frames
+
+    Particle() {
+        x = y = vx = vy = birth = 0;
+    }
+
+    Particle(double x, double y, double vx, double vy, double birth) {
+        this->x = x;
+        this->y = y;
+        this->vx = vx;
+        this->vy = vy;
+        this->birth = birth;
+    }
 };
 
 
@@ -48,6 +60,14 @@ void write_cache(std::vector<Particle>& ptcls, char* path) {
     for (int i = 0; i < length; i++)
         fout.write((char*)(&ptcls[i]), sizeof(Particle));
 };
+
+
+void render_ptcls(Image& img, const std::vector<Particle>& ptcls) {
+    const Color white(255, 255, 255);
+    for (const Particle& ptcl: ptcls) {
+        img.setc(ptcl.x, ptcl.y, white);
+    }
+}
 
 
 /**
@@ -86,39 +106,16 @@ extern "C" void render_ptcls(
 
             int num_ptcls = ppf * Random::uniform(0.5, 2);
             for (int j = 0; j < num_ptcls; j++) {
-                Particle p;
-                p.x = key_x;
-                p.y = height / 2;
-                p.vx = Random::uniform(-1, 1);
-                p.vy = Random::uniform(-1, 0);
-                ptcls.push_back(p);
+                ptcls.push_back(Particle(key_x, height/2, Random::uniform(-1, 1),
+                    Random::uniform(-1, 0), frame));
             }
         }
     }
 
-    std::cerr << frame << ' ' << ptcls.size() << std::endl;
+    render_ptcls(img, ptcls);
+
     write_cache(ptcls, cache_out_path);
 }
 
 
 }  // namespace Pianoray
-
-
-/*
-using namespace Pianoray;
-int main() {
-    CacheRead in("in.cache");
-    CacheWrite out("out.cache");
-
-    std::cerr << "in len: " << in.length << std::endl;
-
-    std::cerr << "Copying in to out." << std::endl;
-    for (int i = 0; i < in.length; i++)
-        out.write(in.ptcls[i]);
-
-    std::cerr << "Adding one." << std::endl;
-    Particle ptcl;
-    out.write(ptcl);
-
-    std::cerr << "Done." << std::endl;
-}*/
