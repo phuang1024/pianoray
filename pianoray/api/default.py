@@ -293,6 +293,20 @@ class ParticleProps(PropertyGroup):
         min=0,
     )
 
+    air_resist: FloatProp(
+        name="Air Resistance",
+        desc="Velocity multiplies by this every second.",
+        default=0.6,
+        min=0,
+    )
+
+    lifetime: FloatProp(
+        name="Lifetime",
+        desc="Particle lifetime in seconds.",
+        default=3,
+        min=0,
+    )
+
 
 class DefaultScene(Scene):
     _pgroups = {

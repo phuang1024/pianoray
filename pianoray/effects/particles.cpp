@@ -51,21 +51,51 @@ void read_cache(std::vector<Particle>& ptcls, char* path) {
 /**
  * Write particles.
  */
-void write_cache(std::vector<Particle>& ptcls, char* path) {
+void write_cache(const std::vector<Particle>& ptcls, const std::vector<bool>& good,
+        char* path) {
     int length = ptcls.size();
 
     std::ofstream fout = std::ofstream(path);
     fout.write((char*)(&length), sizeof(int));
 
     for (int i = 0; i < length; i++)
-        fout.write((char*)(&ptcls[i]), sizeof(Particle));
+        if (good[i])
+            fout.write((char*)(&ptcls[i]), sizeof(Particle));
 };
 
 
-void render_ptcls(Image& img, const std::vector<Particle>& ptcls) {
-    const Color white(255, 255, 255);
+void render_ptcls(Image& img, int frame, const std::vector<Particle>& ptcls,
+        const std::vector<bool>& good, double lifetime) {
+    const int rad = 1.3;  // Radius of ptcl at max strength
+
+    ImageGray factor(img.width, img.height);
+
     for (const Particle& ptcl: ptcls) {
-        img.setc(ptcl.x, ptcl.y, white);
+        double strength = 1 - (double)(frame-ptcl.birth) / lifetime;
+        if (strength <= 0)
+            continue;
+
+        int x_min = ibounds(ptcl.x-rad, 0, img.width-1);
+        int x_max = ibounds(ptcl.x+rad+1, 0, img.width-1);
+        int y_min = ibounds(ptcl.y-rad, 0, img.height-1);
+        int y_max = ibounds(ptcl.y+rad+1, 0, img.height-1);
+
+        for (int x = x_min; x <= x_max; x++) {
+            for (int y = y_min; y <= y_max; y++) {
+                double dist = hypot(x-ptcl.x, y-ptcl.y);
+                double fac = dbounds(interp(dist, 0, rad, strength, 0), 0, strength);
+                factor.set(x, y, std::max(factor.get(x, y), fac));
+            }
+        }
+    }
+
+    const Color white(255, 255, 255);
+    for (int x = 0; x < img.width; x++) {
+        for (int y = 0; y < img.height; y++) {
+            Color curr = img.getc(x, y);
+            Color mix = mix_cols(curr, white, factor.get(x, y));
+            img.setc(x, y, mix);
+        }
     }
 }
 
@@ -80,15 +110,22 @@ void render_ptcls(Image& img, const std::vector<Particle>& ptcls) {
  * @param note_keys  Key (note number) for each note.
  * @param note_starts  Start frame of each note.
  * @param note_ends  End frame of each note.
+ *
+ * @param fps  props.video.fps
+ * @param pps  props.ptcls.pps
+ * @param air_resist  props.ptcls.air_resist
+ * @param lifetime  props.ptcls.lifetime
  */
 extern "C" void render_ptcls(
     UCH* img_data, int width, int height,
     int frame,
     char* cache_in_path, char* cache_out_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double pps)
+    int fps, double pps, double air_resist, double lifetime)
 {
     const double ppf = pps / fps;
+    air_resist = pow(air_resist, 1.0 / fps);
+    lifetime *= fps;
 
     Image img(img_data, width, height, 3);
 
@@ -112,9 +149,29 @@ extern "C" void render_ptcls(
         }
     }
 
-    render_ptcls(img, ptcls);
+    // Update s and v
+    for (Particle& ptcl: ptcls) {
+        ptcl.x += ptcl.vx;
+        ptcl.y += ptcl.vy;
+        ptcl.vx *= air_resist;
+        ptcl.vy *= air_resist;
+    }
 
-    write_cache(ptcls, cache_out_path);
+    std::vector<bool> good;  // ptcls to carry to next frame
+    for (Particle ptcl: ptcls) {
+        bool g = true;
+        if (
+            ptcl.x < 0 || ptcl.x >= width ||
+            ptcl.y < 0 || ptcl.y >= height ||
+            frame - ptcl.birth > lifetime
+        )
+            g = false;
+
+        good.push_back(g);
+    }
+
+    render_ptcls(img, frame, ptcls, good, lifetime);
+    write_cache(ptcls, good, cache_out_path);
 }
 
 
