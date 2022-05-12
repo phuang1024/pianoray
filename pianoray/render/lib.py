@@ -61,6 +61,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     particles.render_ptcls.argtypes = [
         Types.img, Types.int, Types.int,
         Types.int,
+        Types.path, Types.path,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
     ]
 

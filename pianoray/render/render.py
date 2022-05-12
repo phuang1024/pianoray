@@ -67,7 +67,7 @@ def render_video(args, scene, out: str, cache: Path) -> None:
         raise
 
     # Cache subdirs
-    for sub in ("glare",):
+    for sub in ("glare", "ptcls"):
         (cache/sub).mkdir(exist_ok=True)
 
     # Save settings to cache.

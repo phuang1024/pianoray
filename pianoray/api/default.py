@@ -285,14 +285,24 @@ class GlareProps(PropertyGroup):
     )
 
 
+class ParticleProps(PropertyGroup):
+    pps: FloatProp(
+        name="Particles per Second",
+        desc="Number of particles to emit per note per second.",
+        default=25,
+        min=0,
+    )
+
+
 class DefaultScene(Scene):
     _pgroups = {
-        "video": VideoProps(),
         "audio": AudioProps(),
-        "composition": CompositionProps(),
-        "piano": PianoProps(),
         "blocks": BlocksProps(),
-        "midi": MidiProps(),
-        "keyboard": KeyboardProps(),
+        "composition": CompositionProps(),
         "glare": GlareProps(),
+        "keyboard": KeyboardProps(),
+        "midi": MidiProps(),
+        "ptcls": ParticleProps(),
+        "piano": PianoProps(),
+        "video": VideoProps(),
     }
