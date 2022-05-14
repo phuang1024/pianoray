@@ -33,3 +33,12 @@ class Coords(Modifier):
     def __call__(self, default, value):
         coord = default.video.resolution[0] / 52
         return value * coord
+
+
+class SecToFrame(Modifier):
+    """
+    Convert seconds to frames.
+    """
+
+    def __call__(self, default, value):
+        return value / default.video.fps

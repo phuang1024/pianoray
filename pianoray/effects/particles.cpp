@@ -64,14 +64,15 @@ void write_cache(const std::vector<Particle>& ptcls, const std::vector<bool>& go
 };
 
 
-void render_ptcls(Image& img, int frame, const std::vector<Particle>& ptcls,
+void render(Image& img, int frame, const std::vector<Particle>& ptcls,
         const std::vector<bool>& good, double lifetime) {
-    const int rad = 1.3;  // Radius of ptcl at max strength
+    const int rad = 1.7;  // Radius of ptcl at max strength
 
     ImageGray factor(img.width, img.height);
 
     for (const Particle& ptcl: ptcls) {
-        double strength = 1 - (double)(frame-ptcl.birth) / lifetime;
+        double strength = (double)(frame-ptcl.birth) / lifetime;
+        strength = 1 - pow(strength, 2);
         if (strength <= 0)
             continue;
 
@@ -115,13 +116,16 @@ void render_ptcls(Image& img, int frame, const std::vector<Particle>& ptcls,
  * @param pps  props.ptcls.pps
  * @param air_resist  props.ptcls.air_resist
  * @param lifetime  props.ptcls.lifetime
+ * @param x_vel  props.ptcls.x_vel
+ * @param y_vel  props.ptcls.y_vel
  */
 extern "C" void render_ptcls(
     UCH* img_data, int width, int height,
     int frame,
     char* cache_in_path, char* cache_out_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
-    int fps, double pps, double air_resist, double lifetime)
+    int fps, double pps, double air_resist, double lifetime, double x_vel,
+        double y_vel)
 {
     const double ppf = pps / fps;
     air_resist = pow(air_resist, 1.0 / fps);
@@ -143,8 +147,9 @@ extern "C" void render_ptcls(
 
             int num_ptcls = ppf * Random::uniform(0.5, 2);
             for (int j = 0; j < num_ptcls; j++) {
-                ptcls.push_back(Particle(key_x, height/2, Random::uniform(-1, 1),
-                    Random::uniform(-1, 0), frame));
+                double vx = Random::uniform(-x_vel, x_vel);
+                double vy = Random::uniform(-y_vel, -y_vel/2);
+                ptcls.push_back(Particle(key_x, height/2, vx, vy, frame));
             }
         }
     }
@@ -170,7 +175,7 @@ extern "C" void render_ptcls(
         good.push_back(g);
     }
 
-    render_ptcls(img, frame, ptcls, good, lifetime);
+    render(img, frame, ptcls, good, lifetime);
     write_cache(ptcls, good, cache_out_path);
 }
 

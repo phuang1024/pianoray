@@ -3,7 +3,7 @@ Default scene, contains settings for PianoRay.
 i.e. default "implementation" of Scene.
 """
 
-from .modifiers import Coords
+from .modifiers import *
 from .pgroup import PropertyGroup
 from .props import *
 from .scene import Scene
@@ -289,7 +289,7 @@ class ParticleProps(PropertyGroup):
     pps: FloatProp(
         name="Particles per Second",
         desc="Number of particles to emit per note per second.",
-        default=25,
+        default=40,
         min=0,
     )
 
@@ -304,6 +304,22 @@ class ParticleProps(PropertyGroup):
         name="Lifetime",
         desc="Particle lifetime in seconds.",
         default=3,
+        min=0,
+    )
+
+    x_vel: FloatProp(
+        name="X Velocity",
+        desc="Initial X velocity range in coords/sec.",
+        mods=[Coords(), SecToFrame()],
+        default=1,
+        min=0,
+    )
+
+    y_vel: FloatProp(
+        name="Y Velocity",
+        desc="Initial Y velocity range in coords/sec.",
+        mods=[Coords(), SecToFrame()],
+        default=4,
         min=0,
     )
 
