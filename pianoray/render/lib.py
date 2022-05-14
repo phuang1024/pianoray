@@ -16,7 +16,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     Load C libraries. Also sets the argtypes and restypes.
     """
     cache = cache / "c_libs"
-    os.makedirs(cache, exist_ok=True)
+    cache.mkdir(parents=True, exist_ok=True)
 
     blocks = build_lib(
         ["effects/blocks.cpp"],
@@ -53,8 +53,22 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         Types.img, Types.int, Types.int,
     ]
 
+    particles = build_lib(
+        ["effects/particles.cpp"],
+        cache,
+        "particles",
+    )
+    particles.render_ptcls.argtypes = [
+        Types.img, Types.int, Types.int,
+        Types.int,
+        Types.path, Types.path,
+        Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
+        Types.int, Types.double, Types.double, Types.double, Types.double, Types.double,
+    ]
+
     return {
         "blocks": blocks,
         "glare": glare,
         "keyboard": keyboard,
+        "ptcls": particles,
     }

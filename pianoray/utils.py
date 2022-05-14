@@ -28,6 +28,14 @@ def forever():
         yield
 
 
+def strnum(v):
+    """
+    Returns str(v) if v >= 0 else "n" + str(abs(v))
+    Used for getting a filename given frame number.
+    """
+    return str(v) if v >= 0 else "n" + str(abs(v))
+
+
 def bounds(v, vmin, vmax):
     """
     Bound v between vmin and vmax.

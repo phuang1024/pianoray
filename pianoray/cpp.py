@@ -44,11 +44,11 @@ class Types:
     path = ndpointer(dtype=char, ndim=1, flags=_arr_flags)
 
     @staticmethod
-    def cpath(path: str):
+    def cpath(path):
         """
         Return C path (numpy array of chars, null terminated).
         """
-        data = [c for c in path.encode()]
+        data = [c for c in str(path).encode()]
         data.append(0)
         return np.array(data, dtype=np.int8)
 

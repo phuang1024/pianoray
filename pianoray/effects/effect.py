@@ -1,4 +1,5 @@
 import ctypes
+from pathlib import Path
 from typing import Mapping
 
 import numpy as np
@@ -10,10 +11,10 @@ class Effect:
     """
     Base class for all effects.
     """
-    cache: str
+    cache: Path
     libs: Mapping[str, ctypes.CDLL]
 
-    def __init__(self, props: Accessor, cache: str, libs) -> None:
+    def __init__(self, props: Accessor, cache: Path, libs) -> None:
         self.cache = cache
         self.libs = libs
 

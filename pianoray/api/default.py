@@ -3,7 +3,7 @@ Default scene, contains settings for PianoRay.
 i.e. default "implementation" of Scene.
 """
 
-from .modifiers import Coords
+from .modifiers import *
 from .pgroup import PropertyGroup
 from .props import *
 from .scene import Scene
@@ -285,14 +285,54 @@ class GlareProps(PropertyGroup):
     )
 
 
+class ParticleProps(PropertyGroup):
+    pps: FloatProp(
+        name="Particles per Second",
+        desc="Number of particles to emit per note per second.",
+        default=40,
+        min=0,
+    )
+
+    air_resist: FloatProp(
+        name="Air Resistance",
+        desc="Velocity multiplies by this every second.",
+        default=0.6,
+        min=0,
+    )
+
+    lifetime: FloatProp(
+        name="Lifetime",
+        desc="Particle lifetime in seconds.",
+        default=3,
+        min=0,
+    )
+
+    x_vel: FloatProp(
+        name="X Velocity",
+        desc="Initial X velocity range in coords/sec.",
+        mods=[Coords(), SecToFrame()],
+        default=1,
+        min=0,
+    )
+
+    y_vel: FloatProp(
+        name="Y Velocity",
+        desc="Initial Y velocity range in coords/sec.",
+        mods=[Coords(), SecToFrame()],
+        default=4,
+        min=0,
+    )
+
+
 class DefaultScene(Scene):
     _pgroups = {
-        "video": VideoProps(),
         "audio": AudioProps(),
-        "composition": CompositionProps(),
-        "piano": PianoProps(),
         "blocks": BlocksProps(),
-        "midi": MidiProps(),
-        "keyboard": KeyboardProps(),
+        "composition": CompositionProps(),
         "glare": GlareProps(),
+        "keyboard": KeyboardProps(),
+        "midi": MidiProps(),
+        "ptcls": ParticleProps(),
+        "piano": PianoProps(),
+        "video": VideoProps(),
     }

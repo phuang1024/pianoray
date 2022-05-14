@@ -21,7 +21,7 @@ import sys
 import os
 import pathlib
 
-MAX_LEN = 80   # Max line length.
+MAX_LEN = 88   # Max line length.
 
 RESET = "\x1b[39m"
 RED = "\x1b[31m"
