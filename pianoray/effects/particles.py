@@ -32,7 +32,8 @@ class Particles(Effect):
             cache_in = ""
 
         props_args = [props.video.fps, props.ptcls.pps, props.ptcls.air_resist,
-            props.ptcls.lifetime, props.ptcls.x_vel, props.ptcls.y_vel]
+            props.ptcls.lifetime, props.ptcls.x_vel, props.ptcls.y_vel,
+            props.ptcls.wind_strength]
 
         self.libs["ptcls"].render_ptcls(
             img, img.shape[1], img.shape[0],

@@ -64,6 +64,20 @@ void write_cache(const std::vector<Particle>& ptcls, const std::vector<bool>& go
 };
 
 
+/**
+ * Get vector of wind at coord.
+ * Stores in param wx, wy.
+ *
+ * @param x, y  Coords.
+ * @param t  Seconds.
+ */
+void wind(double& wx, double& wy, double x, double y, double t) {
+    double v = (x+y)*2 + t;
+    wx = cos(v);
+    wy = sin(v);
+}
+
+
 void render(Image& img, int frame, const std::vector<Particle>& ptcls,
         const std::vector<bool>& good, double lifetime) {
     const int rad = 1.7;  // Radius of ptcl at max strength
@@ -118,6 +132,7 @@ void render(Image& img, int frame, const std::vector<Particle>& ptcls,
  * @param lifetime  props.ptcls.lifetime
  * @param x_vel  props.ptcls.x_vel
  * @param y_vel  props.ptcls.y_vel
+ * @param wind_str  props.ptcls.wind_strength
  */
 extern "C" void render_ptcls(
     UCH* img_data, int width, int height,
@@ -125,11 +140,12 @@ extern "C" void render_ptcls(
     char* cache_in_path, char* cache_out_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
     int fps, double pps, double air_resist, double lifetime, double x_vel,
-        double y_vel)
+        double y_vel, double wind_str)
 {
     const double ppf = pps / fps;
     air_resist = pow(air_resist, 1.0 / fps);
     lifetime *= fps;
+    wind_str /= fps;
 
     Image img(img_data, width, height, 3);
 
@@ -155,11 +171,19 @@ extern "C" void render_ptcls(
     }
 
     // Update s and v
+    const double px_to_coord = 52.0 / width;
     for (Particle& ptcl: ptcls) {
         ptcl.x += ptcl.vx;
         ptcl.y += ptcl.vy;
         ptcl.vx *= air_resist;
         ptcl.vy *= air_resist;
+
+        double wx, wy;
+        wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord, (double)(frame)/fps);
+        wx *= wind_str;
+        wy *= wind_str;
+        ptcl.vx += wx;
+        ptcl.vy += wy;
     }
 
     std::vector<bool> good;  // ptcls to carry to next frame

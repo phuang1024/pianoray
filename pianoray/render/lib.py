@@ -64,6 +64,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         Types.path, Types.path,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
         Types.int, Types.double, Types.double, Types.double, Types.double, Types.double,
+            Types.double,
     ]
 
     return {
