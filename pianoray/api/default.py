@@ -323,6 +323,12 @@ class ParticleProps(PropertyGroup):
         min=0,
     )
 
+    wind_strength: FloatProp(
+        name="Wind Strength",
+        desc="Strength multiplier of wind affecting particles.",
+        default=1,
+    )
+
 
 class DefaultScene(Scene):
     _pgroups = {
