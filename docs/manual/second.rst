@@ -55,15 +55,16 @@ next. This is described in detail in :doc:`animation`.
 
 .. warning::
 
-   If a property is animated, PianoRay will ignore it's value:
+   If a property is animated, PianoRay will ignore it's non-animated value:
 
    .. code-block:: py
 
-      self.blocks.color = ...         # This value will be used.
+      # This value will be used if there is no animation.
+      self.blocks.color = ...
 
-      self.blocks.color.animate(...)  # The animation will be used, but the
-                                      # value from the previous line will be
-                                      # ignored.
+      # The animation will be used, but the value from the previous line
+      # will be ignored.
+      self.blocks.color.animate(...)
 
 Animation is done with a property's ``animate`` method. Let's animate the
 blocks changing from green to blue. Add these lines somewhere:
