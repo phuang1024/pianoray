@@ -33,7 +33,7 @@ class Particles(Effect):
 
         props_args = [props.video.fps, props.ptcls.pps, props.ptcls.air_resist,
             props.ptcls.lifetime, props.ptcls.x_vel, props.ptcls.y_vel,
-            props.ptcls.wind_strength]
+            props.ptcls.wind_strength, props.ptcls.heat_strength, props.ptcls.gravity]
 
         self.libs["ptcls"].render_ptcls(
             img, img.shape[1], img.shape[0],

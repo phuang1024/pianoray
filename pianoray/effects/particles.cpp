@@ -134,6 +134,7 @@ void render(Image& img, int frame, const std::vector<Particle>& ptcls,
  * @param x_vel  props.ptcls.x_vel
  * @param y_vel  props.ptcls.y_vel
  * @param wind_str  props.ptcls.wind_strength
+ * @param heat_str  props.ptcls.heat_strength
  */
 extern "C" void render_ptcls(
     UCH* img_data, int width, int height,
@@ -141,12 +142,14 @@ extern "C" void render_ptcls(
     char* cache_in_path, char* cache_out_path,
     int num_notes, int* note_keys, double* note_starts, double* note_ends,
     int fps, double pps, double air_resist, double lifetime, double x_vel,
-        double y_vel, double wind_str)
+        double y_vel, double wind_str, double heat_str, double gravity)
 {
     const double ppf = pps / fps;
     air_resist = pow(air_resist, 1.0 / fps);
     lifetime *= fps;
-    wind_str /= fps * 1.5;
+    wind_str /= fps;
+    heat_str /= fps / 2;
+    gravity /= fps;
 
     Image img(img_data, width, height, 3);
 
@@ -174,17 +177,24 @@ extern "C" void render_ptcls(
     // Update s and v
     const double px_to_coord = 52.0 / width;
     for (Particle& ptcl: ptcls) {
+        // s = integral(v), air resistance, gravity
         ptcl.x += ptcl.vx;
         ptcl.y += ptcl.vy;
         ptcl.vx *= air_resist;
         ptcl.vy *= air_resist;
+        ptcl.vy += gravity;
 
+        // Wind
         double wx, wy;
         wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord, (double)(frame)/fps);
         wx *= wind_str;
         wy *= wind_str;
         ptcl.vx += wx;
         ptcl.vy += wy;
+
+        // Heat rising
+        double heat = 1 - (double)(frame-ptcl.birth) / lifetime;
+        ptcl.vy -= heat * heat_str;  // minus bc up is minus
     }
 
     std::vector<bool> good;  // ptcls to carry to next frame
