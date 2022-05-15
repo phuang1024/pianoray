@@ -80,7 +80,7 @@ void wind(double& wx, double& wy, double x, double y, double t) {
 
 void render(Image& img, int frame, const std::vector<Particle>& ptcls,
         const std::vector<bool>& good, double lifetime) {
-    const int rad = 1.7;  // Radius of ptcl at max strength
+    const double rad = 1.3;  // Radius of ptcl at max strength
 
     ImageGray factor(img.width, img.height);
 
@@ -90,15 +90,16 @@ void render(Image& img, int frame, const std::vector<Particle>& ptcls,
         if (strength <= 0)
             continue;
 
-        int x_min = ibounds(ptcl.x-rad, 0, img.width-1);
-        int x_max = ibounds(ptcl.x+rad+1, 0, img.width-1);
-        int y_min = ibounds(ptcl.y-rad, 0, img.height-1);
-        int y_max = ibounds(ptcl.y+rad+1, 0, img.height-1);
+        double r = rad * strength;  // decrease rad
+        int x_min = ibounds(ptcl.x-r, 0, img.width-1);
+        int x_max = ibounds(ptcl.x+r+1, 0, img.width-1);
+        int y_min = ibounds(ptcl.y-r, 0, img.height-1);
+        int y_max = ibounds(ptcl.y+r+1, 0, img.height-1);
 
         for (int x = x_min; x <= x_max; x++) {
             for (int y = y_min; y <= y_max; y++) {
                 double dist = hypot(x-ptcl.x, y-ptcl.y);
-                double fac = dbounds(interp(dist, 0, rad, strength, 0), 0, strength);
+                double fac = dbounds(interp(dist, 0, r, strength, 0), 0, strength);
                 factor.set(x, y, std::max(factor.get(x, y), fac));
             }
         }
@@ -145,7 +146,7 @@ extern "C" void render_ptcls(
     const double ppf = pps / fps;
     air_resist = pow(air_resist, 1.0 / fps);
     lifetime *= fps;
-    wind_str /= fps;
+    wind_str /= fps * 1.5;
 
     Image img(img_data, width, height, 3);
 
