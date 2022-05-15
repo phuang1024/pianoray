@@ -329,6 +329,18 @@ class ParticleProps(PropertyGroup):
         default=1,
     )
 
+    heat_strength: FloatProp(
+        name="Heat Strength",
+        desc="Strength multiplier of heat affecting particles.",
+        default=1,
+    )
+
+    gravity: FloatProp(
+        name="Gravity",
+        desc="Strength multiplier of gravity affecting particles.",
+        default=1,
+    )
+
 
 class DefaultScene(Scene):
     _pgroups = {
