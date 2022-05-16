@@ -72,12 +72,38 @@ class Property:
         assert self.verify(value)
         self._value = value
 
-    def animate(self, keyframe: Keyframe) -> None:
+    def animate(self, *args) -> None:
+        """
+        Insert a keyframe.
+
+        A few syntaxes are available:
+
+        .. code-block:: py
+
+           prop.animate(Keyframe(frame, value, interp))
+           prop.animate(Keyframe(frame, value, interp), Keyframe(frame, value, interp))
+           prop.animate(frame, value, interp)
+           prop.animate((frame, value, interp))
+           prop.animate((frame, value, interp), (frame2, value2, interp2), ...)
+
+        They all do the same thing. However, please do not mix syntaxes in one call
+        (don't pass a keyframe object and then an unpacked tuple).
+        """
         assert self.animatable
-        assert keyframe.interp in self.supported_interps
-        keyframe.value = self.type(keyframe.value)
-        assert self.verify(keyframe.value)
-        self._keyframes.append(keyframe)
+
+        keyframes = []
+        if isinstance(args[0], (tuple, Keyframe)):
+            for a in args:
+                k = a if isinstance(a, Keyframe) else Keyframe(*a)
+                keyframes.append(k)
+        else:
+            keyframes.append(Keyframe(*args))
+
+        assert all(k.interp in self.supported_interps for k in keyframes)
+        for k in keyframes:
+            k.value = self.type(k.value)
+        assert all(self.verify(k.value) for k in keyframes)
+        self._keyframes.extend(keyframes)
 
     def verify(self, value: Any) -> bool:
         """
