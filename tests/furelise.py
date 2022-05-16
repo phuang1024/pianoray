@@ -11,14 +11,16 @@ class FurElise(DefaultScene):
         self.audio.file = "examples/furelise/audio.mp3"
         self.audio.start = 20.74
 
-        self.blocks.speed.animate(Keyframe(100, 0.5, Interp.LINEAR))
-        self.blocks.speed.animate(Keyframe(150, 0.2, Interp.LINEAR))
-        self.blocks.speed.animate(Keyframe(200, 0.2, Interp.LINEAR))
-        self.blocks.speed.animate(Keyframe(250, 1, Interp.LINEAR))
-        self.blocks.color.animate(Keyframe(100, (160, 160, 255), Interp.LINEAR))
-        self.blocks.color.animate(Keyframe(150, (255, 160, 160), Interp.CONSTANT))
-        self.blocks.color.animate(Keyframe(200, (255, 160, 160), Interp.QUADRATIC))
-        self.blocks.color.animate(Keyframe(250, (160, 160, 255), Interp.LINEAR))
+        self.blocks.speed.animate(
+            (100, 0.5, Interp.LINEAR),
+            (150, 0.2, Interp.LINEAR),
+            (200, 0.2, Interp.LINEAR),
+            (250, 1, Interp.LINEAR),
+            (300, 1, Interp.QUADRATIC),
+            (350, 0.5, Interp.QUADRATIC),
+        )
+        self.blocks.color.animate(100, (160, 160, 255), Interp.LINEAR)
+        self.blocks.color.animate((150, (255, 160, 160), Interp.CONSTANT))
 
         self.keyboard.file = "examples/furelise/video.mp4"
         self.keyboard.start = 4.75

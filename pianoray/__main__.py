@@ -27,6 +27,7 @@ def render(args):
                 .lower().strip() != "y":
             return 3
 
+    logger.info(f"Using scene {args.clsname} from {args.file}")
     scene = import_scene(args.file, args.clsname)()
     render_video(args, scene, args.output, args.cache)
 
