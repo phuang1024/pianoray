@@ -17,8 +17,6 @@ from .utils import GCC
 ROOT = Path(__file__).absolute().parent
 
 CPP_UTILS = ROOT / "cutils"
-CPP_UTILS_FILES = [CPP_UTILS / f
-    for f in CPP_UTILS.iterdir() if f.suffix == ".cpp"]
 
 
 class Types:
@@ -68,7 +66,6 @@ def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
     os.makedirs(cache, exist_ok=True)
 
     files = [ROOT/f for f in files]
-    files.extend(CPP_UTILS_FILES)
 
     obj_files = []
     for f in files:

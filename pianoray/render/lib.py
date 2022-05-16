@@ -19,7 +19,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     cache.mkdir(parents=True, exist_ok=True)
 
     blocks = build_lib(
-        ["effects/blocks.cpp"],
+        ["cutils/blocks.cpp"],
         cache,
         "blocks",
     )
@@ -32,7 +32,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     ]
 
     glare = build_lib(
-        ["effects/glare.cpp"],
+        ["cutils/glare.cpp"],
         cache,
         "glare",
     )
@@ -45,7 +45,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     ]
 
     keyboard = build_lib(
-        ["effects/keyboard.cpp"],
+        ["cutils/keyboard.cpp"],
         cache,
         "keyboard",
     )
@@ -54,7 +54,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     ]
 
     particles = build_lib(
-        ["effects/particles.cpp"],
+        ["cutils/particles.cpp"],
         cache,
         "particles",
     )
