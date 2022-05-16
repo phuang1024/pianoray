@@ -129,7 +129,6 @@ class BlocksProps(PropertyGroup):
         name="Speed",
         desc="If ``X`` is the distance between the top of the screen and the"
              "top of the keyboard, the blocks travel ``speed * X`` per second.",
-        animatable=False,
         default=0.5,
     )
 

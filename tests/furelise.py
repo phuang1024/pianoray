@@ -11,7 +11,10 @@ class FurElise(DefaultScene):
         self.audio.file = "examples/furelise/audio.mp3"
         self.audio.start = 20.74
 
-        self.blocks.speed = 0.5
+        self.blocks.speed.animate(Keyframe(100, 0.5, Interp.LINEAR))
+        self.blocks.speed.animate(Keyframe(150, 0.2, Interp.LINEAR))
+        self.blocks.speed.animate(Keyframe(200, 0.2, Interp.LINEAR))
+        self.blocks.speed.animate(Keyframe(250, 1, Interp.LINEAR))
         self.blocks.color.animate(Keyframe(100, (160, 160, 255), Interp.LINEAR))
         self.blocks.color.animate(Keyframe(150, (255, 160, 160), Interp.CONSTANT))
         self.blocks.color.animate(Keyframe(200, (255, 160, 160), Interp.QUADRATIC))
