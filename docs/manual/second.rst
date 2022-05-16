@@ -30,7 +30,7 @@ Add this line somewhere in the ``setup`` method:
 
 .. code-block:: py
 
-   self.blocks.color = (255, 160, 160)
+   self.blocks.color = (255, 160, 160)  # Red
 
 This will set the blocks to red. Run the render command to re-render the
 video:
@@ -69,11 +69,13 @@ next. This is described in detail in :doc:`animation`.
 Animation is done with a property's ``animate`` method. Let's animate the
 blocks changing from green to blue. Add these lines somewhere:
 
-.. code-block:: sh
+.. code-block:: py
 
-   self.blocks.color.animate(Keyframe(100, (160, 255, 160), Interp.LINEAR))
-   self.blocks.color.animate(Keyframe(150, (160, 160, 255), Interp.LINEAR))
+   self.blocks.color.animate(
+       (100, (160, 255, 160), Interp.LINEAR),  # Green
+       (150, (160, 160, 255), Interp.LINEAR),  # Blue
+    )
 
-The arguments for :class:`~pianoray.Keyframe` are ``(frame, value, interp)``.
 Render the video again and you should see the blocks change color somewhere
-in the middle.
+in the middle. Notice how the blocks are not red, even though the line above
+sets them to red. Read the warning above to learn why.
