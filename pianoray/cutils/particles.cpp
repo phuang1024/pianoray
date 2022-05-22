@@ -80,7 +80,7 @@ void wind(double& wx, double& wy, double x, double y, double t) {
 
 void render(Image& img, int frame, const std::vector<Particle>& ptcls,
         const std::vector<bool>& good, double lifetime) {
-    const double rad = 1.3;  // Radius of ptcl at max strength
+    const double rad = img.width / 750.0;  // Radius of ptcl at max strength
 
     ImageGray factor(img.width, img.height);
 
