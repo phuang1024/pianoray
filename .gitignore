@@ -1,4 +1,21 @@
-/node_modules/
-/public/build/
+*.vim
+*.mid
+*.mp3
+*.mp4
 
-.DS_Store
+__pycache__
+.prcache
+
+/build
+/dist
+/*.egg-info
+
+/docs/_build
+/docs/manual/props.rst
+
+!/examples/**
+
+# From branch "website"
+node_modules
+
+/public/build
