@@ -1,5 +1,5 @@
 <div class="head">
-    <a href="/">Home</a>
+    <a href="./">Home</a>
     <a href="https://github.com/phuang1024/pianoray">GitHub</a>
     <a href="https://pianoray.rtfd.io">Documentation</a>
 </div>
@@ -22,6 +22,6 @@
         margin: 0px;
         padding: 1.5em;
 
-        background-color: #202020;
+        background-color: #1d1d1d;
     }
 </style>
