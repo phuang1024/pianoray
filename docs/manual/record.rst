@@ -79,8 +79,8 @@ audio starts. I use `Audacity <https://audacityteam.org>`__.
 Video
 ^^^^^
 
-Find the moment you play the first note in the video. I use
-`Blender <https://blender.org>`__'s video editor.
+Find the timestamp in seconds you play the first note and when you play the
+last note in the video. I use `Blender <https://blender.org>`__'s video editor.
 
 Video Crop
 ^^^^^^^^^^
