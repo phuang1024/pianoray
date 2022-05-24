@@ -71,10 +71,14 @@ class Keyboard(Effect):
         """
         super().__init__(props, cache, libs)
 
+        vid = cv2.VideoCapture(props.keyboard.file)
+        vid_fps = vid.get(cv2.CAP_PROP_FPS)
+        vid.release()
+
         fps = props.video.fps
         duration = notes[-1].start - notes[0].start
         self.video = VideoRead(props.keyboard.file, fps,
-            (0, duration, props.keyboard.start*fps, props.keyboard.end*fps))
+            (0, duration, props.keyboard.start*vid_fps, props.keyboard.end*vid_fps))
 
         self.compute_crop(props)
 
