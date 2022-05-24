@@ -1,17 +1,20 @@
-<main>
-	<h1>Text</h1>
-</main>
+<script>
+    import Header from "./Header.svelte";
+</script>
+
+<Header/>
+
+<h1>PianoRay</h1>
 
 <style>
-    main {
-        background-color: black;
-    }
-
 	h1 {
         text-align: center;
 		text-transform: uppercase;
+
+        font-family: Ubuntu;
 		font-size: 4em;
-		font-weight: 100;
-		color: white;
+		font-weight: 300;
+
+		color: #dddddd;
 	}
 </style>
