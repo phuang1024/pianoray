@@ -188,7 +188,8 @@ extern "C" void render_ptcls(
 
         // Wind
         double wx, wy;
-        wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord, (double)(frame)/fps, width);
+        wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord,
+            (double)(frame)/fps, width);
         wx *= wind_str;
         wy *= wind_str;
         ptcl.vx += wx;
