@@ -70,11 +70,13 @@ void write_cache(const std::vector<Particle>& ptcls, const std::vector<bool>& go
  *
  * @param x, y  Coords.
  * @param t  Seconds.
+ * @param width  Image width.
  */
-void wind(double& wx, double& wy, double x, double y, double t) {
+void wind(double& wx, double& wy, double x, double y, double t, const int width) {
+    const double fac = (double)width / 750;
     double v = (x+y)*2 + t;
-    wx = cos(v);
-    wy = sin(v);
+    wx = cos(v) * fac;
+    wy = sin(v) * fac;
 }
 
 
@@ -186,7 +188,7 @@ extern "C" void render_ptcls(
 
         // Wind
         double wx, wy;
-        wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord, (double)(frame)/fps);
+        wind(wx, wy, ptcl.x*px_to_coord, ptcl.y*px_to_coord, (double)(frame)/fps, width);
         wx *= wind_str;
         wy *= wind_str;
         ptcl.vx += wx;
