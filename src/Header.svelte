@@ -7,21 +7,19 @@
 <style>
     a {
         color: gray;
-        text-decoration: underline;
         font-family: Ubuntu;
         font-size: 1.2em;
+        text-decoration: underline;
     }
 
     .head {
+        align-items: space-between;
+        background-color: #1d1d1d;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-around;
-        align-items: space-between;
-
         margin: 0px;
         padding: 1.5em;
-
-        background-color: #1d1d1d;
     }
 </style>
