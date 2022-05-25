@@ -1,7 +1,7 @@
 PianoRay
 ========
 
-.. image:: furelise.jpg
+.. image:: ./renders/furelise.jpg
 
 .. toctree::
    :maxdepth: 2
@@ -9,6 +9,7 @@ PianoRay
    :caption: General
 
    general/about.rst
+   general/gallery.rst
    general/install.rst
    general/support.rst
    general/license.rst
