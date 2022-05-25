@@ -1,5 +1,6 @@
 <script>
     import Header from "./Header.svelte";
+    import Footer from "./Footer.svelte";
 
     const repo_path = "https://raw.githubusercontent.com/phuang1024/pianoray/master/"
     const img1 = repo_path + "examples/renders/clementi.jpg"
@@ -13,6 +14,8 @@
         <h3 style="text-align: center">A free and open source piano visualizer.</h3>
     </div>
 </div>
+
+<Footer/>
 
 <style>
 	h1, h2, h3, p {
@@ -45,7 +48,8 @@
     }
 
     .main {
-        background-image: url(../clementi.jpg);
+        background-image: url(../furelise_dim.jpg);
+        background-size: cover;
         display: block;
         min-height: 100%;
     }
