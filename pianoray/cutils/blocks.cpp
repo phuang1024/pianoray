@@ -41,6 +41,19 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
 
 
 /**
+ * New render blocks.
+ */
+extern "C" void render_blocks(
+    double* img_data, int width, int height
+) {
+    ImageD img(img_data, width, height);
+
+    for (int i = 0; i < width; i++)
+        img.set(i, 10, ColorD((double)i / 10, 0, 0));
+}
+
+
+/**
  * Set block_fac and glow_fac values.
  *
  * @param width, height  Image dimensions.
@@ -164,16 +177,3 @@ extern "C" void render_blocks(
     draw_blocks(img, block_fac, glow_fac, color, glow_color);
 }
 */
-
-
-/**
- * New render blocks.
- */
-extern "C" void render_blocks(
-    double* img_data, int width, int height
-) {
-    ImageD img(img_data, width, height);
-
-    for (int i = 0; i < width; i++)
-        img.set(i, 10, ColorD((double)i / 10, 0, 0));
-}

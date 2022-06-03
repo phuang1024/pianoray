@@ -4,6 +4,7 @@ C++ library compilation and handling.
 
 import ctypes
 import os
+import re
 from pathlib import Path
 from subprocess import Popen
 from typing import Sequence
@@ -11,8 +12,8 @@ from typing import Sequence
 import numpy as np
 from numpy.ctypeslib import ndpointer
 
-from . import logger
-from .utils import GCC
+#from . import logger
+#from .utils import GCC
 
 ROOT = Path(__file__).absolute().parent
 
@@ -34,13 +35,9 @@ class Types:
     float = ctypes.c_float
     double = ctypes.c_double
 
-    arr_uchar = ndpointer(dtype=uchar, ndim=1, flags=_arr_flags)
-    arr_int = ndpointer(dtype=int, ndim=1, flags=_arr_flags)
-    arr_double = ndpointer(dtype=double, ndim=1, flags=_arr_flags)
-
-    imgC = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
-    imgD = ndpointer(dtype=double, ndim=3, flags=_arr_flags)
-    path = ndpointer(dtype=char, ndim=1, flags=_arr_flags)
+    _arr_code = "arr_{0} = ndpointer(dtype={0}, ndim=1, flags=_arr_flags)"
+    for t in ("char", "uchar", "int", "uint", "float", "double"):
+        exec(_arr_code.format(t))
 
     @staticmethod
     def cpath(path):
@@ -50,6 +47,19 @@ class Types:
         data = [c for c in str(path).encode()]
         data.append(0)
         return np.array(data, dtype=np.int8)
+
+    @staticmethod
+    def c_to_attr(type):
+        """
+        Convert C type string to this class's attribute name.
+        e.g. "unsigned int" to "uint"
+        """
+        if type in ("char", "int", "float", "double"):
+            return type
+        elif type.startswith("unsigned"):
+            return "u" + type.split(" ")[1]
+        else:
+            raise ValueError(f"Cannot understand C type {type}")
 
 
 def build_lib(files: Sequence[str], cache: Path, name: str) -> ctypes.CDLL:
@@ -96,3 +106,33 @@ def link(obj_files, lib_path):
     p = Popen(args)
     p.wait()
     assert p.returncode == 0
+
+
+def parse_args(path, func_name):
+    """
+    Use regex to parse the arguments of a C++ function.
+    Don't need to manually set them with CDLL.argtypes = [...]
+    """
+    with open(path, "r") as fp:
+        data = fp.read()
+
+    start = re.search(r'extern\s*"C"\s*void\s*' + func_name, data)
+    if start is None:
+        raise ValueError("Function declaration not found.")
+    start = start.start()
+
+    arg_str = data[data.find("(", start)+1 : data.find(")", start)]
+    arg_strs = map(str.strip, arg_str.strip().split(","))
+    args = []
+    for s in arg_strs:
+        type, name = s.rsplit(" ", 1)
+        ptr = "*" in type
+        type = type.replace("*", "").replace(" ", "").strip()
+
+        attr = Types.c_to_attr(type)
+        if ptr:
+            attr = "arr_" + attr
+
+        args.append(getattr(Types, attr))
+
+    return args
