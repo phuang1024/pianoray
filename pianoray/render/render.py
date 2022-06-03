@@ -16,6 +16,7 @@ from .. import logger
 from ..effects import parse_midi
 from ..effects import Blocks, Keyboard, Glare, Particles
 from ..utils import bounds
+from .composite import composite
 from .lib import load_libs
 from .video import Video
 
@@ -92,8 +93,8 @@ def get_frame_bounds(props, duration):
     :param duration: Duration of MIDI in frames.
     """
     fps = props.video.fps
-    m_start = props.composition.margin_start
-    m_end = props.composition.margin_end
+    m_start = props.comp.margin_start
+    m_end = props.comp.margin_end
     frame_start = -fps * m_start
     frame_end = duration + fps*m_end
 
@@ -102,9 +103,9 @@ def get_frame_bounds(props, duration):
 
 def add_fade(props, img, frame_start, frame_end, frame):
     fps = props.video.fps
-    fade_in = frame_start + props.composition.fade_in * fps
-    fade_out = frame_end - props.composition.fade_out * fps
-    fade_blur = props.composition.fade_blur
+    fade_in = frame_start + props.comp.fade_in * fps
+    fade_out = frame_end - props.comp.fade_out * fps
+    fade_blur = props.comp.fade_blur
 
     fade_fac = 1
     if frame <= fade_in:
@@ -171,6 +172,5 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
         # Fade
         #add_fade(scene.default, img, frame_start, frame_end, frame)
 
-        img = np.zeros(shape, dtype=np.uint8)
-        libs["composite"].composite(raw_img, img, img.shape[1], img.shape[0])
+        img = composite(libs, props, raw_img)
         video.write(img)

@@ -59,9 +59,10 @@ class AudioProps(PropertyGroup):
     )
 
 
-class CompositionProps(PropertyGroup):
+class CompositingProps(PropertyGroup):
     """
-    Composition, i.e. structure of the video.
+    Compositing (producing final image).
+    Also video structure.
     """
 
     margin_start: FloatProp(
@@ -103,6 +104,13 @@ class CompositionProps(PropertyGroup):
         mods=[Coords()],
         default=1,
         coords=True,
+    )
+
+    shutter: FloatProp(
+        name="Shutter",
+        desc="Shutter (brightness), lower = dimmer.",
+        default=1,
+        min=0,
     )
 
 
@@ -345,7 +353,7 @@ class DefaultScene(Scene):
     _pgroups = {
         "audio": AudioProps(),
         "blocks": BlocksProps(),
-        "composition": CompositionProps(),
+        "comp": CompositingProps(),
         "glare": GlareProps(),
         "keyboard": KeyboardProps(),
         "midi": MidiProps(),

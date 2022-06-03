@@ -10,7 +10,8 @@
  * @param out_data  Output char image.
  */
 extern "C" void composite(
-    double* in_data, unsigned char* out_data, int width, int height
+    double* in_data, unsigned char* out_data, int width, int height,
+    double prop_comp_shutter
 ) {
     ImageD input(in_data, width, height);
     ImageC output(out_data, width, height);
@@ -21,7 +22,7 @@ extern "C" void composite(
             ColorD raw = input.get(x, y);
             ColorC col;
             for (int i = 0; i < 3; i++) {
-                double v = tanh(raw.get(i));
+                double v = tanh(prop_comp_shutter * raw.get(i));
                 col.set(i, 255 * v);
             }
             output.set(x, y, col);

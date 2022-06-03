@@ -77,7 +77,7 @@ class Video:
             args = [
                 FFMPEG,
                 "-y",
-                "-ss", props.audio.start - props.composition.margin_start,
+                "-ss", props.audio.start - props.comp.margin_start,
                 "-t", self.frame / props.video.fps,
                 "-i", props.audio.file,
                 self.cache / "offset.mp3",

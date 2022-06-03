@@ -25,6 +25,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     )
     composite.composite.argtypes = (
         Types.imgD, Types.imgC, Types.int, Types.int,
+        Types.double,
     )
 
     blocks = build_lib(
