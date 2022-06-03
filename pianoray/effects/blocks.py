@@ -29,9 +29,13 @@ class Blocks(Effect):
             np.array(props.blocks.glow_color, dtype=np.uint8),
         ]
 
+        """
         self.libs["blocks"].render_blocks(
             img, img.shape[1], img.shape[0],
             frame,
             len(notes), keys, starts, ends,
             *props_args,
         )
+        """
+
+        self.libs["blocks"].render_blocks(img, img.shape[1], img.shape[0])

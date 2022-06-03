@@ -24,13 +24,19 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         "blocks",
     )
     blocks.render_blocks.argtypes = [
+        Types.imgD, Types.int, Types.int,
+    ]
+    """
+    blocks.render_blocks.argtypes = [
         Types.img, Types.int, Types.int,
         Types.int,
         Types.int, Types.arr_int, Types.arr_double, Types.arr_double,
         Types.int, Types.double, Types.double, Types.double, Types.arr_uchar,
             Types.double, Types.double, Types.arr_uchar,
     ]
+    """
 
+    """
     glare = build_lib(
         ["cutils/glare.cpp"],
         cache,
@@ -66,10 +72,11 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
         Types.int, Types.double, Types.double, Types.double, Types.double, Types.double,
             Types.double, Types.double, Types.double,
     ]
+    """
 
     return {
         "blocks": blocks,
-        "glare": glare,
-        "keyboard": keyboard,
-        "ptcls": particles,
+        #"glare": glare,
+        #"keyboard": keyboard,
+        #"ptcls": particles,
     }

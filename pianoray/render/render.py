@@ -137,9 +137,9 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     # OOP effects
     props = scene.default
     blocks = Blocks(props, cache, libs)
-    keyboard = Keyboard(props, cache, libs, notes)
-    glare = Glare(props, cache, libs, notes)
-    ptcls = Particles(props, cache, libs)
+    #keyboard = Keyboard(props, cache, libs, notes)
+    #glare = Glare(props, cache, libs, notes)
+    #ptcls = Particles(props, cache, libs)
 
     # Adjust start to match previous render
     if real_start is None:
@@ -159,16 +159,17 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
 
         # Create image
         img = np.zeros((*scene.default.video.resolution[::-1], 3),
-            dtype=np.uint8)
+            dtype=np.float64)
 
         # Apply effects
         props = scene.values(frame)
-        keyboard.render(props, img, frame)
+        #keyboard.render(props, img, frame)
         blocks.render(props, img, frame, notes)
-        ptcls.render(props, img, frame, notes)
-        glare.render(props, img, frame, notes)
+        #ptcls.render(props, img, frame, notes)
+        #glare.render(props, img, frame, notes)
 
         # Fade
-        add_fade(scene.default, img, frame_start, frame_end, frame)
+        #add_fade(scene.default, img, frame_start, frame_end, frame)
 
+        img = img.astype(np.uint8)
         video.write(img)

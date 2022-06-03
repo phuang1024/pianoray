@@ -1,11 +1,6 @@
 #include <iostream>
 
 #include "pr_image.hpp"
-#include "pr_math.hpp"
-#include "pr_piano.hpp"
-
-
-namespace Pianoray {
 
 
 struct Rect {
@@ -19,6 +14,7 @@ struct Rect {
  * @param px, py  Point coordinates.
  * @param r  Block rounding radius.
  */
+/*
 double dist_to_block(double px, double py, const Rect& rect, double r)
 {
     const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
@@ -43,6 +39,7 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
     else
         return 0;
 }
+*/
 
 
 /**
@@ -50,6 +47,7 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
  *
  * @param width, height  Image dimensions.
  */
+/*
 void set_fac(
     ImageGray& block_fac, ImageGray& glow_fac,
     const Rect& rect, double radius, double glow_radius, double glow_int)
@@ -79,11 +77,13 @@ void set_fac(
         }
     }
 }
+*/
 
 
 /**
  * Draw the blocks based on block and glow factors.
  */
+/*
 void draw_blocks(
     Image& img, const ImageGray& block_fac, const ImageGray& glow_fac,
     const Color& color, const Color& glow_color)
@@ -100,6 +100,7 @@ void draw_blocks(
         }
     }
 }
+*/
 
 
 /**
@@ -121,6 +122,7 @@ void draw_blocks(
  * @param glow_int  settings.blocks.glow_intensity
  * @param glow_color_data  settings.blocks.glow_color
  */
+/*
 extern "C" void render_blocks(
     UCH* img_data, int width, int height,
     int frame,
@@ -163,7 +165,18 @@ extern "C" void render_blocks(
 
     draw_blocks(img, block_fac, glow_fac, color, glow_color);
 }
+*/
 
 
-}  // namespace Pianoray
+/**
+ * New render blocks.
+ */
+extern "C" void render_blocks(
+    double* img_data, int width, int height
+) {
+    ImageD img(img_data, width, height);
 
+    const ColorD red(200, 0, 0);
+    for (int i = 0; i < width; i++)
+        img.set(i, 10, red);
+}

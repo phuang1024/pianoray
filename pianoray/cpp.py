@@ -38,7 +38,8 @@ class Types:
     arr_int = ndpointer(dtype=int, ndim=1, flags=_arr_flags)
     arr_double = ndpointer(dtype=double, ndim=1, flags=_arr_flags)
 
-    img = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
+    imgC = ndpointer(dtype=uchar, ndim=3, flags=_arr_flags)
+    imgD = ndpointer(dtype=double, ndim=3, flags=_arr_flags)
     path = ndpointer(dtype=char, ndim=1, flags=_arr_flags)
 
     @staticmethod
