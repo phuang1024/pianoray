@@ -110,6 +110,11 @@ public:
 };
 
 
+// Lexical parser Python-side will see these instead of pointers and
+// will know that expected numpy array dimension is 3.
+using CImg = unsigned char*;
+using DImg = double*;
+
 using ColorC = Color<unsigned char>;
 using ColorD = Color<double>;
 using ImageC = Image<unsigned char>;

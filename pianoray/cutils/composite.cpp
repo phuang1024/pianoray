@@ -10,7 +10,7 @@
  * @param out_data  Output char image.
  */
 extern "C" void composite(
-    double* in_data, unsigned char* out_data, int width, int height,
+    DImg in_data, CImg out_data, int width, int height,
     double prop_comp_shutter
 ) {
     ImageD input(in_data, width, height);

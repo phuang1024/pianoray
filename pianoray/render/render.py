@@ -13,11 +13,11 @@ import numpy as np
 from tqdm import trange
 
 from .. import logger
+from ..cpp import load_libs
 from ..effects import parse_midi
 from ..effects import Blocks, Keyboard, Glare, Particles
 from ..utils import bounds
 from .composite import composite
-from .lib import load_libs
 from .video import Video
 
 

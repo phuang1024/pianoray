@@ -44,7 +44,7 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
  * New render blocks.
  */
 extern "C" void render_blocks(
-    double* img_data, int width, int height
+    DImg img_data, int width, int height
 ) {
     ImageD img(img_data, width, height);
 
