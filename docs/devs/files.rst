@@ -26,7 +26,7 @@ ReadTheDocs.
 examples
 --------
 
-Example recordings for testing.
+Example recordings and renders.
 
 pianoray
 --------
@@ -37,49 +37,28 @@ pianoray/
 ^^^^^^^^^
 
 Main module and global utilities.
-
-- ``__init__.py``: Module file.
-- ``cpp.py``: Handles C++ library compiling and loading.
-- ``logger.py``: Logging utilities.
-- ``main.py``: Main entry point.
-- ``settings.py``: Class for convenient settings access.
-- ``utils.py``: Global utilities.
+Entry point is here (``__main__``).
 
 pianoray/cutils
 ^^^^^^^^^^^^^^^
 
-C++ header files for C++ libraries.
-
-- ``pr_image.hpp``: Image class for interacting with raw unsigned char data.
-- ``pr_math.hpp``: Math utilities.
-- ``pr_piano.hpp``: Utilities relating to rendering, e.g. piano dimensions.
-- ``pr_random.hpp``: Random number generator utilities.
+C++ libraries for rendering.
 
 pianoray/effects
 ^^^^^^^^^^^^^^^^
 
-Files that render the video.
-
-- ``effect.py``: Effect base class for OOP internally.
-- ``midi.py``: Parse MIDI.
-- ``blocks.py``, ``blocks.cpp``: Rendering blocks.
-- ``glare.py``, ``glare.cpp``: Rendering glare.
-- ``keyboard.py``: Rendering keyboard.
+OOP effects for organization. Actual rendering code is in ``cutils``. These
+files call the C++ libraries.
 
 pianoray/render
 ^^^^^^^^^^^^^^^
 
 Rendering pipeline.
 
-- ``render.py``: Calling effects to render the video.
-- ``video.py``: Class for managing video frames and calling FFmpeg to compile
-  the video.
-- ``lib.py``: Load and initialize C++ libraries.
-
 pianoray/view
 ^^^^^^^^^^^^^
 
-PianoRay viewer files. Currently in development.
+PianoRay viewer. Currently in development.
 
 scripts
 -------
@@ -89,4 +68,4 @@ Small scripts, like style checks.
 tests
 -----
 
-Testing files, like test JSON settings.
+Testing files, like test video settings.

@@ -14,7 +14,6 @@ struct Rect {
  * @param px, py  Point coordinates.
  * @param r  Block rounding radius.
  */
-/*
 double dist_to_block(double px, double py, const Rect& rect, double r)
 {
     const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
@@ -39,7 +38,6 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
     else
         return 0;
 }
-*/
 
 
 /**

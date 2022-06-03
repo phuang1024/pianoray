@@ -29,6 +29,8 @@ class FurElise(DefaultScene):
         self.keyboard.dim_mult = 0.6
         self.keyboard.dim_add = -8
 
+        """
         self.comp.shutter.animate(50, 1, Interp.LINEAR)
         self.comp.shutter.animate(100, 2, Interp.LINEAR)
         self.comp.shutter.animate(150, 0.5, Interp.LINEAR)
+        """
