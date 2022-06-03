@@ -1,7 +1,7 @@
-Information
+Conventions
 ===========
 
-Just information for now.
+Conventions used internally.
 
 - Frame zero is when the first note begins.
 - Note zero is lowest note on piano.

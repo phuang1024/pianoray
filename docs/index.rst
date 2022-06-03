@@ -33,7 +33,9 @@ PianoRay
    :caption: Developers
 
    devs/setup.rst
+   devs/convs.rst
    devs/render.rst
+   devs/clib.rst
+   devs/specs.rst
    devs/files.rst
    devs/cache.rst
-   devs/info.rst
