@@ -158,18 +158,19 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
             fp.write(str(frame))
 
         # Create image
-        img = np.zeros((*scene.default.video.resolution[::-1], 3),
-            dtype=np.float64)
+        shape = (*scene.default.video.resolution[::-1], 3)
+        raw_img = np.zeros(shape, dtype=np.float64)
 
         # Apply effects
         props = scene.values(frame)
         #keyboard.render(props, img, frame)
-        blocks.render(props, img, frame, notes)
+        blocks.render(props, raw_img, frame, notes)
         #ptcls.render(props, img, frame, notes)
         #glare.render(props, img, frame, notes)
 
         # Fade
         #add_fade(scene.default, img, frame_start, frame_end, frame)
 
-        img = img.astype(np.uint8)
+        img = np.zeros(shape, dtype=np.uint8)
+        libs["composite"].composite(raw_img, img, img.shape[1], img.shape[0])
         video.write(img)

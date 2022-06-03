@@ -36,9 +36,36 @@ struct Color {
     }
 
     Color(const Color<T>& other) {
-        this->r = r;
-        this->g = g;
-        this->b = b;
+        this->r = other.r;
+        this->g = other.g;
+        this->b = other.b;
+    }
+
+    /**
+     * Get r, g, b based on i = 0, 1, 2
+     * Returns 0 if i != 0, 1, 2
+     */
+    T get(int i) const {
+        if (i == 0)
+            return r;
+        if (i == 1)
+            return g;
+        if (i == 2)
+            return b;
+        return 0;
+    }
+
+    /**
+     * Set a value.
+     * Does nothing if i != 0, 1, 2
+     */
+    void set(int i, T v) {
+        if (i == 0)
+            r = v;
+        else if (i == 1)
+            g = v;
+        else if (i == 2)
+            b = v;
     }
 };
 

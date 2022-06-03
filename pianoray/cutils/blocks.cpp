@@ -176,7 +176,6 @@ extern "C" void render_blocks(
 ) {
     ImageD img(img_data, width, height);
 
-    const ColorD red(200, 0, 0);
     for (int i = 0; i < width; i++)
-        img.set(i, 10, red);
+        img.set(i, 10, ColorD((double)i / 10, 0, 0));
 }

@@ -18,6 +18,15 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
     cache = cache / "c_libs"
     cache.mkdir(parents=True, exist_ok=True)
 
+    composite = build_lib(
+        ["cutils/composite.cpp"],
+        cache,
+        "composite",
+    )
+    composite.composite.argtypes = (
+        Types.imgD, Types.imgC, Types.int, Types.int,
+    )
+
     blocks = build_lib(
         ["cutils/blocks.cpp"],
         cache,
@@ -76,6 +85,7 @@ def load_libs(cache: Path) -> Mapping[str, ctypes.CDLL]:
 
     return {
         "blocks": blocks,
+        "composite": composite,
         #"glare": glare,
         #"keyboard": keyboard,
         #"ptcls": particles,
