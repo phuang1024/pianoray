@@ -315,7 +315,7 @@ class ArrayProp(Property):
 
 class RGBProp(ArrayProp):
     """
-    RGB color property, 0 to 255.
+    RGB color property.
     """
     shape = (3,)
 

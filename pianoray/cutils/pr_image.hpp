@@ -67,6 +67,20 @@ struct Color {
         else if (i == 2)
             b = v;
     }
+
+    /**
+     * Add colors elementwise.
+     */
+    Color<T> add(const Color<T>& other) const {
+        return Color<T>(r+other.r, g+other.g, b+other.b);
+    }
+
+    /**
+     * Scalar multiplication.
+     */
+    Color<T> mult(double fac) const {
+        return Color<T>(fac*r, fac*g, fac*b);
+    }
 };
 
 
@@ -106,6 +120,14 @@ public:
      */
     void set(int x, int y, const Color<T>& c) {
         data[index(x, y)] = c;
+    }
+
+    /**
+     * Add color to pixel.
+     * Equivalent to set(x, y, get(x, y).add(c))
+     */
+    void add(int x, int y, const Color<T>& c) {
+        set(x, y, get(x, y).add(c));
     }
 };
 

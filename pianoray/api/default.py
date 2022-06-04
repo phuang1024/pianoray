@@ -143,7 +143,7 @@ class BlocksProps(PropertyGroup):
     color: RGBProp(
         name="Color",
         desc="Color of the blocks.",
-        default=(150, 160, 240),
+        default=(0.6, 0.65, 0.9),
     )
 
     radius: FloatProp(
@@ -152,27 +152,6 @@ class BlocksProps(PropertyGroup):
         mods=[Coords()],
         default=0.25,
         min=0,
-    )
-
-    glow_intensity: FloatProp(
-        name="Glow Intensity",
-        desc="Intensity of glow around blocks.",
-        default=0.3,
-        min=0,
-    )
-
-    glow_color: RGBProp(
-        name="Glow Color",
-        desc="Color of the glow.",
-        default=(230, 230, 255),
-    )
-
-    glow_radius: FloatProp(
-        name="Glow Radius",
-        desc="Radius of glow around blocks in coords.",
-        mods=[Coords()],
-        default=0.4,
-        coords=True,
     )
 
 

@@ -42,7 +42,7 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
 }
 
 
-void draw_block(ImageD& img, const Rect& rect) {
+void draw_block(ImageD& img, const Rect& rect, const ColorD& color, double radius) {
     const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
     const int width = img.width, height = img.height;
 
@@ -53,15 +53,9 @@ void draw_block(ImageD& img, const Rect& rect) {
 
     for (int x = x_min; x < x_max; x++) {
         for (int y = y_min; y < y_max; y++) {
-            img.set(x, y, ColorD(255, 255, 255));
-
-            /*
             double dist = dist_to_block(x, y, rect, radius);
-            double bfac = interp(dist, 0, 1, 1, 0);
-            bfac = dbounds(bfac, 0, 1);
-
-            block_fac.set(x, y, std::max(bfac, block_fac.get(x, y)));
-            */
+            double fac = dbounds(interp(dist, 0, 1, 1, 0), 0, 1);
+            img.add(x, y, color.mult(fac));
         }
     }
 }
@@ -71,23 +65,23 @@ void draw_block(ImageD& img, const Rect& rect) {
  * New render blocks.
  */
 extern "C" void render_blocks(
-    DImg img_data, int width, int height,
+    DImg d_img, int width, int height,
     int frame, char* notes_str,
-    double prop_video_fps, double prop_blocks_speed, double prop_piano_blackWidthFac
+    double p_video_fps, double p_piano_blackWidthFac, double p_blocks_speed,
+    double* dp_blocks_color, double p_blocks_radius
 ) {
-    ImageD img(img_data, width, height);
+    ImageD img(d_img, width, height);
     Midi midi(notes_str);
+    ColorD p_blocks_color(dp_blocks_color);
 
     for (int i = 0; i < midi.count; i++) {
         const Note note = midi[i];
 
         // Y bounds of rect.
-        double y_start = event_coord(note.start, frame, height, prop_video_fps,
-            prop_blocks_speed);
-        double y_end = event_coord(note.end, frame, height, prop_video_fps,
-            prop_blocks_speed);
-        //y_start = dbounds(y_start, -radius, height/2 + radius);
-        //y_end = dbounds(y_end, -radius, height/2 + radius);
+        double y_start = event_coord(note.start, frame, height, p_video_fps,
+            p_blocks_speed);
+        double y_end = event_coord(note.end, frame, height, p_video_fps,
+            p_blocks_speed);
 
         // Not sure of y_start, y_end order so check here.
         double y_up, y_down;
@@ -103,7 +97,7 @@ extern "C" void render_blocks(
 
         // X bounds of note.
         double x_start, x_end;
-        key_coords(x_start, x_end, note.note, width, prop_piano_blackWidthFac);
+        key_coords(x_start, x_end, note.note, width, p_piano_blackWidthFac);
 
         Rect rect;
         rect.x = x_start;
@@ -111,7 +105,7 @@ extern "C" void render_blocks(
         rect.w = x_end - x_start;
         rect.h = y_down - y_up;
 
-        draw_block(img, rect);
+        draw_block(img, rect, p_blocks_color, p_blocks_radius);
     }
 }
 
