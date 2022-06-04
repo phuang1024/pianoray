@@ -43,11 +43,14 @@ class Types:
         exec(_arr_code.format("img", t, 3))
 
     @staticmethod
-    def cpath(path):
+    def cstr(s):
         """
-        Return C path (numpy array of chars, null terminated).
+        Numpy array of chars, null terminated.
         """
-        data = [c for c in str(path).encode()]
+        if not isinstance(s, bytes):
+            s = str(s).encode()
+
+        data = list(s)
         data.append(0)
         return np.array(data, dtype=np.int8)
 

@@ -13,8 +13,8 @@ import numpy as np
 from tqdm import trange
 
 from .. import logger
-from ..cpp import load_libs
-from ..effects import parse_midi
+from ..cpp import Types, load_libs
+from ..midi import parse_midi, serialize_midi
 from ..effects import Blocks, Keyboard, Glare, Particles
 from ..utils import bounds
 from .composite import composite
@@ -131,13 +131,14 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     # Parse MIDI.
     notes = parse_midi(scene.default)
     duration = int(max(x.end for x in notes))
+    notes_str = Types.cstr(serialize_midi(notes))
 
     # Calculate start and end.
     frame_start, frame_end = get_frame_bounds(scene.default, duration)
 
     # OOP effects
     props = scene.default
-    blocks = Blocks(props, cache, libs)
+    blocks = Blocks(props, cache, libs, notes_str)
     #keyboard = Keyboard(props, cache, libs, notes)
     #glare = Glare(props, cache, libs, notes)
     #ptcls = Particles(props, cache, libs)
@@ -165,7 +166,7 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
         # Apply effects
         props = scene.values(frame)
         #keyboard.render(props, img, frame)
-        blocks.render(props, raw_img, frame, notes)
+        blocks.render(props, raw_img, frame)
         #ptcls.render(props, img, frame, notes)
         #glare.render(props, img, frame, notes)
 

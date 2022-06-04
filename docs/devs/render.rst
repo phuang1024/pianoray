@@ -1,7 +1,10 @@
-Rendering Pipeline
-==================
+Rendering
+=========
 
 Description of how rendering is done internally.
+
+Pipeline
+--------
 
 First, an image of 64-bit floats is created. This is like an unbounded brightness
 image of the rendered scene, and will be converted into a standard 8-bit int later.

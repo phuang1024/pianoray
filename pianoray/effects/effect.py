@@ -13,10 +13,13 @@ class Effect:
     """
     cache: Path
     libs: Mapping[str, ctypes.CDLL]
+    notes_str: np.ndarray
 
-    def __init__(self, props: Accessor, cache: Path, libs) -> None:
+    def __init__(self, props: Accessor, cache: Path, libs,
+            notes_str) -> None:
         self.cache = cache
         self.libs = libs
+        self.notes_str = notes_str
 
     def render(self, props: Accessor, img: np.ndarray, frame: int,
             *args, **kwargs) -> None:

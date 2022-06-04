@@ -47,8 +47,7 @@ C++ libraries for rendering.
 pianoray/effects
 ^^^^^^^^^^^^^^^^
 
-OOP effects for organization. Actual rendering code is in ``cutils``. These
-files call the C++ libraries.
+OOP effects for organization. Most call libraries from ``cutils``.
 
 pianoray/render
 ^^^^^^^^^^^^^^^
