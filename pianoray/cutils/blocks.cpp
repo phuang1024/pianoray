@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "pr_image.hpp"
+#include "pr_midi.hpp"
 
 
 struct Rect {
@@ -48,6 +49,7 @@ extern "C" void render_blocks(
     int frame, char* notes_str
 ) {
     ImageD img(img_data, width, height);
+    Midi midi(notes_str);
 
     for (int i = 0; i < width; i++)
         img.set(i, 10, ColorD((double)i / 10, 0, 0));
