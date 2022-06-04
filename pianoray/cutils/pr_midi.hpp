@@ -18,7 +18,7 @@ std::ostream& operator<<(std::ostream& os, const Note& note) {
  * Unserialize MIDI notes according to docs.
  */
 struct Midi {
-    const int note_size = 2*8 + 2*1;
+    const static int note_size = 2*8 + 2*1;
 
     int count;
     char* data;

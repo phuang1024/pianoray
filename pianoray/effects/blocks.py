@@ -21,4 +21,5 @@ class Blocks(Effect):
         self.libs["blocks"].render_blocks(
             img, img.shape[1], img.shape[0],
             frame, self.notes_str,
+            props.video.fps, props.blocks.speed, props.piano.black_width_fac,
         )

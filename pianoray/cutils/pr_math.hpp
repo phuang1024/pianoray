@@ -4,9 +4,6 @@
 #include <cmath>
 
 
-namespace Pianoray {
-
-
 constexpr double PI = 3.14159;
 
 
@@ -28,6 +25,3 @@ double interp(double v, double old_min, double old_max,
     double fac = (v-old_min) / (old_max-old_min);
     return new_min + fac * (new_max-new_min);
 }
-
-
-}  // namespace Pianoray

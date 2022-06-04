@@ -2,6 +2,7 @@
 
 #include "pr_image.hpp"
 #include "pr_midi.hpp"
+#include "pr_piano.hpp"
 
 
 struct Rect {
@@ -41,18 +42,77 @@ double dist_to_block(double px, double py, const Rect& rect, double r)
 }
 
 
+void draw_block(ImageD& img, const Rect& rect) {
+    const double x = rect.x, y = rect.y, w = rect.w, h = rect.h;
+    const int width = img.width, height = img.height;
+
+    int x_min = (int)(dbounds(x-1, 0, width-1));
+    int x_max = (int)(dbounds(x+w+2, 0, width-1));
+    int y_min = (int)(dbounds(y-1, 0, height/2));
+    int y_max = (int)(dbounds(y+h+2, 0, height/2));
+
+    for (int x = x_min; x < x_max; x++) {
+        for (int y = y_min; y < y_max; y++) {
+            img.set(x, y, ColorD(255, 255, 255));
+
+            /*
+            double dist = dist_to_block(x, y, rect, radius);
+            double bfac = interp(dist, 0, 1, 1, 0);
+            bfac = dbounds(bfac, 0, 1);
+
+            block_fac.set(x, y, std::max(bfac, block_fac.get(x, y)));
+            */
+        }
+    }
+}
+
+
 /**
  * New render blocks.
  */
 extern "C" void render_blocks(
     DImg img_data, int width, int height,
-    int frame, char* notes_str
+    int frame, char* notes_str,
+    double prop_video_fps, double prop_blocks_speed, double prop_piano_blackWidthFac
 ) {
     ImageD img(img_data, width, height);
     Midi midi(notes_str);
 
-    for (int i = 0; i < width; i++)
-        img.set(i, 10, ColorD((double)i / 10, 0, 0));
+    for (int i = 0; i < midi.count; i++) {
+        const Note note = midi[i];
+
+        // Y bounds of rect.
+        double y_start = event_coord(note.start, frame, height, prop_video_fps,
+            prop_blocks_speed);
+        double y_end = event_coord(note.end, frame, height, prop_video_fps,
+            prop_blocks_speed);
+        //y_start = dbounds(y_start, -radius, height/2 + radius);
+        //y_end = dbounds(y_end, -radius, height/2 + radius);
+
+        // Not sure of y_start, y_end order so check here.
+        double y_up, y_down;
+        if (y_start < y_end) {
+            y_up = y_start;
+            y_down = y_end;
+        } else {
+            y_down = y_start;
+            y_up = y_end;
+        }
+        if (y_down < 0 || y_up > height/2)
+            continue;
+
+        // X bounds of note.
+        double x_start, x_end;
+        key_coords(x_start, x_end, note.note, width, prop_piano_blackWidthFac);
+
+        Rect rect;
+        rect.x = x_start;
+        rect.y = y_up;
+        rect.w = x_end - x_start;
+        rect.h = y_down - y_up;
+
+        draw_block(img, rect);
+    }
 }
 
 
