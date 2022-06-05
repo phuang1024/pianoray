@@ -129,6 +129,13 @@ public:
     void add(int x, int y, const Color<T>& c) {
         set(x, y, get(x, y).add(c));
     }
+
+    /**
+     * Set pixel to opacity*new + (1-opacity)*curr
+     */
+    void overlay(int x, int y, const Color<T>& c, double opacity) {
+        set(x, y, c.mult(opacity).add(get(x, y).mult(1-opacity)));
+    }
 };
 
 

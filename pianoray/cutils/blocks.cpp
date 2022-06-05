@@ -55,7 +55,7 @@ void draw_block(ImageD& img, const Rect& rect, const ColorD& color, double radiu
         for (int y = y_min; y < y_max; y++) {
             double dist = dist_to_block(x, y, rect, radius);
             double fac = dbounds(interp(dist, 0, 1, 1, 0), 0, 1);
-            img.add(x, y, color.mult(fac));
+            img.overlay(x, y, color, fac);
         }
     }
 }
