@@ -109,7 +109,7 @@ class CompositingProps(PropertyGroup):
     shutter: FloatProp(
         name="Shutter",
         desc="Shutter (brightness), lower = dimmer.",
-        default=1.5,
+        default=1.2,
         min=0,
     )
 

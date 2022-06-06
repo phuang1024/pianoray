@@ -16,8 +16,7 @@ from .. import logger
 from ..cpp import Types, load_libs
 from ..midi import parse_midi, serialize_midi
 from ..effects import Blocks, Keyboard, Glare, Particles
-from ..utils import bounds
-from .composite import composite
+from .composite import add_fade, composite
 from .video import Video
 
 
@@ -88,7 +87,8 @@ def render_video(args, scene, out: str, cache: Path) -> None:
 
 def get_frame_bounds(props, duration):
     """
-    Returns (start_frame, end_frame).
+    Returns (start_frame, end_frame) of whole video, where frame 0 is
+    start of first note.
 
     :param duration: Duration of MIDI in frames.
     """
@@ -99,26 +99,6 @@ def get_frame_bounds(props, duration):
     frame_end = duration + fps*m_end
 
     return (frame_start, frame_end)
-
-
-def add_fade(props, img, frame_start, frame_end, frame):
-    fps = props.video.fps
-    fade_in = frame_start + props.comp.fade_in * fps
-    fade_out = frame_end - props.comp.fade_out * fps
-    fade_blur = props.comp.fade_blur
-
-    fade_fac = 1
-    if frame <= fade_in:
-        fade_fac *= np.interp(frame, (frame_start, fade_in), (0, 1))
-    if frame >= fade_out:
-        fade_fac *= np.interp(frame, (fade_out, frame_end), (1, 0))
-    fade_fac = bounds(fade_fac, 0, 1)
-
-    if fade_fac < 1:
-        blur = int(fade_blur * (1-fade_fac))
-        img[...] = (img * fade_fac).astype(np.uint8)
-        if blur > 0:
-            img[...] = cv2.blur(img, (blur, blur))
 
 
 def render_frames(scene, libs, video, cache, real_start=None) -> int:
@@ -170,8 +150,8 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
         #ptcls.render(props, img, frame, notes)
         #glare.render(props, img, frame, notes)
 
-        # Fade
-        #add_fade(scene.default, img, frame_start, frame_end, frame)
-
+        # Compositing
         img = composite(libs, props, raw_img)
+        add_fade(scene.default, img, frame_start, frame_end, frame)
+
         video.write(img)
