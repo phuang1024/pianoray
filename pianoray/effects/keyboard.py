@@ -69,7 +69,7 @@ class Keyboard(Effect):
         """
         :param notes: Parsed MIDI notes.
         """
-        super().__init__(props, cache, libs)
+        super().__init__(props, cache, libs, notes)
 
         vid = cv2.VideoCapture(props.keyboard.file)
         vid_fps = vid.get(cv2.CAP_PROP_FPS)
@@ -153,7 +153,9 @@ class Keyboard(Effect):
         half = int(props.video.resolution[1] / 2)
         img[half:half+dst[1], 0:dst[0], ...] = kbd
 
+        """
         # Octave lines
         if props.keyboard.octave_lines:
             self.libs["keyboard"].render_octave_lines(
                 img, img.shape[1], img.shape[0])
+        """

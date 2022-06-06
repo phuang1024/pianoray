@@ -1,5 +1,6 @@
 """
 Compositing (post processing) the rendered image.
+Also arbitrary small rendering functions.
 """
 
 import cv2

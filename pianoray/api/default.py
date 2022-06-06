@@ -137,7 +137,7 @@ class BlocksProps(PropertyGroup):
         name="Speed",
         desc="If ``X`` is the distance between the top of the screen and the"
              "top of the keyboard, the blocks travel ``speed * X`` per second.",
-        default=0.5,
+        default=0.42,
     )
 
     color: RGBProp(
@@ -175,7 +175,7 @@ class MidiProps(PropertyGroup):
         name="Minimum Duration",
         desc="Min duration of a note in seconds.",
         animatable=False,
-        default=0.08,
+        default=0.1,
         min=0,
     )
 

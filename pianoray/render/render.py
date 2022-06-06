@@ -111,15 +111,14 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
     # Parse MIDI.
     notes = parse_midi(scene.default)
     duration = int(max(x.end for x in notes))
-    notes_str = Types.cstr(serialize_midi(notes))
 
     # Calculate start and end.
     frame_start, frame_end = get_frame_bounds(scene.default, duration)
 
     # OOP effects
     props = scene.default
-    blocks = Blocks(props, cache, libs, notes_str)
-    #keyboard = Keyboard(props, cache, libs, notes)
+    blocks = Blocks(props, cache, libs, notes)
+    keyboard = Keyboard(props, cache, libs, notes)
     #glare = Glare(props, cache, libs, notes)
     #ptcls = Particles(props, cache, libs)
 
@@ -145,13 +144,13 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
 
         # Apply effects
         props = scene.values(frame)
-        #keyboard.render(props, img, frame)
         blocks.render(props, raw_img, frame)
         #ptcls.render(props, img, frame, notes)
         #glare.render(props, img, frame, notes)
 
         # Compositing
         img = composite(libs, props, raw_img)
+        keyboard.render(props, img, frame)
         add_fade(scene.default, img, frame_start, frame_end, frame)
 
         video.write(img)
