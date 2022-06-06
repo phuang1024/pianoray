@@ -13,10 +13,10 @@ import numpy as np
 from tqdm import trange
 
 from .. import logger
-from ..effects import parse_midi
+from ..cpp import Types, load_libs
+from ..midi import parse_midi, serialize_midi
 from ..effects import Blocks, Keyboard, Glare, Particles
-from ..utils import bounds
-from .lib import load_libs
+from .composite import add_fade, composite
 from .video import Video
 
 
@@ -87,37 +87,18 @@ def render_video(args, scene, out: str, cache: Path) -> None:
 
 def get_frame_bounds(props, duration):
     """
-    Returns (start_frame, end_frame).
+    Returns (start_frame, end_frame) of whole video, where frame 0 is
+    start of first note.
 
     :param duration: Duration of MIDI in frames.
     """
     fps = props.video.fps
-    m_start = props.composition.margin_start
-    m_end = props.composition.margin_end
+    m_start = props.comp.margin_start
+    m_end = props.comp.margin_end
     frame_start = -fps * m_start
     frame_end = duration + fps*m_end
 
     return (frame_start, frame_end)
-
-
-def add_fade(props, img, frame_start, frame_end, frame):
-    fps = props.video.fps
-    fade_in = frame_start + props.composition.fade_in * fps
-    fade_out = frame_end - props.composition.fade_out * fps
-    fade_blur = props.composition.fade_blur
-
-    fade_fac = 1
-    if frame <= fade_in:
-        fade_fac *= np.interp(frame, (frame_start, fade_in), (0, 1))
-    if frame >= fade_out:
-        fade_fac *= np.interp(frame, (fade_out, frame_end), (1, 0))
-    fade_fac = bounds(fade_fac, 0, 1)
-
-    if fade_fac < 1:
-        blur = int(fade_blur * (1-fade_fac))
-        img[...] = (img * fade_fac).astype(np.uint8)
-        if blur > 0:
-            img[...] = cv2.blur(img, (blur, blur))
 
 
 def render_frames(scene, libs, video, cache, real_start=None) -> int:
@@ -136,10 +117,10 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
 
     # OOP effects
     props = scene.default
-    blocks = Blocks(props, cache, libs)
+    blocks = Blocks(props, cache, libs, notes)
     keyboard = Keyboard(props, cache, libs, notes)
-    glare = Glare(props, cache, libs, notes)
-    ptcls = Particles(props, cache, libs)
+    #glare = Glare(props, cache, libs, notes)
+    #ptcls = Particles(props, cache, libs)
 
     # Adjust start to match previous render
     if real_start is None:
@@ -158,17 +139,18 @@ def render_frames(scene, libs, video, cache, real_start=None) -> int:
             fp.write(str(frame))
 
         # Create image
-        img = np.zeros((*scene.default.video.resolution[::-1], 3),
-            dtype=np.uint8)
+        shape = (*scene.default.video.resolution[::-1], 3)
+        raw_img = np.zeros(shape, dtype=np.float64)
 
         # Apply effects
         props = scene.values(frame)
-        keyboard.render(props, img, frame)
-        blocks.render(props, img, frame, notes)
-        ptcls.render(props, img, frame, notes)
-        glare.render(props, img, frame, notes)
+        blocks.render(props, raw_img, frame)
+        #ptcls.render(props, img, frame, notes)
+        #glare.render(props, img, frame, notes)
 
-        # Fade
+        # Compositing
+        img = composite(libs, props, raw_img)
+        keyboard.render(props, img, frame)
         add_fade(scene.default, img, frame_start, frame_end, frame)
 
         video.write(img)

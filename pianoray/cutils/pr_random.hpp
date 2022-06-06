@@ -1,9 +1,6 @@
 #pragma once
 
 
-namespace Random {
-
-
 constexpr int LARGE = (int)1e9;
 
 
@@ -29,6 +26,3 @@ int randint(int a, int b) {
     int delta = (b-a) * random();
     return a + delta;
 }
-
-
-}  // namespace Random

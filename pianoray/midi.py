@@ -1,4 +1,6 @@
+import io
 import os
+import struct
 from typing import Any, Mapping, Sequence
 
 import mido
@@ -56,3 +58,17 @@ def parse_midi(props) -> Sequence[Note]:
                 notes.append(Note(note, vel, starts[note], end))
 
     return notes
+
+
+def serialize_midi(notes) -> bytes:
+    """
+    Serialize according to description in docs.
+    """
+    data = io.BytesIO()
+
+    data.write(struct.pack("<I", len(notes)))
+    for n in notes:
+        data.write(struct.pack("<ddBB", n.start, n.end, n.note, n.velocity))
+
+    data.seek(0)
+    return data.read()

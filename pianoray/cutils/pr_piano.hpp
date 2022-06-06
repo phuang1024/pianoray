@@ -1,9 +1,6 @@
 #pragma once
 
 
-namespace Pianoray {
-
-
 /**
  * If key is white.
  */
@@ -77,6 +74,3 @@ double event_coord(
     double delta = speed * (frame-event_frame);
     return height + delta;
 }
-
-
-}  // namespace Pianoray

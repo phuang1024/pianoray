@@ -59,9 +59,10 @@ class AudioProps(PropertyGroup):
     )
 
 
-class CompositionProps(PropertyGroup):
+class CompositingProps(PropertyGroup):
     """
-    Composition, i.e. structure of the video.
+    Compositing (producing final image).
+    Also video structure.
     """
 
     margin_start: FloatProp(
@@ -105,6 +106,13 @@ class CompositionProps(PropertyGroup):
         coords=True,
     )
 
+    shutter: FloatProp(
+        name="Shutter",
+        desc="Shutter (brightness), lower = dimmer.",
+        default=1.2,
+        min=0,
+    )
+
 
 class PianoProps(PropertyGroup):
     """
@@ -129,13 +137,13 @@ class BlocksProps(PropertyGroup):
         name="Speed",
         desc="If ``X`` is the distance between the top of the screen and the"
              "top of the keyboard, the blocks travel ``speed * X`` per second.",
-        default=0.5,
+        default=0.42,
     )
 
     color: RGBProp(
         name="Color",
         desc="Color of the blocks.",
-        default=(150, 160, 240),
+        default=(0.6, 0.65, 0.9),
     )
 
     radius: FloatProp(
@@ -146,25 +154,18 @@ class BlocksProps(PropertyGroup):
         min=0,
     )
 
-    glow_intensity: FloatProp(
-        name="Glow Intensity",
-        desc="Intensity of glow around blocks.",
-        default=0.3,
+    bottom_glow: FloatProp(
+        name="Bottom Glow",
+        desc="Intensity multiplier of block glow when it hits the keyboard.",
+        default=4,
         min=0,
     )
 
-    glow_color: RGBProp(
-        name="Glow Color",
-        desc="Color of the glow.",
-        default=(230, 230, 255),
-    )
-
-    glow_radius: FloatProp(
-        name="Glow Radius",
-        desc="Radius of glow around blocks in coords.",
+    bottom_glow_len: FloatProp(
+        name="Bottom Glow Length",
+        desc="Amount of bottom glow in coords.",
         mods=[Coords()],
-        default=0.4,
-        coords=True,
+        default=2,
     )
 
 
@@ -188,7 +189,7 @@ class MidiProps(PropertyGroup):
         name="Minimum Duration",
         desc="Min duration of a note in seconds.",
         animatable=False,
-        default=0.08,
+        default=0.1,
         min=0,
     )
 
@@ -345,7 +346,7 @@ class DefaultScene(Scene):
     _pgroups = {
         "audio": AudioProps(),
         "blocks": BlocksProps(),
-        "composition": CompositionProps(),
+        "comp": CompositingProps(),
         "glare": GlareProps(),
         "keyboard": KeyboardProps(),
         "midi": MidiProps(),
