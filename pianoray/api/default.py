@@ -154,6 +154,20 @@ class BlocksProps(PropertyGroup):
         min=0,
     )
 
+    bottom_glow: FloatProp(
+        name="Bottom Glow",
+        desc="Intensity multiplier of block glow when it hits the keyboard.",
+        default=4,
+        min=0,
+    )
+
+    bottom_glow_len: FloatProp(
+        name="Bottom Glow Length",
+        desc="Amount of bottom glow in coords.",
+        mods=[Coords()],
+        default=2,
+    )
+
 
 class MidiProps(PropertyGroup):
     file: PathProp(

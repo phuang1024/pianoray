@@ -22,5 +22,6 @@ class Blocks(Effect):
             img, img.shape[1], img.shape[0],
             frame, self.notes_str,
             props.video.fps, props.piano.black_width_fac, props.blocks.speed,
-            props.blocks.color, props.blocks.radius,
+            props.blocks.color, props.blocks.radius, props.blocks.bottom_glow,
+            props.blocks.bottom_glow_len,
         )
