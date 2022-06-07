@@ -139,6 +139,41 @@ public:
 };
 
 
+/**
+ * Grayscale factor image.
+ */
+struct ImageGray {
+    int width, height;
+    double* data;
+
+    ImageGray(int width, int height) {
+        this->width = width;
+        this->height = height;
+        data = new double[width*height];
+
+        for (int i = 0; i < width*height; i++)
+            data[i] = 0;
+    }
+
+    ~ImageGray() {
+        delete[] data;
+    }
+
+    int index(int x, int y) const {
+        return y*width + x;
+    }
+
+    double get(int x, int y) const {
+        return data[index(x, y)];
+    }
+
+    void set(int x, int y, double v) {
+        data[index(x, y)] = v;
+    }
+};
+
+
+// Use these to receive raw image data from Python.
 // Lexical parser Python-side will see these instead of pointers and
 // will know that expected numpy array dimension is 3.
 using CImg = unsigned char*;
