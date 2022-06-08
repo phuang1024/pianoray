@@ -22,27 +22,30 @@ void double_to_char(ImageD& input, ImageC& output, double shutter) {
 
 
 void add_bloom(ImageD& img, double intensity, double radius, double thres) {
-    // Will be added to original image.
-    ImageD bloom(img.width, img.height);
+    const int width = img.width, height = img.height;
 
-    for (int x = 0; x < img.width; x++) {
-        for (int y = 0; y < img.height/2; y++) {
+    // Will be added to original image.
+    ImageD bloom(width, height);
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height/2; y++) {
             const ColorD col = img.get(x, y);
             double mag = (col.r+col.g+col.b) / 3.0;
             if (!(mag > 0 && mag >= thres))
                 continue;
 
-            for (int dx = -radius; dx <= radius+1; dx++) {
-                for (int dy = -radius; dy <= radius+1; dy++) {
-                    double dist = hypot(dx, dy);
-                    double dist_fac = interp(dist, 0, radius, 1, 0);
+            const int x_min = dbounds(x-radius, 0, width-1);
+            const int x_max = dbounds(x+radius+1, 0, width-1);
+            const int y_min = dbounds(y-radius, 0, height-1);
+            const int y_max = dbounds(y+radius+1, 0, height-1);
+            for (int cx = x_min; cx <= x_max; cx++) {
+                for (int cy = y_min; cy <= y_max; cy++) {
+                    double dist = hypot(cx-x, cy-y);
 
-                    if (dist_fac > 0) {
-                        dist_fac = dbounds(dist_fac, 0, 1);
-                        int cx = x+dx, cy = y+dy;
+                    if (dist > 0) {
+                        double dist_fac = dbounds(interp(dist, 0, radius, 1, 0), 0, 1);
                         double fac = intensity * pow(dist_fac, 2);
-
-                        bloom.add(cx, cy, img.get(cx, cy).mult(fac));
+                        bloom.max(cx, cy, col.mult(fac));
                     }
                 }
             }
@@ -51,9 +54,6 @@ void add_bloom(ImageD& img, double intensity, double radius, double thres) {
 
     for (int x = 0; x < img.width; x++) {
         for (int y = 0; y < img.height; y++) {
-            double b = bloom.get(x, y).r;
-            if (b > 1e9)
-                std::cerr << b << std::endl;
             img.add(x, y, bloom.get(x, y));
         }
     }

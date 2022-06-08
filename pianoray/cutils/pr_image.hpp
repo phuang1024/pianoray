@@ -101,6 +101,9 @@ public:
         this->width = width;
         this->height = height;
         dealloc = true;
+
+        for (int i = 0; i < width*height; i++)
+            data[i].r = data[i].g = data[i].b = 0;
     }
 
     /**
@@ -146,6 +149,16 @@ public:
      */
     void add(int x, int y, const Color<T>& c) {
         set(x, y, get(x, y).add(c));
+    }
+
+    /**
+     * Set color to max of current and c, element wise.
+     */
+    void max(int x, int y, const Color<T>& c) {
+        const Color<T> curr = get(x, y);
+        Color<T> new_col(std::max(curr.r, c.r), std::max(curr.g, c.g),
+            std::max(curr.b, c.b));
+        set(x, y, new_col);
     }
 
     /**
