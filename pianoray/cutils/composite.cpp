@@ -34,7 +34,7 @@ void add_bloom(ImageD& img, double intensity, double radius, double thres) {
             if (!(mag > 0 && mag >= thres))
                 continue;
 
-            // Radius corresponding to brightness.
+            // Adaptive radius based on brightness.
             const double r = radius * tanh(mag / 5.0);
 
             const int x_min = dbounds(x-r, 0, width-1);
