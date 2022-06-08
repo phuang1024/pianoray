@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "pr_math.hpp"
 
 
@@ -89,16 +91,32 @@ class Image {
 public:
     Color<T>* data;
     int width, height;
+    bool dealloc;  // Whether we need to deallocate (not reference to other memory).
 
     /**
-     * Initialize.
-     * @param data  Memory of values.
-     *              Shape should be (height, width, channel)
+     * Initialize all 0.
+     */
+    Image(int width, int height) {
+        data = new Color<T>[width*height];
+        this->width = width;
+        this->height = height;
+        dealloc = true;
+    }
+
+    /**
+     * Initialize as a reference to memory.
+     * @param data  Shape should be (height, width, channel)
      */
     Image(T* data, int width, int height) {
         this->data = (Color<T>*)data;
         this->width = width;
         this->height = height;
+        dealloc = false;
+    }
+
+    ~Image() {
+        if (dealloc)
+            delete[] data;
     }
 
     /**

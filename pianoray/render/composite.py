@@ -19,7 +19,8 @@ def composite(libs, props, raw_img):
 
     libs["composite"].composite(
         raw_img, img, img.shape[1], img.shape[0],
-        props.comp.shutter,
+        props.comp.shutter, props.comp.bloom_int, props.comp.bloom_rad,
+        props.comp.bloom_thres,
     )
 
     return img

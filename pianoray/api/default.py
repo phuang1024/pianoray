@@ -113,6 +113,28 @@ class CompositingProps(PropertyGroup):
         min=0,
     )
 
+    bloom_int: FloatProp(
+        name="Bloom Intensity",
+        desc="Intensity of glow around bright objects.",
+        default=0.3,
+        min=0,
+    )
+
+    bloom_rad: FloatProp(
+        name="Bloom Radius",
+        desc="Radius of bloom in coords.",
+        mods=[Coords()],
+        default=1,
+        min=0,
+    )
+
+    bloom_thres: FloatProp(
+        name="Bloom Threshold",
+        desc="Minimum brightness before adding bloom.",
+        default=0.5,
+        min=0,
+    )
+
 
 class PianoProps(PropertyGroup):
     """
