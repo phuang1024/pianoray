@@ -116,15 +116,15 @@ class CompositingProps(PropertyGroup):
     bloom_int: FloatProp(
         name="Bloom Intensity",
         desc="Intensity of glow around bright objects.",
-        default=0.3,
+        default=0.6,
         min=0,
     )
 
     bloom_rad: FloatProp(
         name="Bloom Radius",
-        desc="Radius of bloom in coords.",
+        desc="Max radius of bloom in coords.",
         mods=[Coords()],
-        default=1,
+        default=1.5,
         min=0,
     )
 

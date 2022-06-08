@@ -34,16 +34,19 @@ void add_bloom(ImageD& img, double intensity, double radius, double thres) {
             if (!(mag > 0 && mag >= thres))
                 continue;
 
-            const int x_min = dbounds(x-radius, 0, width-1);
-            const int x_max = dbounds(x+radius+1, 0, width-1);
-            const int y_min = dbounds(y-radius, 0, height-1);
-            const int y_max = dbounds(y+radius+1, 0, height-1);
+            // Radius corresponding to brightness.
+            const double r = radius * tanh(mag / 5.0);
+
+            const int x_min = dbounds(x-r, 0, width-1);
+            const int x_max = dbounds(x+r+1, 0, width-1);
+            const int y_min = dbounds(y-r, 0, height-1);
+            const int y_max = dbounds(y+r+1, 0, height-1);
             for (int cx = x_min; cx <= x_max; cx++) {
                 for (int cy = y_min; cy <= y_max; cy++) {
                     double dist = hypot(cx-x, cy-y);
 
                     if (dist > 0) {
-                        double dist_fac = dbounds(interp(dist, 0, radius, 1, 0), 0, 1);
+                        double dist_fac = dbounds(interp(dist, 0, r, 1, 0), 0, 1);
                         double fac = intensity * pow(dist_fac, 2);
                         bloom.max(cx, cy, col.mult(fac));
                     }
